@@ -54,8 +54,8 @@ describe('WalkontableMerge', function () {
     wtMerge.mergeSelection(wtSelection);
 
     expect($table.find('td').length).toBe(1);
-    expect($table.find('td:eq(0)').attr('rowspan')).toBe('2');
-    expect($table.find('td:eq(0)').attr('colspan')).toBe('2');
+    expect($table.find('td:eq(0)')[0].rowSpan).toBe(2);
+    expect($table.find('td:eq(0)')[0].colSpan).toBe(2);
     expect($table.find('tr:eq(0)').find('td').length).toBe(1);
     expect($table.find('tr:eq(1)').find('td').length).toBe(0);
   });

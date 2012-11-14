@@ -36,32 +36,39 @@ WalkontableSelection.prototype.getSelected = function () {
   return this.selected;
 };
 
-WalkontableSelection.prototype.isRectangular = function () {
+WalkontableSelection.prototype.rectangleSize = function () {
   var rowLengths = {}
     , row
     , last
     , i
     , ilen
     , j
-    , jlen;
+    , jlen
+    , height = 0;
 
   for (i = 0, ilen = this.selected.length; i < ilen; i++) {
     row = this.wtCell.rowIndex(this.selected[i]);
     for (j = 0, jlen = this.selected[i].rowSpan; j < jlen; j++) {
       if (typeof rowLengths[row + j] === 'undefined') {
         rowLengths[row + j] = 0;
+        height++;
       }
       rowLengths[row + j] += this.selected[i].colSpan;
     }
   }
 
+  if (!ilen) {
+    return null;
+  }
+
   for (i in rowLengths) {
     if (rowLengths.hasOwnProperty(i)) {
       if (typeof last !== 'undefined' && rowLengths[i] !== last) {
-        return false;
+        return null;
       }
       last = rowLengths[i];
     }
   }
-  return true;
+
+  return {width: last, height: height};
 };
