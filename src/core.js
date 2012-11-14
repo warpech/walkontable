@@ -1,5 +1,6 @@
 function Walkontable(TABLE) {
   var that = this;
+  this.wtDom = new WalkontableDom();
   this.merge = new WalkontableMerge(function (TD) {
     that.areaSelection.remove(TD);
   });
@@ -14,27 +15,8 @@ function Walkontable(TABLE) {
     TD.style.border = "1px solid white";
   });
 
-  function inArray(val, arr) {
-    for (var i = 0, ilen = arr.length; i < ilen; i++) {
-      if (arr[i] === val) return true;
-    }
-    return false;
-  }
-
-  function findParentUntil(element, nodeNames, ultimateElement) {
-    if (element === ultimateElement) {
-      return void 0;
-    }
-    else if (inArray(element.nodeName, nodeNames)) {
-      return element;
-    }
-    else {
-      return findParentUntil(element.parentNode, nodeNames, ultimateElement);
-    }
-  }
-
   TABLE.addEventListener('click', function (event) {
-    var TD = findParentUntil(event.target, ['TD', 'TH'], TABLE);
+    var TD = that.wtDom.closest(event.target, ['TD', 'TH']);
     if (TD) { //if not table border
       if (that.areaSelection.isSelected(TD) > -1) {
         that.areaSelection.remove(TD);
