@@ -7,20 +7,18 @@ function WalkontableCell() {
 
 function getCellLocation(cell) {
   var cols = cell.closest("tr").children("td, th").index(cell);
-  var rows = cell.parents("table").children("thead, tbody").children("tr").index(cell.parents("tr"));
+  var rows = cell.closest("table").children("thead, tbody").children("tr").index(cell.closest("tr"));
   cell.prevAll("td, th").each(function () {
     cols += ($(this).attr("colspan")) ? parseInt($(this).attr("colspan")) - 1 : 0;
   });
 
   cell.parent("tr").prevAll("tr").each(function () {
     //get row index for search cells
-    var rowindex = cell.parents("table").children("thead, tbody").children("tr").index($(this));
+    var rowindex = cell.closest("table").children("thead, tbody").children("tr").index($(this));
     // assign the row to a variable for later use
     var row = $(this);
     row.children("td, th").each(function () {
       // fetch all cells of this row
-      var colindex = row.children("td, th").index($(this));
-      //check if this cell comes before our cell
       if ($(this).attr("rowspan") || $(this).attr("colspan")) {
         // check if it has both rowspan and colspan, because the single ones are handled before
         //var colspn = parseInt($(this).attr("colspan") || 1);
