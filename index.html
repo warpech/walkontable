@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Walkontable</title>
+  <script src="src/core.js"></script>
+  <script src="src/selection.js"></script>
+  <script src="src/merge.js"></script>
+</head>
+<body>
+
+<h1>Walkontable</h1>
+
+<table border="1">
+  <thead>
+  <tr>
+    <th colspan="2">Description</th>
+    <th>2007</th>
+    <th>2008</th>
+    <th>2009</th>
+    <th>2010</th>
+    <th>2011</th>
+    <th>2012 (progn.)</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <th rowspan="2">Income</th>
+    <th>Passive</th>
+    <td colspan="3"><em>not measured</em></td>
+    <td>4</td>
+    <td>5</td>
+    <td>6</td>
+  </tr>
+  <tr>
+    <th>Active</th>
+    <td>1</td>
+    <td>2</td>
+    <td>3</td>
+    <td>4</td>
+    <td>5</td>
+    <td>6</td>
+  </tr>
+  </tbody>
+</table>
+
+<button id="merge">Merge selected</button>
+
+<script>
+  var wt = new Walkontable(document.getElementsByTagName('table')[0]);
+
+  var BUTTON = document.getElementById('merge');
+  BUTTON.addEventListener('click', function () {
+    var area = wt.areaSelection.getSelected();
+    wt.merge.merge(area);
+  });
+</script>
+
+<h2>Features</h2>
+
+<ul>
+  <li>Can take on any table that already exists in DOM or construct a new one</li>
+  <li>Supports merged cols and rows</li>
+  <li>Supports cols and rows blocked from scrolling (at 4 sides)</li>
+  <li>Supports multiple selection (also nonconsecutive)</li>
+  <li>Supports walking with keyboard, mouse and API</li>
+  <li>Supports tabindex</li>
+</ul>
+
+<h2>Technical</h2>
+
+<ul>
+  <li>Works in IE7+, FF3.6+, latest Opera, Safari and Chrome</li>
+  <li>TDD</li>
+  <li>Library agnostic</li>
+</ul>
+
+</body>
+</html>
