@@ -13,8 +13,6 @@ WalkontableMerge.prototype.merge = function (nodes) {
     return a.cellIndex - b.cellIndex;
   });
 
-  //perform merge
-  console.log("merge", nodes);
   for (i = nodes.length - 1; i >= 0; i--) {
     curRowIndex = nodes[i].parentNode.rowIndex;
     curCellIndex = nodes[i].cellIndex;
@@ -29,10 +27,8 @@ WalkontableMerge.prototype.merge = function (nodes) {
     if(lastCellIndex !== curCellIndex) {
       colSpan++;
     }
-    console.log("c", curCellIndex, lastCellIndex !== curCellIndex, colSpan);
 
     if (i === 0) {
-      console.log("koncze", rowSpan, colSpan);
       if(rowSpan > 1) {
         nodes[0].rowSpan = rowSpan;
       }
