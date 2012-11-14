@@ -5,7 +5,7 @@ describe('WalkontableSelection', function () {
   };
 
   beforeEach(function () {
-    $table = $('<table><tr><td></td></tr></table>'); //create a table that is not even attached to document
+    $table = $('<table><tr><td></td><td></td></tr><tr><td colspan="2"></td></tr></table>'); //create a table that is not even attached to document
   });
 
   afterEach(function () {
@@ -36,5 +36,24 @@ describe('WalkontableSelection', function () {
     wtSelection.clear();
 
     expect(wtSelection.getSelected().length).toBe(0);
+  });
+
+  it("should recognize rectangular selection", function () {
+    var wtSelection = new WalkontableSelection(doNothing, doNothing);
+    var TDs = $table.find('td');
+    wtSelection.add(TDs[0]);
+    wtSelection.add(TDs[1]);
+    wtSelection.add(TDs[2]);
+
+    expect(wtSelection.isRectangular()).toBe(true);
+  });
+
+  it("should recognize non-rectangular selection", function () {
+    var wtSelection = new WalkontableSelection(doNothing, doNothing);
+    var TDs = $table.find('td');
+    wtSelection.add(TDs[0]);
+    wtSelection.add(TDs[2]);
+
+    expect(wtSelection.isRectangular()).toBe(false);
   });
 });
