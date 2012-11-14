@@ -9,7 +9,7 @@ WalkontableMerge.prototype.mergeSelection = function (wtSelection) {
     , rect = wtSelection.rectangleSize();
 
   if (!rect) {
-    throw new Error("not rec");
+    return false;
   }
 
   nodes = wtSelection.getSelected();

@@ -59,4 +59,30 @@ describe('WalkontableMerge', function () {
     expect($table.find('tr:eq(0)').find('td').length).toBe(1);
     expect($table.find('tr:eq(1)').find('td').length).toBe(0);
   });
+
+  it("should return false when non-rectangular selection is given", function () {
+    var wtSelection = new WalkontableSelection();
+    var TD_1 = $table.find('tr:eq(0)').find('td:eq(0)')[0];
+    var TD_2 = $table.find('tr:eq(1)').find('td:eq(1)')[0];
+    wtSelection.add(TD_1);
+    wtSelection.add(TD_2);
+
+    var wtMerge = new WalkontableMerge();
+    var result = wtMerge.mergeSelection(wtSelection);
+
+    expect(result).toBe(false);
+  });
+
+  it("should return true when rectangular selection is given (and merge was successful)", function () {
+    var wtSelection = new WalkontableSelection();
+    var TD_1 = $table.find('tr:eq(0)').find('td:eq(0)')[0];
+    var TD_2 = $table.find('tr:eq(0)').find('td:eq(1)')[0];
+    wtSelection.add(TD_1);
+    wtSelection.add(TD_2);
+
+    var wtMerge = new WalkontableMerge();
+    var result = wtMerge.mergeSelection(wtSelection);
+
+    expect(result).toBe(true);
+  });
 });
