@@ -15,30 +15,36 @@ WalkontableCell.prototype.getCellLocation = function (TD) {
   var cols = TDs.indexOf(TD);
   var rows = TRs.indexOf(TR);
 
+  var i, ilen, j, jlen;
+  var prevTDs;
+  var prevTRs;
   var tmpRowSpan;
   var tmpColSpan;
-  $(this.wtDom.prevSiblings(TD)).each(function () {
-    tmpColSpan = this.colSpan;
+
+  prevTDs = this.wtDom.prevSiblings(TD);
+  for (i = 0, ilen = prevTDs.length; i < ilen; i++) {
+    tmpColSpan = prevTDs[i].colSpan;
     if (tmpColSpan > 1) {
       cols += tmpColSpan - 1;
     }
-  });
+  }
 
-  $(this.wtDom.prevSiblings(TR)).each(function () {
+  prevTRs = this.wtDom.prevSiblings(TR);
+  for (i = 0, ilen = prevTRs.length; i < ilen; i++) {
     //get row index for search cells
-    var rowindex = TRs.indexOf(this);
+    var rowindex = TRs.indexOf(prevTRs[i]);
     // assign the row to a variable for later use
-    var TDs = that.wtDom.children(this);
-    $(TDs).each(function () {// fetch all cells of this row
-      tmpRowSpan = this.rowSpan;
-      tmpColSpan = this.colSpan;
+    prevTDs = that.wtDom.children(prevTRs[i]);
+    for (j = 0, jlen = prevTDs.length; j < jlen; j++) {// fetch all cells of this row
+      tmpRowSpan = prevTDs[j].rowSpan;
+      tmpColSpan = prevTDs[j].colSpan;
       if (tmpRowSpan > 1) {//check if it's affecting our cell with those values
         if (rowindex + tmpRowSpan >= rows) { //if it's affecting, add this colspan to our cell column index
           cols += tmpColSpan;
         }
       }
-    });
-  });
+    }
+  }
 
   return {
     rows: rows,
