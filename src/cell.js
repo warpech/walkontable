@@ -7,19 +7,24 @@ function WalkontableCell() {
 //discussion: http://stackoverflow.com/questions/10966687/how-can-i-find-each-table-cells-visual-location-using-jquery
 
 WalkontableCell.prototype.getCellLocation = function (TD) {
-  var that = this;
-  var TR = this.wtDom.closestParent(TD, ['TR']);
-  var TABLE = this.wtDom.closestParent(TR, ['TABLE']);
-  var TDs = this.wtDom.children(TR);
-  var TRs = this.wtDom.nodeListToArray(TABLE.getElementsByTagName('TR'));
-  var cols = TDs.indexOf(TD);
-  var rows = TRs.indexOf(TR);
+  var that = this
+    , TR = this.wtDom.closestParent(TD, ['TR'])
+    , TABLE = this.wtDom.closestParent(TR, ['TABLE'])
+    , TDs = this.wtDom.children(TR)
+    , TRs = this.wtDom.nodeListToArray(TABLE.getElementsByTagName('TR'))
+    , cols = TDs.indexOf(TD)
+    , rows = TRs.indexOf(TR)
 
-  var i, ilen, j, jlen;
-  var prevTDs;
-  var prevTRs;
-  var tmpRowSpan;
-  var tmpColSpan;
+    , i
+    , ilen
+    , j
+    , jlen
+
+    , prevTDs
+    , prevTRs
+    , tmpRowSpan
+    , tmpColSpan
+    , rowindex;
 
   prevTDs = this.wtDom.prevSiblings(TD);
   for (i = 0, ilen = prevTDs.length; i < ilen; i++) {
@@ -30,10 +35,8 @@ WalkontableCell.prototype.getCellLocation = function (TD) {
   }
 
   prevTRs = this.wtDom.prevSiblings(TR);
-  for (i = 0, ilen = prevTRs.length; i < ilen; i++) {
-    //get row index for search cells
-    var rowindex = TRs.indexOf(prevTRs[i]);
-    // assign the row to a variable for later use
+  for (i = 0, ilen = prevTRs.length; i < ilen; i++) { //get row index for search cells
+    rowindex = TRs.indexOf(prevTRs[i]); // assign the row to a variable for later use
     prevTDs = that.wtDom.children(prevTRs[i]);
     for (j = 0, jlen = prevTDs.length; j < jlen; j++) {// fetch all cells of this row
       tmpRowSpan = prevTDs[j].rowSpan;
@@ -60,7 +63,6 @@ WalkontableCell.prototype.colIndex = function (elem) {
 
 //calculates row index including rowspan
 WalkontableCell.prototype.rowIndex = function (elem) {
-
   var loc = this.getCellLocation(elem);
   return loc.rows;
 };
