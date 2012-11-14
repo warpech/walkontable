@@ -6,7 +6,7 @@ function WalkontableCell() {
 //but "tbody" is changed to "thead, tbody" and "td" is changed to "td, th"
 //discussion: http://stackoverflow.com/questions/10966687/how-can-i-find-each-table-cells-visual-location-using-jquery
 
-WalkontableCell.prototype.getCellLocation = function(TD) {
+WalkontableCell.prototype.getCellLocation = function (TD) {
   var that = this;
   var TR = this.wtDom.closestParent(TD, ['TR']);
   var TABLE = this.wtDom.closestParent(TR, ['TABLE']);
@@ -19,7 +19,7 @@ WalkontableCell.prototype.getCellLocation = function(TD) {
   var tmpColSpan;
   $(this.wtDom.prevSiblings(TD)).each(function () {
     tmpColSpan = this.colSpan;
-    if(tmpColSpan > 1) {
+    if (tmpColSpan > 1) {
       cols += tmpColSpan - 1;
     }
   });
@@ -29,20 +29,11 @@ WalkontableCell.prototype.getCellLocation = function(TD) {
     var rowindex = TRs.indexOf(this);
     // assign the row to a variable for later use
     var TDs = that.wtDom.children(this);
-    $(TDs).each(function () {
+    $(TDs).each(function () {// fetch all cells of this row
       tmpRowSpan = this.rowSpan;
       tmpColSpan = this.colSpan;
-
-      // fetch all cells of this row
-      if (tmpRowSpan > 1) {
-        // check if it has both rowspan and colspan, because the single ones are handled before
-
-        //check if it's affecting our cell with those values
-        if (
-        //is it a prerow?
-          rowindex + tmpRowSpan >= rows
-          ) {
-          //if it's affecting, add this colspan to our cell column index
+      if (tmpRowSpan > 1) {//check if it's affecting our cell with those values
+        if (rowindex + tmpRowSpan >= rows) { //if it's affecting, add this colspan to our cell column index
           cols += tmpColSpan;
         }
       }
