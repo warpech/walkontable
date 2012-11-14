@@ -7,8 +7,8 @@ function WalkontableCell() {
 //discussion: http://stackoverflow.com/questions/10966687/how-can-i-find-each-table-cells-visual-location-using-jquery
 
 WalkontableCell.prototype.getCellLocation = function(TD) {
-  var TR = this.wtDom.closestParent(TD, 'TR');
-  var TABLE = this.wtDom.closestParent(TR, 'TABLE');
+  var TR = this.wtDom.closestParent(TD, ['TR']);
+  var TABLE = this.wtDom.closestParent(TR, ['TABLE']);
   var cols = $(TR).children("td, th").index(TD);
   var rows = $(TABLE).children("thead, tbody").children("tr").index(TR);
   var $cell = $(TD);
