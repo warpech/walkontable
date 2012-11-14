@@ -15,8 +15,13 @@ WalkontableCell.prototype.getCellLocation = function(TD) {
   var cols = TDs.indexOf(TD);
   var rows = TRs.indexOf(TR);
 
+  var tmpRowSpan;
+  var tmpColSpan;
   $(this.wtDom.prevSiblings(TD)).each(function () {
-    cols += ($(this).attr("colspan")) ? parseInt($(this).attr("colspan")) - 1 : 0;
+    tmpColSpan = this.colSpan;
+    if(tmpColSpan > 1) {
+      cols += tmpColSpan - 1;
+    }
   });
 
   $(this.wtDom.prevSiblings(TR)).each(function () {
@@ -25,23 +30,20 @@ WalkontableCell.prototype.getCellLocation = function(TD) {
     // assign the row to a variable for later use
     var TDs = that.wtDom.children(this);
     $(TDs).each(function () {
+      tmpRowSpan = this.rowSpan;
+      tmpColSpan = this.colSpan;
+
       // fetch all cells of this row
-      if ($(this).attr("rowspan") || $(this).attr("colspan")) {
+      if (tmpRowSpan > 1) {
         // check if it has both rowspan and colspan, because the single ones are handled before
-        //var colspn = parseInt($(this).attr("colspan") || 1);
-        var colspn = 1;
-        var rowspn = parseInt($(this).attr("rowspan") || 1);
 
         //check if it's affecting our cell with those values
-        if (colspn == 1 && rowspn == 1) {
-          return;
-        }
         if (
         //is it a prerow?
-          rowindex + rowspn >= rows
+          rowindex + tmpRowSpan >= rows
           ) {
           //if it's affecting, add this colspan to our cell column index
-          cols += colspn;
+          cols += tmpColSpan;
         }
       }
     });

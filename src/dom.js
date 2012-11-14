@@ -31,7 +31,9 @@ WalkontableDom.prototype.children = function (elem) {
 WalkontableDom.prototype.prevSiblings = function (elem) {
   var out = [];
   while ((elem = elem.previousSibling) != null) {
-    out.push(elem);
+    if (elem.nodeType === 1) {
+      out.push(elem);
+    }
   }
   return out;
 };
