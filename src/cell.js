@@ -42,7 +42,9 @@ WalkontableCell.prototype.getCellLocation = function (TD) {
       tmpRowSpan = prevTDs[j].rowSpan;
       tmpColSpan = prevTDs[j].colSpan;
       if (tmpRowSpan > 1) {//check if it's affecting our cell with those values
-        if (rowindex + tmpRowSpan >= rows) { //if it's affecting, add this colspan to our cell column index
+        if (rowindex + tmpRowSpan >= rows //if row is affecting
+          && that.colIndex(prevTDs[j]) < cols //and col is before our col
+          ) { //if it's affecting, add this colspan to our cell column index
           cols += tmpColSpan;
         }
       }

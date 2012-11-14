@@ -3,6 +3,7 @@ describe('WalkontableSelection', function () {
 
   beforeEach(function () {
     $table = $('<table><tr><td></td><td></td><td rowspan="2"></td><td></td></tr><tr><td colspan="2"></td><td></td></tr></table>'); //create a table that is not even attached to document
+    //$table = $('<table><tr><td rowspan="2"></td><td><td></td><td></td></td></tr><tr><td></td><td colspan="2"></td></tr></table>'); //same but inverted cols
   });
 
   afterEach(function () {
@@ -56,6 +57,14 @@ describe('WalkontableSelection', function () {
   });
 
   it("should recognize non-rectangular selection", function () {
+    var wtSelection = new WalkontableSelection();
+    wtSelection.add($table.find('tr:eq(0) td:eq(0)')[0]);
+    wtSelection.add($table.find('tr:eq(1) td:eq(0)')[0]);
+
+    expect(wtSelection.rectangleSize()).toBe(null);
+  });
+
+  it("should recognize diagonal selection as non-rectangular", function () {
     var wtSelection = new WalkontableSelection();
     wtSelection.add($table.find('tr:eq(0) td:eq(0)')[0]);
     wtSelection.add($table.find('tr:eq(1) td:eq(0)')[0]);

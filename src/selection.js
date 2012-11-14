@@ -39,7 +39,9 @@ WalkontableSelection.prototype.getSelected = function () {
 WalkontableSelection.prototype.rectangleSize = function () {
   var rowLengths = {}
     , row
-    , last
+    , col
+    , lastRow
+    , lastCol
     , i
     , ilen
     , j
@@ -50,6 +52,11 @@ WalkontableSelection.prototype.rectangleSize = function () {
     row = this.wtCell.rowIndex(this.selected[i]);
     for (j = 0, jlen = this.selected[i].rowSpan; j < jlen; j++) {
       if (typeof rowLengths[row + j] === 'undefined') {
+        col = this.wtCell.colIndex(this.selected[i]);
+        if (typeof lastCol !== 'undefined' && lastCol !== col) {
+          return null; //rectangular selection must always begin on the same column
+        }
+        lastCol = col;
         rowLengths[row + j] = 0;
         height++;
       }
@@ -63,12 +70,12 @@ WalkontableSelection.prototype.rectangleSize = function () {
 
   for (i in rowLengths) {
     if (rowLengths.hasOwnProperty(i)) {
-      if (typeof last !== 'undefined' && rowLengths[i] !== last) {
+      if (typeof lastRow !== 'undefined' && rowLengths[i] !== lastRow) {
         return null;
       }
-      last = rowLengths[i];
+      lastRow = rowLengths[i];
     }
   }
 
-  return {width: last, height: height};
+  return {width: lastRow, height: height};
 };
