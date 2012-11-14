@@ -52,6 +52,12 @@ describe('WalkontableCell', function () {
     $table.remove();
   });
 
+  it("should get rowIndex", function () {
+    var wtCell = new WalkontableCell();
+    var TD = $table.find('#gamma').get(0);
+    expect(wtCell.rowIndex(TD)).toBe(3);
+  });
+
   it("should get colIndex when no colspan is used", function () {
     var wtCell = new WalkontableCell();
     var TD = $table.find('#alpha').get(0);
