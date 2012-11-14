@@ -33,11 +33,20 @@ describe('WalkontableSelection', function () {
     expect(wtSelection.getSelected().length).toBe(0);
   });
 
-  it("should recognize rectangular selection", function () {
+  it("should recognize rectangular selection with colspan", function () {
     var wtSelection = new WalkontableSelection();
     wtSelection.add($table.find('tr:eq(0) td:eq(0)')[0]);
     wtSelection.add($table.find('tr:eq(0) td:eq(1)')[0]);
     wtSelection.add($table.find('tr:eq(1) td:eq(0)')[0]);
+
+    expect(wtSelection.isRectangular()).toBe(true);
+  });
+
+  it("should recognize rectangular selection with rowspan", function () {
+    var wtSelection = new WalkontableSelection();
+    wtSelection.add($table.find('tr:eq(0) td:eq(2)')[0]);
+    wtSelection.add($table.find('tr:eq(0) td:eq(3)')[0]);
+    wtSelection.add($table.find('tr:eq(1) td:eq(1)')[0]);
 
     expect(wtSelection.isRectangular()).toBe(true);
   });

@@ -41,14 +41,18 @@ WalkontableSelection.prototype.isRectangular = function () {
     , row
     , last
     , i
-    , ilen;
+    , ilen
+    , j
+    , jlen;
 
   for (i = 0, ilen = this.selected.length; i < ilen; i++) {
     row = this.wtCell.rowIndex(this.selected[i]);
-    if (typeof rowLengths[row] === 'undefined') {
-      rowLengths[row] = 0;
+    for (j = 0, jlen = this.selected[i].rowSpan; j < jlen; j++) {
+      if (typeof rowLengths[row + j] === 'undefined') {
+        rowLengths[row + j] = 0;
+      }
+      rowLengths[row + j] += this.selected[i].colSpan;
     }
-    rowLengths[row] += this.selected[i].colSpan;
   }
 
   for (i in rowLengths) {
