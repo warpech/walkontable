@@ -1,9 +1,7 @@
 function Walkontable(TABLE) {
   var that = this;
   this.wtDom = new WalkontableDom();
-  this.merge = new WalkontableMerge(function (TD) {
-    that.areaSelection.remove(TD);
-  });
+  this.wtMerge = new WalkontableMerge();
   this.currentSelection = new WalkontableSelection(function (TD) {
     TD.style.backgroundColor = "blue";
   }, function (TD) {

@@ -1,10 +1,15 @@
-function WalkontableMerge(onRemove) {
-  this.onRemove = onRemove;
+function WalkontableMerge() {
   this.wtCell = new WalkontableCell();
 }
 
-WalkontableMerge.prototype.merge = function (nodes) {
-  var that = this, lastRowIndex, lastCellIndex, curRowIndex, curCellIndex, rowSpan = 0, colSpan = 0, i;
+WalkontableMerge.prototype.mergeSelection = function (wtSelection) {
+  var that = this, lastRowIndex, lastCellIndex, curRowIndex, curCellIndex, rowSpan = 0, colSpan = 0, i, nodes;
+
+  if (!wtSelection.isRectangular()) {
+    throw new Error("not rec");
+  }
+
+  nodes = wtSelection.getSelected();
 
   nodes.sort(function (a, b) {
     return that.wtCell.rowIndex(a) - that.wtCell.rowIndex(b);
@@ -17,10 +22,6 @@ WalkontableMerge.prototype.merge = function (nodes) {
   for (i = nodes.length - 1; i >= 0; i--) {
     curRowIndex = this.wtCell.rowIndex(nodes[i]);
     curCellIndex = this.wtCell.colIndex(nodes[i]);
-
-    if (typeof lastRowIndex !== 'undefined' && (lastRowIndex - curRowIndex > 1 || lastCellIndex - curCellIndex > 1 || (lastRowIndex !== curRowIndex && lastCellIndex !== curCellIndex))) {
-      throw new Error("cannot_merge_nonconsecutive_cells");
-    }
 
     if (lastRowIndex !== curRowIndex) {
       rowSpan++;
@@ -39,10 +40,12 @@ WalkontableMerge.prototype.merge = function (nodes) {
     }
     else {
       nodes[i].parentNode.removeChild(nodes[i]);
-
+      wtSelection.remove(nodes[i]);
     }
 
     lastRowIndex = curRowIndex;
     lastCellIndex = curCellIndex;
   }
+
+  return true;
 };

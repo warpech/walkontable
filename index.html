@@ -52,8 +52,7 @@
 
   var BUTTON = document.getElementById('merge');
   BUTTON.addEventListener('click', function () {
-    var area = wt.areaSelection.getSelected();
-    wt.merge.merge(area);
+    wt.wtMerge.mergeSelection(wt.areaSelection);
   });
 </script>
 

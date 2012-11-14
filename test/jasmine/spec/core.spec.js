@@ -23,6 +23,6 @@ describe('Walkontable', function () {
 
   it("should start with merge class", function () {
     var wt = new Walkontable($table[0]);
-    expect(wt.merge).toBeDefined();
+    expect(wt.wtMerge).toBeDefined();
   });
 });
