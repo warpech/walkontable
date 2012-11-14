@@ -7,10 +7,13 @@ function WalkontableCell() {
 //discussion: http://stackoverflow.com/questions/10966687/how-can-i-find-each-table-cells-visual-location-using-jquery
 
 WalkontableCell.prototype.getCellLocation = function(TD) {
+  var that = this;
   var TR = this.wtDom.closestParent(TD, ['TR']);
   var TABLE = this.wtDom.closestParent(TR, ['TABLE']);
-  var cols = $(TR).children("td, th").index(TD);
-  var rows = $(TABLE).children("thead, tbody").children("tr").index(TR);
+  var TDs = this.wtDom.children(TR);
+  var TRs = this.wtDom.nodeListToArray(TABLE.getElementsByTagName('TR'));
+  var cols = TDs.indexOf(TD);
+  var rows = TRs.indexOf(TR);
   var $cell = $(TD);
 
   //var cols = cell.closest("tr").children("td, th").index(cell);
@@ -22,10 +25,10 @@ WalkontableCell.prototype.getCellLocation = function(TD) {
 
   $cell.parent("tr").prevAll("tr").each(function () {
     //get row index for search cells
-    var rowindex = $(TABLE).children("thead, tbody").children("tr").index(this);
+    var rowindex = TRs.indexOf(this);
     // assign the row to a variable for later use
-    var row = $(this);
-    row.children("td, th").each(function () {
+    var TDs = that.wtDom.children(this);
+    $(TDs).each(function () {
       // fetch all cells of this row
       if ($(this).attr("rowspan") || $(this).attr("colspan")) {
         // check if it has both rowspan and colspan, because the single ones are handled before

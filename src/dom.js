@@ -16,3 +16,22 @@ WalkontableDom.prototype.closest = function (elem, nodeNames) {
 WalkontableDom.prototype.closestParent = function (elem, nodeNames) {
   return this.closest(elem.parentNode, nodeNames);
 };
+
+WalkontableDom.prototype.children = function (elem) {
+  var out = [];
+  var nodes = elem.childNodes;
+  for (var i = 0, ilen = nodes.length; i < ilen; i++) {
+    if (nodes[i].nodeType === 1) {
+      out.push(nodes[i]);
+    }
+  }
+  return out;
+};
+
+//http://jsperf.com/nodelist-to-array/11
+WalkontableDom.prototype.nodeListToArray = function (nodeList) {
+  var l = []; // Will hold the array of Node's
+  for (var i = 0, ll = nodeList.length; i != ll; l.push(nodeList[i++])) {
+  }
+  return l;
+};
