@@ -14,16 +14,12 @@ WalkontableCell.prototype.getCellLocation = function(TD) {
   var TRs = this.wtDom.nodeListToArray(TABLE.getElementsByTagName('TR'));
   var cols = TDs.indexOf(TD);
   var rows = TRs.indexOf(TR);
-  var $cell = $(TD);
 
-  //var cols = cell.closest("tr").children("td, th").index(cell);
-  //var rows = cell.closest("table").children("thead, tbody").children("tr").index(cell.closest("tr"));
-
-  $cell.prevAll("td, th").each(function () {
+  $(this.wtDom.prevSiblings(TD)).each(function () {
     cols += ($(this).attr("colspan")) ? parseInt($(this).attr("colspan")) - 1 : 0;
   });
 
-  $cell.parent("tr").prevAll("tr").each(function () {
+  $(this.wtDom.prevSiblings(TR)).each(function () {
     //get row index for search cells
     var rowindex = TRs.indexOf(this);
     // assign the row to a variable for later use

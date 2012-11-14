@@ -28,6 +28,14 @@ WalkontableDom.prototype.children = function (elem) {
   return out;
 };
 
+WalkontableDom.prototype.prevSiblings = function (elem) {
+  var out = [];
+  while ((elem = elem.previousSibling) != null) {
+    out.push(elem);
+  }
+  return out;
+};
+
 //http://jsperf.com/nodelist-to-array/11
 WalkontableDom.prototype.nodeListToArray = function (nodeList) {
   var l = []; // Will hold the array of Node's
