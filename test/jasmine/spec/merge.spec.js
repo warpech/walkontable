@@ -33,4 +33,19 @@ describe('WalkontableMerge', function () {
     expect($table.find('tr:eq(0)').find('td').length).toBe(2);
     expect($table.find('tr:eq(1)').find('td').length).toBe(1);
   });
+
+  xit("should merge four cells vertically and horizontally", function () {
+    var wtMerge = new WalkontableMerge(doNothing);
+    var TD_1 = $table.find('tr:eq(0)').find('td:eq(0)')[0];
+    var TD_2 = $table.find('tr:eq(0)').find('td:eq(1)')[0];
+    var TD_3 = $table.find('tr:eq(1)').find('td:eq(0)')[0];
+    var TD_4 = $table.find('tr:eq(1)').find('td:eq(1)')[0];
+    wtMerge.merge([TD_4, TD_2, TD_1, TD_3]);
+
+    expect($table.find('td').length).toBe(1);
+    expect($table.find('td:eq(0)').attr('rowspan')).toBe('2');
+    expect($table.find('td:eq(0)').attr('colspan')).toBe('2');
+    expect($table.find('tr:eq(0)').find('td').length).toBe(1);
+    expect($table.find('tr:eq(1)').find('td').length).toBe(0);
+  });
 });
