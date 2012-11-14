@@ -1,9 +1,6 @@
 describe('WalkontableSelection', function () {
   var $table;
 
-  var doNothing = function () {
-  };
-
   beforeEach(function () {
     $table = $('<table><tr><td></td><td></td></tr><tr><td colspan="2"></td></tr></table>'); //create a table that is not even attached to document
   });
@@ -13,7 +10,7 @@ describe('WalkontableSelection', function () {
   });
 
   it("should add TD to selection", function () {
-    var wtSelection = new WalkontableSelection(doNothing);
+    var wtSelection = new WalkontableSelection();
     var TD = $table.find('td')[0];
     wtSelection.add(TD);
 
@@ -21,7 +18,7 @@ describe('WalkontableSelection', function () {
   });
 
   it("should remove TD from selection", function () {
-    var wtSelection = new WalkontableSelection(doNothing, doNothing);
+    var wtSelection = new WalkontableSelection();
     var TD = $table.find('td')[0];
     wtSelection.add(TD);
     wtSelection.remove(TD);
@@ -30,7 +27,7 @@ describe('WalkontableSelection', function () {
   });
 
   it("clear should remove all TDs from selection", function () {
-    var wtSelection = new WalkontableSelection(doNothing, doNothing);
+    var wtSelection = new WalkontableSelection();
     var TD = $table.find('td')[0];
     wtSelection.add(TD);
     wtSelection.clear();
@@ -39,7 +36,7 @@ describe('WalkontableSelection', function () {
   });
 
   it("should recognize rectangular selection", function () {
-    var wtSelection = new WalkontableSelection(doNothing, doNothing);
+    var wtSelection = new WalkontableSelection();
     var TDs = $table.find('td');
     wtSelection.add(TDs[0]);
     wtSelection.add(TDs[1]);
@@ -49,7 +46,7 @@ describe('WalkontableSelection', function () {
   });
 
   it("should recognize non-rectangular selection", function () {
-    var wtSelection = new WalkontableSelection(doNothing, doNothing);
+    var wtSelection = new WalkontableSelection();
     var TDs = $table.find('td');
     wtSelection.add(TDs[0]);
     wtSelection.add(TDs[2]);

@@ -1,20 +1,24 @@
 function WalkontableSelection(onAdd, onRemove) {
   this.selected = [];
-  this.onAdd = onAdd;
-  this.onRemove = onRemove;
+  this.onAdd = onAdd; //optional
+  this.onRemove = onRemove; //optional
   this.wtCell = new WalkontableCell();
 }
 
 WalkontableSelection.prototype.add = function (TD) {
   this.selected.push(TD);
-  this.onAdd(TD);
+  if (this.onAdd) {
+    this.onAdd(TD);
+  }
 };
 
 WalkontableSelection.prototype.remove = function (TD) {
   var index = this.isSelected(TD);
   if (index > -1) {
     this.selected.splice(index, 1);
-    this.onRemove(TD);
+    if (this.onRemove) {
+      this.onRemove(TD);
+    }
   }
 };
 
