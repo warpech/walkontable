@@ -46,34 +46,52 @@ function Walkontable(TABLE) {
 
   removeTextNodes(TABLE);
 
-  var rightBox = [];
+  var courtains = {
+    right: {
+      box: [],
+      detach: function(TR){
+        var TDs = TR.childNodes;
+        return TDs[TDs.length - 1];
+      },
+      attach: function(TR, TD){
+        TR.appendChild(TD);
+      }
+    }
+  };
 
-  var BUTTON = document.getElementById('detach');
-  this.wtDom.addEvent(BUTTON, 'click', function () {
+  function courtainDetach(side) {
     var underbed = [];
     var TSECTIONs = TABLE.childNodes;
     for (var i = 0, ilen = TSECTIONs.length; i < ilen; i++) {
       underbed[i] = [];
       var TRs = TSECTIONs[i].childNodes;
       for (var j = 0, jlen = TRs.length; j < jlen; j++) {
-        var TDs = TRs[j].childNodes;
-        var TD = TRs[j].removeChild(TDs[TDs.length - 1]);
+        var TD = courtains[side].detach(TRs[j]);
+        TRs[j].removeChild(TD);
         underbed[i].push(TD);
       }
     }
-    rightBox.push(underbed);
+    courtains[side].box.push(underbed);
+  }
+
+  function courtainAttach(side) {
+    var underbed = courtains[side].box.pop();
+    if(underbed) {
+      for (var i = 0, ilen = underbed.length; i < ilen; i++) {
+        for (var j = 0, jlen = underbed[i].length; j < jlen; j++) {
+          courtains[side].attach(TABLE.childNodes[i].childNodes[j], underbed[i][j]);
+        }
+      }
+    }
+  }
+
+  var BUTTON = document.getElementById('detach');
+  this.wtDom.addEvent(BUTTON, 'click', function () {
+    courtainDetach('right')
   });
 
   BUTTON = document.getElementById('attach');
   this.wtDom.addEvent(BUTTON, 'click', function () {
-    var underbed = rightBox.pop();
-    if(underbed) {
-      console.log("idzie", underbed);
-      for (var i = 0, ilen = underbed.length; i < ilen; i++) {
-        for (var j = 0, jlen = underbed[i].length; j < jlen; j++) {
-          TABLE.childNodes[i].childNodes[j].appendChild(underbed[i][j]);
-        }
-      }
-    }
+    courtainAttach('right')
   });
 }
