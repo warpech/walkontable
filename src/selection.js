@@ -44,6 +44,7 @@ WalkontableSelection.prototype.rectangleSize = function () {
     , lastRow = -1
     , lastFirstCol = -1
     , lastCol = -1
+    , lastColSpan = -1
     , i
     , ilen
     , j
@@ -74,12 +75,13 @@ WalkontableSelection.prototype.rectangleSize = function () {
         height++;
       }
       else {
-        if (lastCol !== -1 && col - lastCol > 1) {
+        if (lastCol !== -1 && col - (lastCol + lastColSpan - 1) > 1) {
           return null; //selected cols must be consecutive
         }
       }
       rowLengths[row + j] += this.selected[i].colSpan;
       lastCol = col;
+      lastColSpan = this.selected[i].colSpan;
       lastRow = row;
     }
   }
