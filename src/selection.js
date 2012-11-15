@@ -65,9 +65,6 @@ WalkontableSelection.prototype.rectangleSize = function () {
     rowSpan = this.selected[i].rowSpan;
     colSpan = this.selected[i].colSpan;
     for (j = 0; j < rowSpan; j++) {
-      if (typeof rowBegins[row + j] === 'undefined') {
-        height++;
-      }
       if (typeof rowBegins[row + j] === 'undefined' || col < rowBegins[row + j]) {
         rowBegins[row + j] = col;
       }
@@ -76,6 +73,7 @@ WalkontableSelection.prototype.rectangleSize = function () {
       }
       if (typeof rowLengths[row + j] === 'undefined') {
         rowLengths[row + j] = 0;
+        height++;
       }
       rowLengths[row + j] += colSpan;
     }
