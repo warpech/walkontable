@@ -33,7 +33,6 @@ WalkontableCell.prototype.getCellLocation = function (TD) {
       cols += tmpColSpan - 1;
     }
   }
-
   prevTRs = this.wtDom.prevSiblings(TR);
   for (i = 0, ilen = prevTRs.length; i < ilen; i++) { //get row index for search cells
     rowindex = TRs.indexOf(prevTRs[i]); // assign the row to a variable for later use
@@ -42,8 +41,8 @@ WalkontableCell.prototype.getCellLocation = function (TD) {
       tmpRowSpan = prevTDs[j].rowSpan;
       tmpColSpan = prevTDs[j].colSpan;
       if (tmpRowSpan > 1) {//check if it's affecting our cell with those values
-        if (rowindex + tmpRowSpan >= rows //if row is affecting
-          && that.colIndex(prevTDs[j]) < cols //and col is before our col
+        if (rowindex + tmpRowSpan > rows //if row is affecting
+          && this.colIndex(prevTDs[j]) <= cols //and col is before our col
           ) { //if it's affecting, add this colspan to our cell column index
           cols += tmpColSpan;
         }

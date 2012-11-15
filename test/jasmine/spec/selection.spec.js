@@ -2,12 +2,14 @@ describe('WalkontableSelection', function () {
   var $table;
 
   beforeEach(function () {
-    $table = $('<table><tr><td></td><td></td><td rowspan="2"></td><td></td></tr><tr><td colspan="2"></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr></table>'); //create a table that is not even attached to document
-    //$table = $('<table><tr><td rowspan="2"></td><td><td></td><td></td></td></tr><tr><td></td><td colspan="2"></td></tr></table>'); //same but inverted cols
+    $table = $('<table border=1><tr><td></td><td></td><td rowspan="2"></td><td></td></tr><tr><td colspan="2"></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr></table>'); //create a table that is not even attached to document
+    /*$table.find('td').each(function () {
+      this.innerHTML = 'x';
+    });*/
   });
 
   afterEach(function () {
-    $table.remove();
+    //$table.appendTo('body');
   });
 
   it("should add TD to selection", function () {
@@ -107,14 +109,12 @@ describe('WalkontableSelection', function () {
     expect(rect.height).toBe(1);
   });
 
-  it("should include colspan in rectangle calculation", function () {
+  it("should recognize uneven rowspan in calculation", function () {
     var wtSelection = new WalkontableSelection();
     wtSelection.add($table.find('tr:eq(1) td:eq(0)')[0]);
     wtSelection.add($table.find('tr:eq(1) td:eq(1)')[0]);
 
-    var rect = wtSelection.rectangleSize();
-    expect(rect.width).toBe(3);
-    expect(rect.height).toBe(1);
+    expect(wtSelection.rectangleSize()).toBe(null);
   });
 
   it("should include rowspan in rectangle calculation", function () {
@@ -125,5 +125,19 @@ describe('WalkontableSelection', function () {
     var rect = wtSelection.rectangleSize();
     expect(rect.width).toBe(1);
     expect(rect.height).toBe(3);
+  });
+
+  it("should allow selection of the whole table", function () {
+    var wtSelection = new WalkontableSelection();
+    $table.find('td').each(function(){
+      wtSelection.add(this);
+    });
+
+    var cols = $table.find('tr:eq(0) td').length;
+    var rows = $table.find('tr').length;
+
+    var rect = wtSelection.rectangleSize();
+    expect(rect.width).toBe(cols);
+    expect(rect.height).toBe(rows);
   });
 });

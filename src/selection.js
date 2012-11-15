@@ -39,14 +39,13 @@ WalkontableSelection.prototype.getSelected = function () {
 WalkontableSelection.prototype.rectangleSize = function () {
   var that = this
     , rowLengths = {}
+    , rowBegins = {}
+    , rowEnds = {}
     , row
     , col
     , rowSpan
-    , lastRow = -1
-    , lastFirstCol = -1
-    , lastCol = -1
-    , lastColSpan = -1
-    , lastRowSpan = -1
+    , colSpan
+    , lastRow
     , i
     , ilen
     , j
@@ -64,40 +63,59 @@ WalkontableSelection.prototype.rectangleSize = function () {
     row = this.wtCell.rowIndex(this.selected[i]);
     col = this.wtCell.colIndex(this.selected[i]);
     rowSpan = this.selected[i].rowSpan;
+    colSpan = this.selected[i].colSpan;
     for (j = 0; j < rowSpan; j++) {
-      if (typeof rowLengths[row + j] === 'undefined') {
-        if (lastFirstCol !== -1 && lastFirstCol !== col) {
-          return null; //rectangular selection must always begin on the same column
-        }
-        if (lastRow !== -1 && row - (lastRow + lastRowSpan - 1) > 1) {
-          return null; //selected rows must be consecutive
-        }
-        lastFirstCol = col;
-        rowLengths[row + j] = 0;
+      if (typeof rowBegins[row + j] === 'undefined') {
         height++;
       }
-      else {
-        if (lastCol !== -1 && col - (lastCol + lastColSpan - 1) > 1) {
-          return null; //selected cols must be consecutive
-        }
+      if (typeof rowBegins[row + j] === 'undefined' || col < rowBegins[row + j]) {
+        rowBegins[row + j] = col;
       }
-      rowLengths[row + j] += this.selected[i].colSpan;
-      lastCol = col;
-      lastColSpan = this.selected[i].colSpan;
-      lastRowSpan = rowSpan;
-      lastRow = row;
+      if (typeof rowEnds[row + j] === 'undefined' || col + colSpan - 1 > rowEnds[row + j]) {
+        rowEnds[row + j] = col + colSpan - 1;
+      }
+      if (typeof rowLengths[row + j] === 'undefined') {
+        rowLengths[row + j] = 0;
+      }
+      rowLengths[row + j] += colSpan;
     }
   }
 
   if (!ilen) {
-    return null;
+    return null; //empty selection
+  }
+
+  lastRow = -1;
+  for (i in rowBegins) {
+    if (rowBegins.hasOwnProperty(i)) {
+      if (lastRow !== -1 && rowBegins[i] !== lastRow) {
+        return null; //selected rows begin in different column
+      }
+      lastRow = rowBegins[i];
+    }
+  }
+
+  lastRow = -1;
+  for (i in rowEnds) {
+    if (rowEnds.hasOwnProperty(i)) {
+      if (lastRow !== -1 && rowEnds[i] !== lastRow) {
+        return null; //selected rows end in different column
+      }
+      if (rowEnds[i] !== rowBegins[i] + rowLengths[i] - 1) {
+        return null; //selected rows end does not match begin + length
+      }
+      lastRow = rowEnds[i];
+    }
   }
 
   lastRow = -1;
   for (i in rowLengths) {
     if (rowLengths.hasOwnProperty(i)) {
       if (lastRow !== -1 && rowLengths[i] !== lastRow) {
-        return null;
+        return null; //selected rows have different length
+      }
+      if (lastRow !== -1 && !rowLengths.hasOwnProperty(i - 1)) {
+        return null; //there is a row gap in selection
       }
       lastRow = rowLengths[i];
     }

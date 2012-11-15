@@ -1,78 +1,38 @@
 describe('WalkontableCell', function () {
   var $table;
 
-  var tpl = '<table border="1">\
-    <thead>\
-    <tr>\
-      <th>A</th>\
-      <td>B</td>\
-      <td>C</td>\
-      <td>D</td>\
-      <td>E</td>\
-      <td id="alpha">F</td>\
-      <td>G</td>\
-      <td>H</td>\
-    </tr>\
-    <tr>\
-      <th colspan="2">Description</th>\
-      <th>2007</th>\
-      <th>2008</th>\
-      <th>2009</th>\
-      <th id="beta">2010</th>\
-      <th>2011</th>\
-      <th>2012 (progn.)</th>\
-    </tr>\
-    </thead>\
-  <tbody>\
-    <tr>\
-      <th rowspan="2">Income</th>\
-      <th>Passive</th>\
-      <td colspan="3"><em>not measured</em></td>\
-      <td>4</td>\
-      <td>5</td>\
-      <td>6</td>\
-    </tr>\
-    <tr>\
-      <th>Active</th>\
-      <td>1</td>\
-      <td>2</td>\
-      <td>3</td>\
-      <td id="gamma">4</td>\
-      <td>5</td>\
-      <td>6</td>\
-    </tr>\
-  </tbody>\
-  </table>';
-
   beforeEach(function () {
-    $table = $(tpl); //create a table that is not even attached to document
+    $table = $('<table border=1><tr><td></td><td></td><td rowspan="2"></td><td></td></tr><tr><td colspan="2"></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td colspan="2"></td><td></td><td></td></tr></table>'); //create a table that is not even attached to document
+    /*$table.find('td').each(function () {
+     this.innerHTML = 'x';
+     });*/
   });
 
   afterEach(function () {
-    $table.remove();
+    //$table.appendTo('body');
   });
 
   it("should get rowIndex", function () {
     var wtCell = new WalkontableCell();
-    var TD = $table.find('#gamma').get(0);
-    expect(wtCell.rowIndex(TD)).toBe(3);
+    var TD = $table.find('tr:eq(1) td:eq(1)')[0];
+    expect(wtCell.rowIndex(TD)).toBe(1);
   });
 
   it("should get colIndex when no colspan is used", function () {
     var wtCell = new WalkontableCell();
-    var TD = $table.find('#alpha').get(0);
-    expect(wtCell.colIndex(TD)).toBe(5);
+    var TD = $table.find('tr:eq(2) td:eq(2)')[0];
+    expect(wtCell.colIndex(TD)).toBe(2);
   });
 
   it("should get colIndex when colspan is used", function () {
     var wtCell = new WalkontableCell();
-    var TD = $table.find('#beta').get(0);
-    expect(wtCell.colIndex(TD)).toBe(5);
+    var TD = $table.find('tr:eq(3) td:eq(2)')[0];
+    expect(wtCell.colIndex(TD)).toBe(3);
   });
 
-  it("should get colIndex when rowspan is used in previous row", function () {
+  it("should get colIndex when colspan & rowspan is used in previous row", function () {
     var wtCell = new WalkontableCell();
-    var TD = $table.find('#gamma').get(0);
-    expect(wtCell.colIndex(TD)).toBe(5);
+    var TD = $table.find('tr:eq(1) td:eq(1)')[0];
+    expect(wtCell.colIndex(TD)).toBe(3);
   });
 });
