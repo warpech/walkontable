@@ -47,13 +47,22 @@ function Walkontable(TABLE) {
   removeTextNodes(TABLE);
 
   var courtains = {
+    left: {
+      box: [],
+      detach: function (TR) {
+        return TR.firstChild;
+      },
+      attach: function (TR, TD) {
+        TR.insertBefore(TD, TR.firstChild);
+      }
+    },
     right: {
       box: [],
-      detach: function(TR){
+      detach: function (TR) {
         var TDs = TR.childNodes;
         return TDs[TDs.length - 1];
       },
-      attach: function(TR, TD){
+      attach: function (TR, TD) {
         TR.appendChild(TD);
       }
     }
@@ -76,7 +85,7 @@ function Walkontable(TABLE) {
 
   function courtainAttach(side) {
     var underbed = courtains[side].box.pop();
-    if(underbed) {
+    if (underbed) {
       for (var i = 0, ilen = underbed.length; i < ilen; i++) {
         for (var j = 0, jlen = underbed[i].length; j < jlen; j++) {
           courtains[side].attach(TABLE.childNodes[i].childNodes[j], underbed[i][j]);
@@ -85,13 +94,23 @@ function Walkontable(TABLE) {
     }
   }
 
-  var BUTTON = document.getElementById('detach');
+  var BUTTON = document.getElementById('detachRight');
   this.wtDom.addEvent(BUTTON, 'click', function () {
     courtainDetach('right')
   });
 
-  BUTTON = document.getElementById('attach');
+  BUTTON = document.getElementById('attachRight');
   this.wtDom.addEvent(BUTTON, 'click', function () {
     courtainAttach('right')
+  });
+
+  BUTTON = document.getElementById('detachLeft');
+  this.wtDom.addEvent(BUTTON, 'click', function () {
+    courtainDetach('left')
+  });
+
+  BUTTON = document.getElementById('attachLeft');
+  this.wtDom.addEvent(BUTTON, 'click', function () {
+    courtainAttach('left')
   });
 }
