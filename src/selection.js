@@ -3,6 +3,7 @@ function WalkontableSelection(onAdd, onRemove) {
   this.onAdd = onAdd; //optional
   this.onRemove = onRemove; //optional
   this.wtCell = new WalkontableCell();
+  this.wtDom = new WalkontableDom();
 }
 
 WalkontableSelection.prototype.add = function (TD) {
@@ -49,7 +50,9 @@ WalkontableSelection.prototype.rectangleSize = function () {
     , i
     , ilen
     , j
-    , height = 0;
+    , height = 0
+    , tableSection
+    , lastTableSection;
 
   this.selected.sort(function (a, b) {
     return that.wtCell.colIndex(a) - that.wtCell.colIndex(b);
@@ -60,6 +63,12 @@ WalkontableSelection.prototype.rectangleSize = function () {
   });
 
   for (i = 0, ilen = this.selected.length; i < ilen; i++) {
+    tableSection = this.wtDom.closestParent(this.selected[i], ['THEAD', 'TBODY', 'TFOOT', 'TABLE']);
+    if(lastTableSection && lastTableSection !== tableSection) {
+      return null; //can only select cells that are in the same section (thead, tbody, tfoot or table if none of them is defined)
+    }
+    lastTableSection = tableSection;
+
     row = this.wtCell.rowIndex(this.selected[i]);
     col = this.wtCell.colIndex(this.selected[i]);
     rowSpan = this.selected[i].rowSpan;

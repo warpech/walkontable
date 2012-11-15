@@ -127,7 +127,7 @@ describe('WalkontableSelection', function () {
     expect(rect.height).toBe(3);
   });
 
-  it("should allow selection of the whole table", function () {
+  it("should allow selection of the whole table body", function () {
     var wtSelection = new WalkontableSelection();
     $table.find('tbody td').each(function(){
       wtSelection.add(this);
@@ -139,5 +139,27 @@ describe('WalkontableSelection', function () {
     var rect = wtSelection.rectangleSize();
     expect(rect.width).toBe(cols);
     expect(rect.height).toBe(rows);
+  });
+
+  it("should allow selection of the whole table head", function () {
+    var wtSelection = new WalkontableSelection();
+    $table.find('thead td').each(function(){
+      wtSelection.add(this);
+    });
+
+    var cols = $table.find('thead tr:eq(0) td').length;
+    var rows = $table.find('thead tr').length;
+
+    var rect = wtSelection.rectangleSize();
+    expect(rect.width).toBe(cols);
+    expect(rect.height).toBe(rows);
+  });
+
+  it("should disallow selection of mixed elements from thead & tbody", function () {
+    var wtSelection = new WalkontableSelection();
+    wtSelection.add($table.find('thead tr:eq(0) td:eq(0)')[0]);
+    wtSelection.add($table.find('tbody tr:eq(0) td:eq(0)')[0]);
+
+    expect(wtSelection.rectangleSize()).toBe(null);
   });
 });
