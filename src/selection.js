@@ -41,14 +41,15 @@ WalkontableSelection.prototype.rectangleSize = function () {
     , rowLengths = {}
     , row
     , col
+    , rowSpan
     , lastRow = -1
     , lastFirstCol = -1
     , lastCol = -1
     , lastColSpan = -1
+    , lastRowSpan = -1
     , i
     , ilen
     , j
-    , jlen
     , height = 0;
 
   this.selected.sort(function (a, b) {
@@ -62,12 +63,13 @@ WalkontableSelection.prototype.rectangleSize = function () {
   for (i = 0, ilen = this.selected.length; i < ilen; i++) {
     row = this.wtCell.rowIndex(this.selected[i]);
     col = this.wtCell.colIndex(this.selected[i]);
-    for (j = 0, jlen = this.selected[i].rowSpan; j < jlen; j++) {
+    rowSpan = this.selected[i].rowSpan;
+    for (j = 0; j < rowSpan; j++) {
       if (typeof rowLengths[row + j] === 'undefined') {
         if (lastFirstCol !== -1 && lastFirstCol !== col) {
           return null; //rectangular selection must always begin on the same column
         }
-        if (lastRow !== -1 && row - lastRow > 1) {
+        if (lastRow !== -1 && row - (lastRow + lastRowSpan - 1) > 1) {
           return null; //selected rows must be consecutive
         }
         lastFirstCol = col;
@@ -82,6 +84,7 @@ WalkontableSelection.prototype.rectangleSize = function () {
       rowLengths[row + j] += this.selected[i].colSpan;
       lastCol = col;
       lastColSpan = this.selected[i].colSpan;
+      lastRowSpan = rowSpan;
       lastRow = row;
     }
   }

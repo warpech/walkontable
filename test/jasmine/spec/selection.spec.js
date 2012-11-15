@@ -116,4 +116,14 @@ describe('WalkontableSelection', function () {
     expect(rect.width).toBe(3);
     expect(rect.height).toBe(1);
   });
+
+  it("should include rowspan in rectangle calculation", function () {
+    var wtSelection = new WalkontableSelection();
+    wtSelection.add($table.find('tr:eq(0) td:eq(2)')[0]);
+    wtSelection.add($table.find('tr:eq(2) td:eq(2)')[0]);
+
+    var rect = wtSelection.rectangleSize();
+    expect(rect.width).toBe(1);
+    expect(rect.height).toBe(3);
+  });
 });
