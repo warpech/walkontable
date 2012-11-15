@@ -45,3 +45,46 @@ WalkontableDom.prototype.nodeListToArray = function (nodeList) {
   }
   return l;
 };
+
+//http://net.tutsplus.com/tutorials/javascript-ajax/javascript-from-null-cross-browser-event-binding/
+WalkontableDom.prototype.addEvent = (function () {
+  var that = this;
+  if (document.addEventListener) {
+    return function (elem, type, cb) {
+      if ((elem && !elem.length) || elem === window) {
+        elem.addEventListener(type, cb, false);
+      }
+      else if (elem && elem.length) {
+        var len = elem.length;
+        for (var i = 0; i < len; i++) {
+          that.addEvent(elem[i], type, cb);
+        }
+      }
+    };
+  }
+  else {
+    return function (elem, type, cb) {
+      if ((elem && !elem.length) || elem === window) {
+        elem.attachEvent('on' + type, function () {
+
+          //normalize
+          //http://stackoverflow.com/questions/4643249/cross-browser-event-object-normalization
+          var e = window['event'];
+          e.target = e.srcElement;
+          //e.offsetX = e.layerX;
+          //e.offsetY = e.layerY;
+          e.relatedTarget = e.relatedTarget || e.type == 'mouseover' ? e.fromElement : e.toElement;
+          if (e.target.nodeType === 3) e.target = e.target.parentNode; //Safari bug
+
+          return cb.call(elem, e)
+        });
+      }
+      else if (elem.length) {
+        var len = elem.length;
+        for (var i = 0; i < len; i++) {
+          that.addEvent(elem[i], type, cb);
+        }
+      }
+    };
+  }
+})();

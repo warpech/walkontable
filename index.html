@@ -4,6 +4,7 @@
   <title>Walkontable</title>
   <meta charset="UTF-8">
   <script src="src/core.js"></script>
+  <script src="src/polyfill.js"></script>
   <script src="src/selection.js"></script>
   <script src="src/merge.js"></script>
   <script src="src/cell.js"></script>
@@ -52,7 +53,7 @@
   var wt = new Walkontable(document.getElementsByTagName('table')[0]);
 
   var BUTTON = document.getElementById('merge');
-  BUTTON.addEventListener('click', function () {
+  wt.wtDom.addEvent(BUTTON, 'click', function () {
     wt.wtMerge.mergeSelection(wt.areaSelection);
   });
 </script>
