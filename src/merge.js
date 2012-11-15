@@ -3,8 +3,7 @@ function WalkontableMerge() {
 }
 
 WalkontableMerge.prototype.mergeSelection = function (wtSelection) {
-  var that = this
-    , i
+  var i
     , nodes
     , rect = wtSelection.rectangleSize();
 
@@ -13,14 +12,6 @@ WalkontableMerge.prototype.mergeSelection = function (wtSelection) {
   }
 
   nodes = wtSelection.getSelected();
-
-  nodes.sort(function (a, b) {
-    return that.wtCell.colIndex(a) - that.wtCell.colIndex(b);
-  });
-
-  nodes.sort(function (a, b) {
-    return that.wtCell.rowIndex(a) - that.wtCell.rowIndex(b);
-  });
 
   for (i = nodes.length - 1; i >= 0; i--) {
     if (i === 0) {

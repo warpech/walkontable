@@ -2,7 +2,7 @@ describe('WalkontableSelection', function () {
   var $table;
 
   beforeEach(function () {
-    $table = $('<table><tr><td></td><td></td><td rowspan="2"></td><td></td></tr><tr><td colspan="2"></td><td></td></tr></table>'); //create a table that is not even attached to document
+    $table = $('<table><tr><td></td><td></td><td rowspan="2"></td><td></td></tr><tr><td colspan="2"></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr></table>'); //create a table that is not even attached to document
     //$table = $('<table><tr><td rowspan="2"></td><td><td></td><td></td></td></tr><tr><td></td><td colspan="2"></td></tr></table>'); //same but inverted cols
   });
 
@@ -70,5 +70,40 @@ describe('WalkontableSelection', function () {
     wtSelection.add($table.find('tr:eq(1) td:eq(0)')[0]);
 
     expect(wtSelection.rectangleSize()).toBe(null);
+  });
+
+  it("should recognize non-consecutive horizontal selection as non-rectangular", function () {
+    var wtSelection = new WalkontableSelection();
+    wtSelection.add($table.find('tr:eq(0) td:eq(0)')[0]);
+    wtSelection.add($table.find('tr:eq(1) td:eq(0)')[0]);
+
+    expect(wtSelection.rectangleSize()).toBe(null);
+  });
+
+  it("should recognize non-consecutive horizontal selection as non-rectangular", function () {
+    var wtSelection = new WalkontableSelection();
+    wtSelection.add($table.find('tr:eq(2) td:eq(0)')[0]);
+    wtSelection.add($table.find('tr:eq(2) td:eq(2)')[0]);
+
+    expect(wtSelection.rectangleSize()).toBe(null);
+  });
+
+  it("should recognize non-consecutive vertical selection as non-rectangular", function () {
+    var wtSelection = new WalkontableSelection();
+    wtSelection.add($table.find('tr:eq(0) td:eq(0)')[0]);
+    wtSelection.add($table.find('tr:eq(2) td:eq(0)')[0]);
+
+    expect(wtSelection.rectangleSize()).toBe(null);
+  });
+
+  it("should recognize randomly unsorted consecutive selection as rectangular", function () {
+    var wtSelection = new WalkontableSelection();
+    wtSelection.add($table.find('tr:eq(2) td:eq(0)')[0]);
+    wtSelection.add($table.find('tr:eq(2) td:eq(2)')[0]);
+    wtSelection.add($table.find('tr:eq(2) td:eq(1)')[0]);
+
+    var rect = wtSelection.rectangleSize();
+    expect(rect.width).toBe(3);
+    expect(rect.height).toBe(1);
   });
 });
