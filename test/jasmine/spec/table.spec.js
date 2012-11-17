@@ -1,7 +1,7 @@
 describe('WalkontableTable', function () {
   var $table;
 
-  var debug = false;
+  var debug = 1;
 
   beforeEach(function () {
     $table = $('<table border=1><tr><td></td><td></td><td rowspan="2"></td><td></td></tr><tr><td colspan="2"></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td colspan="2"></td><td></td><td></td></tr></table>'); //create a table that is not even attached to document
@@ -65,10 +65,18 @@ describe('WalkontableTable', function () {
   it("should get last row with colSpan", function () {
     var wtTable = new WalkontableTable($table[0]);
     var TDs = wtTable.getRow(3);
-    console.log("TDS", TDs);
     expect(TDs[0]).toBe($table.find('tr:eq(3) td:eq(0)')[0]);
     expect(TDs[1]).toBe($table.find('tr:eq(3) td:eq(0)')[0]);
     expect(TDs[2]).toBe($table.find('tr:eq(3) td:eq(1)')[0]);
     expect(TDs[3]).toBe($table.find('tr:eq(3) td:eq(2)')[0]);
+  });
+
+  it("should get row with rowSpan", function () {
+    var wtTable = new WalkontableTable($table[0]);
+    var TDs = wtTable.getRow(1);
+    expect(TDs[0]).toBe($table.find('tr:eq(1) td:eq(0)')[0]);
+    expect(TDs[1]).toBe($table.find('tr:eq(1) td:eq(0)')[0]);
+    expect(TDs[2]).toBe($table.find('tr:eq(0) td:eq(2)')[0]);
+    expect(TDs[3]).toBe($table.find('tr:eq(1) td:eq(1)')[0]);
   });
 });

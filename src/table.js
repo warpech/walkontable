@@ -13,14 +13,27 @@ WalkontableTable.prototype.getRow = function (index) {
     , c
     , clen
     , i
-    , sectionOffset = 0;
+    , sectionOffset = 0
+    , col
+  //, totalCols = this.TABLE.childNodes[0].childNodes[0].length
+    , colIndex;
   sections : for (s = 0, slen = this.TABLE.childNodes.length; s < slen; s++) {
     for (r = 0, rlen = this.TABLE.childNodes[s].childNodes.length; r < rlen; r++) {
       if (r + sectionOffset === index) {
+        col = 0;
         for (c = 0, clen = this.TABLE.childNodes[s].childNodes[r].childNodes.length; c < clen; c++) {
           TD = this.TABLE.childNodes[s].childNodes[r].childNodes[c];
+          colIndex = this.wtCell.colIndex(TD);
+          while (col < colIndex) {
+            var TD2 = this.getColumn(col)[index];
+            for (i = TD2.colSpan; i > 0; i--) {
+              row.push(TD2);
+              col++;
+            }
+          }
           for (i = TD.colSpan; i > 0; i--) {
             row.push(TD);
+            col++;
           }
         }
         break sections;
