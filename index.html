@@ -10,6 +10,8 @@
   <script src="src/cell.js"></script>
   <script src="src/dom.js"></script>
   <script src="src/courtain.js"></script>
+
+  <script src="index.js"></script>
 </head>
 <body>
 
@@ -47,33 +49,6 @@
   </tr>
   </tbody>
 </table>
-
-<button id="merge">Merge selected</button>
-
-<button id="detachRight">Detach right</button>
-
-<button id="attachRight">Attach right</button>
-
-<button id="detachLeft">Detach left</button>
-
-<button id="attachLeft">Attach left</button>
-
-<button id="detachTop">Detach top</button>
-
-<button id="attachTop">Attach top</button>
-
-<button id="detachBottom">Detach bottom</button>
-
-<button id="attachBottom">Attach bottom</button>
-
-<script>
-  var wt = new Walkontable(document.getElementsByTagName('table')[0]);
-
-  var BUTTON = document.getElementById('merge');
-  wt.wtDom.addEvent(BUTTON, 'click', function () {
-    wt.wtMerge.mergeSelection(wt.areaSelection);
-  });
-</script>
 
 <h2>Features</h2>
 
