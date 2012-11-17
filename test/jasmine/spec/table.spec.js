@@ -39,4 +39,13 @@ describe('WalkontableTable', function () {
     expect(TDs[2]).toBe($table.find('tr:eq(2) td:eq(3)')[0]);
     expect(TDs[3]).toBe($table.find('tr:eq(3) td:eq(2)')[0]);
   });
+
+  it("should get column with rowSpan", function () {
+    var wtTable = new WalkontableTable($table[0]);
+    var TDs = wtTable.getColumn(2);
+    expect(TDs[0]).toBe($table.find('tr:eq(0) td:eq(2)')[0]);
+    expect(TDs[1]).toBe($table.find('tr:eq(0) td:eq(2)')[0]);
+    expect(TDs[2]).toBe($table.find('tr:eq(2) td:eq(2)')[0]);
+    expect(TDs[3]).toBe($table.find('tr:eq(3) td:eq(1)')[0]);
+  });
 });
