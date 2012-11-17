@@ -47,44 +47,4 @@ function Walkontable(TABLE) {
   }
 
   removeTextNodes(TABLE);
-
-  var BUTTON = document.getElementById('detachRight');
-  this.wtDom.addEvent(BUTTON, 'click', function () {
-    that.wtCourtain.detachColumn('right')
-  });
-
-  BUTTON = document.getElementById('attachRight');
-  this.wtDom.addEvent(BUTTON, 'click', function () {
-    that.wtCourtain.attachColumn('right')
-  });
-
-  BUTTON = document.getElementById('detachLeft');
-  this.wtDom.addEvent(BUTTON, 'click', function () {
-    that.wtCourtain.detachColumn('left')
-  });
-
-  BUTTON = document.getElementById('attachLeft');
-  this.wtDom.addEvent(BUTTON, 'click', function () {
-    that.wtCourtain.attachColumn('left')
-  });
-
-  BUTTON = document.getElementById('detachTop');
-  this.wtDom.addEvent(BUTTON, 'click', function () {
-    that.wtCourtain.detachRow('top')
-  });
-
-  BUTTON = document.getElementById('attachTop');
-  this.wtDom.addEvent(BUTTON, 'click', function () {
-    that.wtCourtain.attachRow('top')
-  });
-
-  BUTTON = document.getElementById('detachBottom');
-  this.wtDom.addEvent(BUTTON, 'click', function () {
-    that.wtCourtain.detachRowReverse('bottom')
-  });
-
-  BUTTON = document.getElementById('attachBottom');
-  this.wtDom.addEvent(BUTTON, 'click', function () {
-    that.wtCourtain.attachRow('bottom')
-  });
 }
