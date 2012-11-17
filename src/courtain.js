@@ -8,7 +8,12 @@ function WalkontableCourtain(TABLE) {
         return TR.firstChild;
       },
       attach: function (TR, TD) {
-        TR.insertBefore(TD, TR.firstChild);
+        if (TD === 1) {
+          TR.childNodes[0].colSpan += 1;
+        }
+        else {
+          TR.insertBefore(TD, TR.firstChild);
+        }
       }
     },
     right: {
@@ -18,7 +23,12 @@ function WalkontableCourtain(TABLE) {
         return TDs[TDs.length - 1];
       },
       attach: function (TR, TD) {
-        TR.appendChild(TD);
+        if (TD === 1) {
+          TR.childNodes[TR.childNodes.length - 1].colSpan += 1;
+        }
+        else {
+          TR.appendChild(TD);
+        }
       }
     },
     top: {
@@ -51,8 +61,14 @@ WalkontableCourtain.prototype.detachColumn = function (side) {
     var TRs = TSECTIONs[i].childNodes;
     for (var j = 0, jlen = TRs.length; j < jlen; j++) {
       var TD = this.courtains[side].detach(TRs[j]);
-      TRs[j].removeChild(TD);
-      underbed[i].push(TD);
+      if (TD.colSpan > 1) {
+        TD.colSpan -= 1;
+        underbed[i].push(1);
+      }
+      else {
+        TRs[j].removeChild(TD);
+        underbed[i].push(TD);
+      }
     }
   }
   this.courtains[side].box.push(underbed);
