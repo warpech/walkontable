@@ -1,13 +1,26 @@
 describe('Walkontable', function () {
   var $table;
 
+  var debug = false;
+
   beforeEach(function () {
-    $table = $('<table><td></td></table>'); //create a table that is not even attached to document
+    $table = $('<table><td></td></table>'); //create a table that is not attached to document
+    if (debug) {
+      $table.find('td').each(function () {
+        this.innerHTML = 'x';
+      });
+    }
   });
 
   afterEach(function () {
-    $table.remove();
+    if (debug) {
+      $table.appendTo('body');
+    }
   });
+
+  /**
+   * Walkontable (constructor)
+   */
 
   it("should start with empty current selection", function () {
     var wt = new Walkontable($table[0]);

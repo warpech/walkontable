@@ -1,13 +1,26 @@
 describe('WalkontableMerge', function () {
   var $table;
 
+  var debug = false;
+
   beforeEach(function () {
-    $table = $('<table><tr><td></td><td></td></tr><tr><td></td><td></td></tr></table>'); //create a table that is not even attached to document
+    $table = $('<table><tr><td></td><td></td></tr><tr><td></td><td></td></tr></table>'); //create a table that is not attached to document
+    if (debug) {
+      $table.find('td').each(function () {
+        this.innerHTML = 'x';
+      });
+    }
   });
 
   afterEach(function () {
-    $table.remove();
+    if (debug) {
+      $table.appendTo('body');
+    }
   });
+
+  /**
+   * mergeSelection
+   */
 
   it("should merge two cells horizontally when given in reverse order", function () {
     var wtSelection = new WalkontableSelection();

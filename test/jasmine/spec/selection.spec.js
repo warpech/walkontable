@@ -1,16 +1,26 @@
 describe('WalkontableSelection', function () {
   var $table;
 
+  var debug = false;
+
   beforeEach(function () {
     $table = $('<table border=1><thead><tr><td></td><td></td><td></td><td></td></tr></thead><tbody><tr><td></td><td></td><td rowspan="2"></td><td></td></tr><tr><td colspan="2"></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr></tbody></table>'); //create a table that is not attached to document
-    /*$table.find('td').each(function () {
-      this.innerHTML = 'x';
-    });*/
+    if (debug) {
+      $table.find('td').each(function () {
+        this.innerHTML = 'x';
+      });
+    }
   });
 
   afterEach(function () {
-    //$table.appendTo('body');
+    if (debug) {
+      $table.appendTo('body');
+    }
   });
+
+  /**
+   * getSelected
+   */
 
   it("should add TD to selection", function () {
     var wtSelection = new WalkontableSelection();
@@ -35,6 +45,10 @@ describe('WalkontableSelection', function () {
 
     expect(wtSelection.getSelected().length).toBe(0);
   });
+
+  /**
+   * rectangleSize
+   */
 
   it("should recognize rectangular selection with colspan", function () {
     var wtSelection = new WalkontableSelection();
