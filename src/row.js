@@ -63,13 +63,23 @@ WalkontableRow.prototype.detach = function () {
         var futureNeighbor = this.nextRow().cells[i + 1];
         futureNeighbor.parentNode.insertBefore(this.cells[i], futureNeighbor);
       }
+      if (!this.cells[i].rowSpanOffset) {
+        this.cells[i].rowSpanOffset = 0;
+      }
+      this.cells[i].rowSpanOffset++;
     }
   }
   this.TSECTION.removeChild(this.TR);
 };
 
 WalkontableRow.prototype.attach = function () {
-  this.TSECTION.insertBefore(this.TR, this.TSECTION.firstChild);
+  this.TSECTION.insertBefore(this.TR, this.TSECTION.childNodes[this.index]);
+  for (var i = 0, ilen = this.cells.length; i < ilen; i++) {
+    if (this.cells[i].rowSpanOffset) {
+      this.cells[i].rowSpan = this.cells[i].rowSpan + 1;
+      this.cells[i].rowSpanOffset--;
+    }
+  }
 };
 
 WalkontableRow.prototype.nextRow = function () {
