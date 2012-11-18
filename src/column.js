@@ -1,7 +1,8 @@
 function WalkontableColumn(wtTable, index) {
   this.wtCell = new WalkontableCell();
-  this.TABLE = wtTable.TABLE;
+  this.wtTable = wtTable;
   this.index = index;
+  this.TABLE = wtTable.TABLE;
   this.cells = this.build();
 }
 
@@ -40,5 +41,32 @@ WalkontableColumn.prototype.build = function () {
   }
   else {
     return null; //column index was not found
+  }
+};
+
+WalkontableColumn.prototype.detach = function () {
+  for (var i = 0, ilen = this.cells.length; i < ilen; i++) {
+    if (this.cells[i].colSpan > 1) {
+      this.cells[i].colSpan = this.cells[i].colSpan - 1;
+      if (!this.cells[i].colSpanOffset) {
+        this.cells[i].colSpanOffset = 0;
+      }
+      this.cells[i].colSpanOffset++;
+    }
+    else {
+      this.cells[i].parentNode.removeChild(this.cells[i]);
+    }
+  }
+};
+
+WalkontableColumn.prototype.attach = function () {
+  for (var i = 0, ilen = this.cells.length; i < ilen; i++) {
+    if (this.cells[i].colSpanOffset) {
+      this.cells[i].colSpan = this.cells[i].colSpan + 1;
+      this.cells[i].colSpanOffset--;
+    }
+    else {
+      this.wtTable.getRow(i).TR.insertBefore(this.cells[i], this.wtTable.getColumn(this.index + 1).cells[i]);
+    }
   }
 };
