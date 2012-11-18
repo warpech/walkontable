@@ -77,7 +77,13 @@ WalkontableRow.prototype.detach = function () {
 };
 
 WalkontableRow.prototype.attach = function () {
-  this.TSECTION.insertBefore(this.TR, this.nextRow().TR);
+  var nextRow = this.nextRow();
+  if (nextRow.TSECTION === this.TSECTION) {
+    this.TSECTION.insertBefore(this.TR, this.nextRow().TR);
+  }
+  else {
+    this.TSECTION.appendChild(this.TR);
+  }
   for (var i = 0, ilen = this.cells.length; i < ilen; i++) {
     if (this.cells[i].rowSpanOffset) {
       this.cells[i].rowSpan = this.cells[i].rowSpan + 1;

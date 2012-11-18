@@ -74,4 +74,22 @@ describe('WalkontableRow', function () {
     expect(TDs[2]).toBe($table.find('tbody tr:eq(0) td:eq(2)')[0]);
     expect(TDs[3]).toBe($table.find('tbody tr:eq(1) td:eq(1)')[0]);
   });
+
+  it("attach row with rowSpan when it was the only one in THEAD", function () {
+    var $thead = $('<thead><tr><td>A</td><td>B</td><td>C</td><td>D</td></tr></thead>');
+    $table.prepend($thead);
+
+    //$table.clone().appendTo('body');
+
+    var wtTable = new WalkontableTable($table[0]);
+    var wtRow = wtTable.getRow(0);
+    wtRow.detach();
+    wtRow.attach();
+
+    var TDs = wtTable.getRow(1).cells;
+    expect(TDs[0]).toBe($table.find('tr:eq(1) td:eq(0)')[0]);
+    expect(TDs[1]).toBe($table.find('tr:eq(1) td:eq(1)')[0]);
+    expect(TDs[2]).toBe($table.find('tr:eq(1) td:eq(2)')[0]);
+    expect(TDs[3]).toBe($table.find('tr:eq(1) td:eq(3)')[0]);
+  });
 });
