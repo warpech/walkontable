@@ -62,6 +62,10 @@ WalkontableRow.prototype.detach = function () {
       if (this.wtCell.rowIndex(this.cells[i]) === this.index) {
         var futureNeighbor = this.nextRow().cells[i + 1];
         futureNeighbor.parentNode.insertBefore(this.cells[i], futureNeighbor);
+        if (!this.cells[i].rowParentOffset) {
+          this.cells[i].rowParentOffset = 0;
+        }
+        this.cells[i].rowParentOffset++;
       }
       if (!this.cells[i].rowSpanOffset) {
         this.cells[i].rowSpanOffset = 0;
@@ -73,11 +77,16 @@ WalkontableRow.prototype.detach = function () {
 };
 
 WalkontableRow.prototype.attach = function () {
-  this.TSECTION.insertBefore(this.TR, this.TSECTION.childNodes[this.index]);
+  this.TSECTION.insertBefore(this.TR, this.nextRow().TR);
   for (var i = 0, ilen = this.cells.length; i < ilen; i++) {
     if (this.cells[i].rowSpanOffset) {
       this.cells[i].rowSpan = this.cells[i].rowSpan + 1;
       this.cells[i].rowSpanOffset--;
+      if (this.cells[i].rowParentOffset) {
+        var futureNeighbor = this.cells[i + 1];
+        this.TR.insertBefore(this.cells[i], futureNeighbor);
+        this.cells[i].rowParentOffset--;
+      }
     }
   }
 };
