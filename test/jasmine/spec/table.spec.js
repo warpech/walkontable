@@ -27,7 +27,6 @@ describe('WalkontableTable', function () {
   it("should get first column", function () {
     var wtTable = new WalkontableTable($table[0]);
     var TDs = wtTable.getColumn(0).cells;
-    console.log('a', TDs);
     expect(TDs[0]).toBe($table.find('tr:eq(0) td:eq(0)')[0]);
     expect(TDs[1]).toBe($table.find('tr:eq(1) td:eq(0)')[0]);
     expect(TDs[2]).toBe($table.find('tr:eq(2) td:eq(0)')[0]);
