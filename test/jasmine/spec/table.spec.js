@@ -71,12 +71,25 @@ describe('WalkontableTable', function () {
     expect(TDs[3]).toBe($table.find('tr:eq(3) td:eq(2)')[0]);
   });
 
-  it("should get row with rowSpan", function () {
+  it("should get row that starts with rowSpan", function () {
+    var wtCourtaun = new WalkontableCourtain($table[0]); //remove 2 columns from the left
+    wtCourtaun.detachColumn('left');
+    wtCourtaun.detachColumn('left');
+
     var wtTable = new WalkontableTable($table[0]);
     var TDs = wtTable.getRow(1);
-    expect(TDs[0]).toBe($table.find('tr:eq(1) td:eq(0)')[0]);
+    expect(TDs[0]).toBe($table.find('tr:eq(0) td:eq(0)')[0]);
     expect(TDs[1]).toBe($table.find('tr:eq(1) td:eq(0)')[0]);
-    expect(TDs[2]).toBe($table.find('tr:eq(0) td:eq(2)')[0]);
-    expect(TDs[3]).toBe($table.find('tr:eq(1) td:eq(1)')[0]);
+  });
+
+  it("should get row that ends with rowSpan", function () {
+    var wtCourtain = new WalkontableCourtain($table[0]); //remove 2 columns from the right
+    wtCourtain.detachColumn('right');
+    wtCourtain.detachColumn('right'); //deteches wrongly - add a test case for that
+
+    var wtTable = new WalkontableTable($table[0]);
+    var TDs = wtTable.getRow(1);  //computes wrongly
+    expect(TDs[0]).toBe($table.find('tr:eq(0) td:eq(0)')[0]);
+    expect(TDs[1]).toBe($table.find('tr:eq(1) td:eq(0)')[0]);
   });
 });
