@@ -1,6 +1,16 @@
 function init() {
   var wt = new Walkontable(document.getElementsByTagName('TABLE')[0]);
 
+
+
+
+  var wtTable = new WalkontableTable(document.getElementsByTagName('table')[0]);
+  console.log("row count", wtTable.rows.length);
+  console.log("column count", wtTable.columns.length);
+
+
+
+
   function createButton(label, fn) {
     var BUTTON = document.createElement('BUTTON');
     BUTTON.innerHTML = label;
