@@ -59,8 +59,10 @@ WalkontableRow.prototype.detach = function () {
   for (var i = 0, ilen = this.cells.length; i < ilen; i++) {
     if (this.cells[i].rowSpan > 1) {
       this.cells[i].rowSpan = this.cells[i].rowSpan - 1;
-      var futureNeighbor = this.nextRow().cells[i + 1];
-      futureNeighbor.parentNode.insertBefore(this.cells[i], futureNeighbor);
+      if (this.wtCell.rowIndex(this.cells[i]) === this.index) {
+        var futureNeighbor = this.nextRow().cells[i + 1];
+        futureNeighbor.parentNode.insertBefore(this.cells[i], futureNeighbor);
+      }
     }
   }
   this.TSECTION.removeChild(this.TR);
