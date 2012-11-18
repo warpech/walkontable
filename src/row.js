@@ -56,9 +56,20 @@ WalkontableRow.prototype.build = function () {
 };
 
 WalkontableRow.prototype.detach = function () {
+  for (var i = 0, ilen = this.cells.length; i < ilen; i++) {
+    if (this.cells[i].rowSpan > 1) {
+      this.cells[i].rowSpan = this.cells[i].rowSpan - 1;
+      var futureNeighbor = this.nextRow().cells[i + 1];
+      futureNeighbor.parentNode.insertBefore(this.cells[i], futureNeighbor);
+    }
+  }
   this.TSECTION.removeChild(this.TR);
 };
 
 WalkontableRow.prototype.attach = function () {
   this.TSECTION.insertBefore(this.TR, this.TSECTION.firstChild);
+};
+
+WalkontableRow.prototype.nextRow = function () {
+  return this.wtTable.getRow(this.index + 1);
 };
