@@ -5,9 +5,11 @@ describe('WalkontableTable', function () {
 
   beforeEach(function () {
     $table = $('<table border=1><tr><td></td><td></td><td rowspan="2"></td><td></td></tr><tr><td colspan="2"></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td colspan="2"></td><td></td><td></td></tr></table>'); //create a table that is not even attached to document
+    var x = 0;
     if (debug) {
       $table.find('td').each(function () {
-        this.innerHTML = 'x';
+        this.innerHTML = x;
+        x++;
       });
     }
   });
