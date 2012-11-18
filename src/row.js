@@ -1,8 +1,10 @@
 function WalkontableRow(wtTable, index) {
   this.wtCell = new WalkontableCell();
   this.wtTable = wtTable;
-  this.TABLE = wtTable.TABLE;
   this.index = index;
+  this.TABLE = wtTable.TABLE;
+  this.TR = null;
+  this.TSECTION = null;
   this.cells = this.build();
 }
 
@@ -18,12 +20,12 @@ WalkontableRow.prototype.build = function () {
     , i
     , sectionOffset = 0
     , col
-    , colIndex
-    , found;
+    , colIndex;
   sections : for (s = 0, slen = this.TABLE.childNodes.length; s < slen; s++) {
     for (r = 0, rlen = this.TABLE.childNodes[s].childNodes.length; r < rlen; r++) {
       if (r + sectionOffset === this.index) {
-        found = true;
+        this.TR = this.TABLE.childNodes[s].childNodes[r];
+        this.TSECTION = this.TR.parentNode;
         col = 0;
         for (c = 0, clen = this.TABLE.childNodes[s].childNodes[r].childNodes.length; c < clen; c++) {
           TD = this.TABLE.childNodes[s].childNodes[r].childNodes[c];
@@ -45,10 +47,18 @@ WalkontableRow.prototype.build = function () {
     }
     sectionOffset += rlen;
   }
-  if (found) {
+  if (this.TR) {
     return row;
   }
   else {
     return null; //row index was not found
   }
+};
+
+WalkontableRow.prototype.detach = function () {
+  this.TSECTION.removeChild(this.TR);
+};
+
+WalkontableRow.prototype.attach = function () {
+  this.TSECTION.insertBefore(this.TR, this.TSECTION.firstChild);
 };

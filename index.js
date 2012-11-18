@@ -22,36 +22,40 @@ function init() {
     wt.wtMerge.mergeSelection(wt.areaSelection);
   });
 
-  createButton('Detach right', function () {
-    wt.wtCourtain.detachColumn('right');
-  });
-
-  createButton('Attach right', function () {
-    wt.wtCourtain.attachColumn('right');
-  });
-
-  createButton('Detach left', function () {
-    wt.wtCourtain.detachColumn('left');
-  });
-
-  createButton('Attach left', function () {
-    wt.wtCourtain.attachColumn('left');
-  });
+  var detached = [];
 
   createButton('Detach top', function () {
-    wt.wtCourtain.detachRow('top');
+    var index = detached.length;
+    var row = wtTable.getRow(index);
+    if(row) {
+      row.detach();
+      detached.push(index);
+    }
   });
 
   createButton('Attach top', function () {
-    wt.wtCourtain.attachRow('top');
+    if(detached.length > 0) {
+      var index = detached.pop();
+      wtTable.getRow(index).attach();
+    }
   });
 
-  createButton('Detach bottom', function () {
-    wt.wtCourtain.detachRow('bottom');
+  var detachedBody = [];
+
+  createButton('Detach body top', function () {
+    var index = detachedBody.length;
+    var row = wtTable.getRow(index+1);
+    if(row) {
+      row.detach();
+      detachedBody.push(index);
+    }
   });
 
-  createButton('Attach bottom', function () {
-    wt.wtCourtain.attachRow('bottom');
+  createButton('Attach body top', function () {
+    if(detachedBody.length > 0) {
+      var index = detachedBody.pop();
+      wtTable.getRow(index+1).attach();
+    }
   });
 }
 
