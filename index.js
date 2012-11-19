@@ -39,11 +39,12 @@ function init() {
   var detachedBottom = [];
 
   createButton('Detach bottom', function () {
-    var index = wtTable.TABLE.childNodes[1].getElementsByTagName('TR').length;
-    var row = wtTable.getRow(index);
-    if (row) {
+    var theadOffset = wtTable.TABLE.childNodes[0].getElementsByTagName('TR').length;
+    var count = wtTable.TABLE.childNodes[1].getElementsByTagName('TR').length;
+    if (count) {
+      var row = wtTable.getRow(theadOffset + count - 1);
       row.detach();
-      detachedBottom.push(index);
+      detachedBottom.push(theadOffset + count - 1);
     }
   });
 
