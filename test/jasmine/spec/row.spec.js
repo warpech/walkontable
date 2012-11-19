@@ -57,6 +57,21 @@ describe('WalkontableRow', function () {
     expect(TDs[3]).toBe($table.find('tr:eq(1) td:eq(1)')[0]);
   });
 
+  it("attach row at the bottom", function () {
+    //$table.clone().appendTo('body');
+
+    var wtTable = new WalkontableTable($table[0]);
+    var wtRow = wtTable.getRow(3);
+    wtRow.detach();
+    wtRow.attach();
+
+    var TDs = wtTable.getRow(3).cells;
+    expect(TDs[0]).toBe($table.find('tr:last-child td:eq(0)')[0]);
+    expect(TDs[1]).toBe($table.find('tr:last-child td:eq(0)')[0]);
+    expect(TDs[2]).toBe($table.find('tr:last-child td:eq(1)')[0]);
+    expect(TDs[3]).toBe($table.find('tr:last-child td:eq(2)')[0]);
+  });
+
   it("attach row with rowSpan when there was THEAD", function () {
     var $thead = $('<thead><tr><td>A</td><td>B</td><td>C</td><td>D</td></tr></thead>');
     $table.prepend($thead);
@@ -75,7 +90,7 @@ describe('WalkontableRow', function () {
     expect(TDs[3]).toBe($table.find('tbody tr:eq(1) td:eq(1)')[0]);
   });
 
-  it("attach row with rowSpan when it was the only one in THEAD", function () {
+  it("attach row when it was the only one in THEAD", function () {
     var $thead = $('<thead><tr><td>A</td><td>B</td><td>C</td><td>D</td></tr></thead>');
     $table.prepend($thead);
 
@@ -91,5 +106,29 @@ describe('WalkontableRow', function () {
     expect(TDs[1]).toBe($table.find('tr:eq(1) td:eq(1)')[0]);
     expect(TDs[2]).toBe($table.find('tr:eq(1) td:eq(2)')[0]);
     expect(TDs[3]).toBe($table.find('tr:eq(1) td:eq(3)')[0]);
+  });
+
+  it("detach and attach all rows starting from the bottom", function () {
+    //$table.clone().appendTo('body');
+
+    var wtTable = new WalkontableTable($table[0]);
+    var wtRow3 = wtTable.getRow(3);
+    var wtRow2 = wtTable.getRow(2);
+    var wtRow1 = wtTable.getRow(1);
+    var wtRow0 = wtTable.getRow(0);
+    wtRow3.detach();
+    wtRow2.detach();
+    wtRow1.detach();
+    wtRow0.detach();
+    wtRow0.attach();
+    wtRow1.attach();
+    wtRow2.attach();
+    wtRow3.attach();
+
+    var TDs = wtTable.getRow(3).cells;
+    expect(TDs[0]).toBe($table.find('tr:eq(3) td:eq(0)')[0]);
+    expect(TDs[1]).toBe($table.find('tr:eq(3) td:eq(0)')[0]);
+    expect(TDs[2]).toBe($table.find('tr:eq(3) td:eq(1)')[0]);
+    expect(TDs[3]).toBe($table.find('tr:eq(3) td:eq(2)')[0]);
   });
 });

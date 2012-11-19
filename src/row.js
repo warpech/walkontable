@@ -78,10 +78,16 @@ WalkontableRow.prototype.detach = function () {
 
 WalkontableRow.prototype.attach = function () {
   var nextRow = this.nextRow();
-  if (nextRow.TSECTION === this.TSECTION) {
-    this.TSECTION.insertBefore(this.TR, this.nextRow().TR);
+  while (nextRow) {
+    if (nextRow.TSECTION === this.TSECTION && nextRow.TR.parentNode !== null) {
+      this.TSECTION.insertBefore(this.TR, this.nextRow().TR);
+      break;
+    }
+    else {
+      nextRow = nextRow.nextRow()
+    }
   }
-  else {
+  if (!nextRow) {
     this.TSECTION.appendChild(this.TR);
   }
   for (var i = 0, ilen = this.cells.length; i < ilen; i++) {
