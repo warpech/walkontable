@@ -8,7 +8,7 @@ function init() {
 
 
   function createButton(label, fn, newLine) {
-    if(newLine) {
+    if (newLine) {
       var BR = document.createElement('BR');
       document.body.insertBefore(BR, document.getElementsByTagName('TABLE')[0]);
     }
@@ -105,6 +105,27 @@ function init() {
     if (detachedLeft.length > 0) {
       var index = detachedLeft.pop();
       wtTable.getColumn(index).attach();
+    }
+  });
+
+  var detachedRight = [];
+
+  var colCount = 8;
+
+  createButton('Detach right', function () {
+    if (colCount > 0) {
+      var column = wtTable.getColumn(colCount - 1);
+      column.detach();
+      detachedRight.push(colCount - 1);
+      colCount--;
+    }
+  });
+
+  createButton('Attach right', function () {
+    if (detachedRight.length > 0) {
+      var index = detachedRight.pop();
+      wtTable.getColumn(index).attach();
+      colCount++;
     }
   });
 }
