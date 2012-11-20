@@ -1,4 +1,5 @@
 function WalkontableRow(wtTable, index) {
+  this.wtDom = new WalkontableDom();
   this.wtCell = new WalkontableCell();
   this.wtTable = wtTable;
   this.index = index;
@@ -79,15 +80,13 @@ WalkontableRow.prototype.detach = function () {
 WalkontableRow.prototype.attach = function () {
   for (var i = 0, ilen = this.cells.length; i < ilen; i++) {
     if (this.cells[i].rowSpanOffset) {
-      //if (this.cells[i].parentNode.parentNode) { // this did not work in IE7 because removed node's parentNode is HTMLDocument (not null)
-      if (this.cells[i].parentNode.parentNode === this.TSECTION) {
+      if (!this.wtDom.isFragment(this.cells[i].parentNode)) {
         this.cells[i].rowSpan = this.cells[i].rowSpan + 1;
         this.cells[i].rowSpanOffset--;
       }
     }
     if (this.cells[i].rowParentOffset) {
-      //if (this.cells[i].parentNode.parentNode) { // this did not work in IE7 because removed node's parentNode is HTMLDocument (not null)
-      if (this.cells[i].parentNode.parentNode === this.TSECTION) {
+      if (!this.wtDom.isFragment(this.cells[i].parentNode)) {
         this.cells[i].rowParentOffset--;
       }
       var futureNeighbor = this.cells[i + 1];
@@ -97,7 +96,6 @@ WalkontableRow.prototype.attach = function () {
 
   var nextRow = this.nextRow();
   while (nextRow) {
-    //if (nextRow.TSECTION === this.TSECTION && nextRow.TR.parentNode !== null) { // this did not work in IE7 because removed node's parentNode is HTMLDocument (not null)
     if (nextRow.TR.parentNode === this.TSECTION) { // have same parent && nextRow is attached to DOM
       this.TSECTION.insertBefore(this.TR, nextRow.TR);
       break;

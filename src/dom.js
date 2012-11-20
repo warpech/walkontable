@@ -1,6 +1,12 @@
 function WalkontableDom() {
 }
 
+//returns true is element is detached from DOM
+//in IE7-8 detached element has parent HTMLDocument with nodeType 11
+WalkontableDom.prototype.isFragment = function (node) {
+  return (node.parentNode === null || node.parentNode.nodeType === 11);
+};
+
 //goes up the DOM tree (including given element) until it finds an element that matches the nodeName
 WalkontableDom.prototype.closest = function (elem, nodeNames) {
   while (elem != null) {
