@@ -1,7 +1,7 @@
 describe('WalkontableRow', function () {
   var $table;
 
-  var debug = true;
+  var debug = false;
 
   beforeEach(function () {
     $table = $('<table border=1><tr><td></td><td></td><td rowspan="2"></td><td></td></tr><tr><td colspan="2"></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td colspan="2"></td><td></td><td></td></tr></table>'); //create a table that is not even attached to document
@@ -136,7 +136,7 @@ describe('WalkontableRow', function () {
     var $thead = $('<thead><tr><td>A</td><td>B</td><td>C</td><td>D</td></tr></thead>');
     $table.prepend($thead);
 
-    $table.clone().appendTo('body');
+    //$table.clone().appendTo('body');
 
     var wtTable = new WalkontableTable($table[0]);
     var wtRow1 = wtTable.getRow(1);
@@ -165,7 +165,7 @@ describe('WalkontableRow', function () {
     var $thead = $('<thead><tr><td>A</td><td>B</td><td>C</td><td>D</td></tr></thead>');
     $table.prepend($thead);
 
-    $table.clone().appendTo('body');
+    //$table.clone().appendTo('body');
 
     var wtTable = new WalkontableTable($table[0]);
     var wtRow1 = wtTable.getRow(1);
