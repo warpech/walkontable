@@ -1,7 +1,7 @@
 describe('WalkontableRow', function () {
   var $table;
 
-  var debug = false;
+  var debug = true;
 
   beforeEach(function () {
     $table = $('<table border=1><tr><td></td><td></td><td rowspan="2"></td><td></td></tr><tr><td colspan="2"></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td colspan="2"></td><td></td><td></td></tr></table>'); //create a table that is not even attached to document
@@ -130,5 +130,64 @@ describe('WalkontableRow', function () {
     expect(TDs[1]).toBe($table.find('tr:eq(3) td:eq(0)')[0]);
     expect(TDs[2]).toBe($table.find('tr:eq(3) td:eq(1)')[0]);
     expect(TDs[3]).toBe($table.find('tr:eq(3) td:eq(2)')[0]);
+  });
+
+  it("detach and attach all rows - 1 starting from TBODY top", function () {
+    var $thead = $('<thead><tr><td>A</td><td>B</td><td>C</td><td>D</td></tr></thead>');
+    $table.prepend($thead);
+
+    $table.clone().appendTo('body');
+
+    var wtTable = new WalkontableTable($table[0]);
+    var wtRow1 = wtTable.getRow(1);
+    var wtRow2 = wtTable.getRow(2);
+    var wtRow3 = wtTable.getRow(3);
+    wtRow1.detach();
+    wtRow2.detach();
+    wtRow3.detach();
+    wtRow3.attach();
+    wtRow2.attach();
+
+    var TDs = wtTable.getRow(2).cells;
+    expect(TDs[0]).toBe($table.find('tbody tr:eq(0) td:eq(0)')[0]);
+    expect(TDs[1]).toBe($table.find('tbody tr:eq(0) td:eq(0)')[0]);
+    expect(TDs[2]).toBe($table.find('tbody tr:eq(0) td:eq(1)')[0]);
+    expect(TDs[3]).toBe($table.find('tbody tr:eq(0) td:eq(2)')[0]);
+
+    TDs = wtTable.getRow(3).cells;
+    expect(TDs[0]).toBe($table.find('tbody tr:eq(1) td:eq(0)')[0]);
+    expect(TDs[1]).toBe($table.find('tbody tr:eq(1) td:eq(1)')[0]);
+    expect(TDs[2]).toBe($table.find('tbody tr:eq(1) td:eq(2)')[0]);
+    expect(TDs[3]).toBe($table.find('tbody tr:eq(1) td:eq(3)')[0]);
+  });
+
+  it("detach and attach all rows starting from TBODY top", function () {
+    var $thead = $('<thead><tr><td>A</td><td>B</td><td>C</td><td>D</td></tr></thead>');
+    $table.prepend($thead);
+
+    $table.clone().appendTo('body');
+
+    var wtTable = new WalkontableTable($table[0]);
+    var wtRow1 = wtTable.getRow(1);
+    var wtRow2 = wtTable.getRow(2);
+    var wtRow3 = wtTable.getRow(3);
+    wtRow1.detach();
+    wtRow2.detach();
+    wtRow3.detach();
+    wtRow3.attach();
+    wtRow2.attach();
+    wtRow1.attach();
+
+    var TDs = wtTable.getRow(1).cells;
+    expect(TDs[0]).toBe($table.find('tbody tr:eq(0) td:eq(0)')[0]);
+    expect(TDs[1]).toBe($table.find('tbody tr:eq(0) td:eq(1)')[0]);
+    expect(TDs[2]).toBe($table.find('tbody tr:eq(0) td:eq(2)')[0]);
+    expect(TDs[3]).toBe($table.find('tbody tr:eq(0) td:eq(3)')[0]);
+
+    TDs = wtTable.getRow(3).cells;
+    expect(TDs[0]).toBe($table.find('tbody tr:eq(2) td:eq(0)')[0]);
+    expect(TDs[1]).toBe($table.find('tbody tr:eq(2) td:eq(1)')[0]);
+    expect(TDs[2]).toBe($table.find('tbody tr:eq(2) td:eq(2)')[0]);
+    expect(TDs[3]).toBe($table.find('tbody tr:eq(2) td:eq(3)')[0]);
   });
 });

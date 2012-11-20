@@ -77,6 +77,22 @@ WalkontableRow.prototype.detach = function () {
 };
 
 WalkontableRow.prototype.attach = function () {
+  for (var i = 0, ilen = this.cells.length; i < ilen; i++) {
+    if (this.cells[i].rowSpanOffset) {
+      if (this.cells[i].parentNode.parentNode) {
+        this.cells[i].rowSpan = this.cells[i].rowSpan + 1;
+        this.cells[i].rowSpanOffset--;
+      }
+    }
+    if (this.cells[i].rowParentOffset) {
+      if (this.cells[i].parentNode.parentNode) {
+        this.cells[i].rowParentOffset--;
+      }
+      var futureNeighbor = this.cells[i + 1];
+      this.TR.insertBefore(this.cells[i], futureNeighbor);
+    }
+  }
+
   var nextRow = this.nextRow();
   while (nextRow) {
     if (nextRow.TSECTION === this.TSECTION && nextRow.TR.parentNode !== null) {
@@ -89,17 +105,6 @@ WalkontableRow.prototype.attach = function () {
   }
   if (!nextRow) {
     this.TSECTION.appendChild(this.TR);
-  }
-  for (var i = 0, ilen = this.cells.length; i < ilen; i++) {
-    if (this.cells[i].rowSpanOffset) {
-      this.cells[i].rowSpan = this.cells[i].rowSpan + 1;
-      this.cells[i].rowSpanOffset--;
-      if (this.cells[i].rowParentOffset) {
-        var futureNeighbor = this.cells[i + 1];
-        this.TR.insertBefore(this.cells[i], futureNeighbor);
-        this.cells[i].rowParentOffset--;
-      }
-    }
   }
 };
 
