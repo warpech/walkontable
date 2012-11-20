@@ -54,7 +54,7 @@ WalkontableColumn.prototype.detach = function () {
       }
       this.cells[i].colSpanOffset++;
     }
-    else if(!this.wtDom.isFragment(this.cells[i])) {
+    else if (!this.wtDom.isFragment(this.cells[i])) {
       this.cells[i].parentNode.removeChild(this.cells[i]);
     }
   }
@@ -66,7 +66,7 @@ WalkontableColumn.prototype.attach = function () {
       this.cells[i].colSpan = this.cells[i].colSpan + 1;
       this.cells[i].colSpanOffset--;
     }
-    else {
+    else if (this.wtDom.isFragment(this.cells[i])) {
       this.wtTable.getRow(i).TR.insertBefore(this.cells[i], this.wtTable.getColumn(this.index + 1).cells[i]);
     }
   }
