@@ -67,7 +67,17 @@ WalkontableColumn.prototype.attach = function () {
       this.cells[i].colSpanOffset--;
     }
     else if (this.wtDom.isFragment(this.cells[i])) {
-      this.wtTable.getRow(i).TR.insertBefore(this.cells[i], this.wtTable.getColumn(this.index + 1).cells[i]);
+      var nextColumn = this.nextColumn();
+      if (nextColumn) {
+        this.wtTable.getRow(i).TR.insertBefore(this.cells[i], nextColumn.cells[i]);
+      }
+      else {
+        this.wtTable.getRow(i).TR.appendChild(this.cells[i]);
+      }
     }
   }
+};
+
+WalkontableColumn.prototype.nextColumn = function () {
+  return this.wtTable.getColumn(this.index + 1);
 };
