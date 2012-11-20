@@ -55,6 +55,7 @@ WalkontableColumn.prototype.detach = function () {
       this.cells[i].colSpanOffset++;
     }
     else if (!this.wtDom.isFragment(this.cells[i])) {
+      this.cells[i].originalParentNode = this.cells[i].parentNode;
       this.cells[i].parentNode.removeChild(this.cells[i]);
     }
   }
@@ -62,17 +63,25 @@ WalkontableColumn.prototype.detach = function () {
 
 WalkontableColumn.prototype.attach = function () {
   for (var i = 0, ilen = this.cells.length; i < ilen; i++) {
-    if (this.cells[i].colSpanOffset) {
-      this.cells[i].colSpan = this.cells[i].colSpan + 1;
-      this.cells[i].colSpanOffset--;
-    }
-    else if (this.wtDom.isFragment(this.cells[i])) {
+    if (this.wtDom.isFragment(this.cells[i])) {
       var nextColumn = this.nextColumn();
-      if (nextColumn) {
-        this.wtTable.getRow(i).TR.insertBefore(this.cells[i], nextColumn.cells[i]);
+      while (nextColumn) {
+        if (nextColumn.cells[i].parentNode === this.cells[i].originalParentNode) { // have same parent
+          this.wtTable.getRow(i).TR.insertBefore(this.cells[i], nextColumn.cells[i]);
+          break;
+        }
+        else {
+          nextColumn = nextColumn.nextColumn();
+        }
       }
-      else {
+      if (!nextColumn) {
         this.wtTable.getRow(i).TR.appendChild(this.cells[i]);
+      }
+    }
+    else {
+      if (this.cells[i].colSpanOffset) {
+        this.cells[i].colSpan = this.cells[i].colSpan + 1;
+        this.cells[i].colSpanOffset--;
       }
     }
   }

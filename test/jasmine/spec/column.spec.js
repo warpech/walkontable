@@ -122,4 +122,21 @@ describe('WalkontableColumn', function () {
     expect(TDs[2]).toBe($table.find('tr:eq(2) td:eq(3)')[0]);
     expect(TDs[3]).toBe($table.find('tr:eq(3) td:eq(2)')[0]);
   });
+
+  it("detach 2 columns with colSpan, then attach 1 column", function () {
+    //$table.clone().appendTo('body');
+
+    var wtTable = new WalkontableTable($table[0]);
+    var wtColumn0 = wtTable.getColumn(0);
+    var wtColumn1 = wtTable.getColumn(1);
+    wtColumn0.detach();
+    wtColumn1.detach();
+    wtColumn1.attach();
+
+    var TDs = wtColumn1.cells;
+    expect(TDs[0]).toBe($table.find('tr:eq(0) td:eq(0)')[0]);
+    expect(TDs[1]).toBe($table.find('tr:eq(1) td:eq(0)')[0]);
+    expect(TDs[2]).toBe($table.find('tr:eq(2) td:eq(0)')[0]);
+    expect(TDs[3]).toBe($table.find('tr:eq(3) td:eq(0)')[0]);
+  });
 });
