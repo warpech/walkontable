@@ -1,4 +1,5 @@
 function WalkontableColumn(wtTable, index) {
+  this.wtDom = new WalkontableDom();
   this.wtCell = new WalkontableCell();
   this.wtTable = wtTable;
   this.index = index;
@@ -53,7 +54,7 @@ WalkontableColumn.prototype.detach = function () {
       }
       this.cells[i].colSpanOffset++;
     }
-    else {
+    else if(!this.wtDom.isFragment(this.cells[i])) {
       this.cells[i].parentNode.removeChild(this.cells[i]);
     }
   }

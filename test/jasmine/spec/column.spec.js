@@ -24,7 +24,7 @@ describe('WalkontableColumn', function () {
    * detach
    */
 
-  it("detach column with rowSpan", function () {
+  it("detach column with colSpan", function () {
     //$table.clone().appendTo('body');
 
     var wtTable = new WalkontableTable($table[0]);
@@ -35,6 +35,20 @@ describe('WalkontableColumn', function () {
     expect(TDs[0]).toBe($table.find('tr:eq(0) td:eq(1)')[0]);
     expect(TDs[1]).toBe($table.find('tr:eq(0) td:eq(1)')[0]);
     expect(TDs[2]).toBe($table.find('tr:eq(2) td:eq(1)')[0]);
+    expect(TDs[3]).toBe($table.find('tr:eq(3) td:eq(1)')[0]);
+  });
+
+  it("detach column with rowSpan", function () {
+    //$table.clone().appendTo('body');
+
+    var wtTable = new WalkontableTable($table[0]);
+    var wtColumn = wtTable.getColumn(2);
+    wtColumn.detach();
+
+    var TDs = wtTable.getColumn(3).cells;
+    expect(TDs[0]).toBe($table.find('tr:eq(0) td:eq(2)')[0]);
+    expect(TDs[1]).toBe($table.find('tr:eq(1) td:eq(1)')[0]);
+    expect(TDs[2]).toBe($table.find('tr:eq(2) td:eq(2)')[0]);
     expect(TDs[3]).toBe($table.find('tr:eq(3) td:eq(1)')[0]);
   });
 

@@ -7,16 +7,29 @@ function init() {
   console.log("column count", wtTable.columns.length);
 
 
-  function createButton(label, fn) {
+  function createButton(label, fn, newLine) {
+    if(newLine) {
+      var BR = document.createElement('BR');
+      document.body.insertBefore(BR, document.getElementsByTagName('TABLE')[0]);
+    }
+
     var BUTTON = document.createElement('BUTTON');
     BUTTON.innerHTML = label;
     wt.wtDom.addEvent(BUTTON, 'click', fn);
     document.body.insertBefore(BUTTON, document.getElementsByTagName('TABLE')[0]);
   }
 
+  /**
+   * Merge
+   */
+
   createButton('Merge selected', function () {
     wt.wtMerge.mergeSelection(wt.areaSelection);
   });
+
+  /**
+   * Detach rows
+   */
 
   var detached = [];
 
@@ -27,7 +40,7 @@ function init() {
       row.detach();
       detached.push(index);
     }
-  });
+  }, true);
 
   createButton('Attach top', function () {
     if (detached.length > 0) {
@@ -70,6 +83,28 @@ function init() {
     if (detachedBody.length > 0) {
       var index = detachedBody.pop();
       wtTable.getRow(index + 1).attach();
+    }
+  });
+
+  /**
+   * Detach columns
+   */
+
+  var detachedLeft = [];
+
+  createButton('Detach left', function () {
+    var index = detachedLeft.length;
+    var row = wtTable.getColumn(index);
+    if (row) {
+      row.detach();
+      detachedLeft.push(index);
+    }
+  }, true);
+
+  createButton('Attach left', function () {
+    if (detachedLeft.length > 0) {
+      var index = detachedLeft.pop();
+      wtTable.getColumn(index).attach();
     }
   });
 }
