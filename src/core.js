@@ -17,7 +17,6 @@ function Walkontable(settings) {
     that.wtDom.addClass(TD, 'current');
   }, function (coords) {
     var TD = that.wtTable.getCell(coords);
-    console.log('remove class', TD);
     that.wtDom.removeClass(TD, 'current');
   });
 
