@@ -3,11 +3,16 @@ function WalkontableScroll(instance) {
 
   //reference to instance
   this.instance = instance;
+  this.$table = $(this.instance.settings.table);
 
+  //create elements
   var holder = document.createElement('DIV');
+  holder.style.position = 'relative';
   holder.className = 'wtHolder';
 
   this.slider = document.createElement('DIV');
+  this.slider.style.position = 'absolute';
+  this.slider.style.top = '0';
   this.slider.className = 'dragdealer';
 
   this.handle = document.createElement('DIV');
@@ -15,8 +20,8 @@ function WalkontableScroll(instance) {
 
   this.instance.settings.table.parentNode.insertBefore(holder, this.instance.settings.table);
   this.slider.appendChild(this.handle);
-  holder.appendChild(this.slider);
   holder.appendChild(this.instance.settings.table);
+  holder.appendChild(this.slider);
 
   this.dragdealer = new Dragdealer(this.slider, {
     vertical: true,
@@ -38,7 +43,12 @@ WalkontableScroll.prototype.refresh = function () {
   if (handleHeight < 10) {
     handleHeight = 30;
   }
+
   this.handle.style.height = handleHeight + 'px';
+  this.slider.style.top = this.$table.position().top + 'px';
+  this.slider.style.left = this.$table.width() + 'px';
+  this.slider.style.height = this.$table.height() + 'px';
+
   this.dragdealer.setWrapperOffset();
   //this.dragdealer.setBoundsPadding();
   this.dragdealer.setBounds();
