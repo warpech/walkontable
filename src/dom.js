@@ -1,57 +1,6 @@
 function WalkontableDom() {
 }
 
-//returns true is element is detached from DOM
-//in IE7-8 detached element has parent HTMLDocument with nodeType 11
-WalkontableDom.prototype.isFragment = function (node) {
-  return (node.parentNode === null || node.parentNode.nodeType === 11);
-};
-
-//goes up the DOM tree (including given element) until it finds an element that matches the nodeName
-WalkontableDom.prototype.closest = function (elem, nodeNames) {
-  while (elem != null) {
-    if (elem.nodeType === 1 && nodeNames.indexOf(elem.nodeName) > -1) {
-      return elem;
-    }
-    elem = elem.parentNode;
-  }
-  return null;
-};
-
-//goes up the DOM tree until it finds an element that matches the nodeName
-WalkontableDom.prototype.closestParent = function (elem, nodeNames) {
-  return this.closest(elem.parentNode, nodeNames);
-};
-
-WalkontableDom.prototype.children = function (elem) {
-  var out = [];
-  var nodes = elem.childNodes;
-  for (var i = 0, ilen = nodes.length; i < ilen; i++) {
-    if (nodes[i].nodeType === 1) {
-      out.push(nodes[i]);
-    }
-  }
-  return out;
-};
-
-WalkontableDom.prototype.prevSiblings = function (elem) {
-  var out = [];
-  while ((elem = elem.previousSibling) != null) {
-    if (elem.nodeType === 1) {
-      out.push(elem);
-    }
-  }
-  return out;
-};
-
-//http://jsperf.com/nodelist-to-array/11
-WalkontableDom.prototype.nodeListToArray = function (nodeList) {
-  var l = []; // Will hold the array of Node's
-  for (var i = 0, ll = nodeList.length; i != ll; l.push(nodeList[i++])) {
-  }
-  return l;
-};
-
 //http://snipplr.com/view/3561/addclass-removeclass-hasclass/
 WalkontableDom.prototype.hasClass = function (ele, cls) {
   return ele.className.match(new RegExp('(\\s|^)' + cls + '(\\s|$)'));
@@ -110,3 +59,15 @@ WalkontableDom.prototype.addEvent = (function () {
     };
   }
 })();
+
+WalkontableDom.prototype.removeTextNodes = function (elem, parent) {
+  if (elem.nodeType === 3) {
+    parent.removeChild(elem); //bye text nodes!
+  }
+  else if (['TABLE', 'THEAD', 'TBODY', 'TFOOT', 'TR'].indexOf(elem.nodeName) > -1) {
+    var childs = elem.childNodes;
+    for (var i = childs.length - 1; i >= 0; i--) {
+      this.removeTextNodes(childs[i], elem);
+    }
+  }
+};

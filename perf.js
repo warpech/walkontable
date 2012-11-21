@@ -7,6 +7,7 @@ function init() {
     startRow: startRow,
     displayRows: displayRows
   });
+  wt.draw();
 
   function createButton(label, fn, newLine) {
     if (newLine) {
