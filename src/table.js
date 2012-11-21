@@ -35,3 +35,12 @@ WalkontableTable.prototype.draw = function () {
   }
   return this;
 };
+
+WalkontableTable.prototype.getCell = function (coords) {
+  if (coords[0] >= this.instance.settings.startRow && coords[0] <= this.instance.settings.startRow + this.instance.settings.displayRows) {
+    if (coords[1] >= 0 && coords[1] <= this.instance.displayColumns) {
+      return this.TBODY.childNodes[coords[0] - this.instance.settings.startRow].childNodes[coords[1]];
+    }
+  }
+  return null;
+};

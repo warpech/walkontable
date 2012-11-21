@@ -9,21 +9,22 @@ function WalkontableEvent(instance) {
   $(this.instance.settings.table).on('mousedown', function (event) {
     var TD = that.wtDom.closest(event.target, ['TD', 'TH']);
     if (TD) { //if not table border
-      /*if (that.instance.areaSelection.isSelected(TD) > -1) {
-       that.instance.areaSelection.remove(TD);
-       }
-       else {
-       that.instance.areaSelection.add(TD);
-       }
+      var coords = [
+        that.wtDom.prevSiblings(TD.parentNode).length + that.instance.settings.startRow,
+        TD.cellIndex
+      ];
 
-       that.instance.currentSelection.clear();
-       that.instance.currentSelection.add(TD);*/
+      if (that.instance.areaSelection.isSelected(coords, TD) > -1) {
+        that.instance.areaSelection.remove(coords, TD);
+      }
+      else {
+        that.instance.areaSelection.add(coords, TD);
+      }
+
+      that.instance.currentSelection.clear();
+      that.instance.currentSelection.add(coords, TD);
 
       if (that.instance.settings.onCurrentChange) {
-        var coords = [
-          that.wtDom.prevSiblings(TD.parentNode).length + that.instance.settings.startRow,
-          TD.cellIndex
-        ];
         that.instance.settings.onCurrentChange(coords);
       }
     }

@@ -2,23 +2,23 @@ function WalkontableSelection(onAdd, onRemove) {
   this.selected = [];
   this.onAdd = onAdd; //optional
   this.onRemove = onRemove; //optional
-  this.wtCell = new WalkontableCell();
-  this.wtDom = new WalkontableDom();
+  //this.wtCell = new WalkontableCell();
+  //this.wtDom = new WalkontableDom();
 }
 
-WalkontableSelection.prototype.add = function (TD) {
-  this.selected.push(TD);
+WalkontableSelection.prototype.add = function (coords) {
+  this.selected.push(coords);
   if (this.onAdd) {
-    this.onAdd(TD);
+    this.onAdd(coords);
   }
 };
 
-WalkontableSelection.prototype.remove = function (TD) {
-  var index = this.isSelected(TD);
+WalkontableSelection.prototype.remove = function (coords) {
+  var index = this.isSelected(coords);
   if (index > -1) {
     this.selected.splice(index, 1);
     if (this.onRemove) {
-      this.onRemove(TD);
+      this.onRemove(coords);
     }
   }
 };
@@ -29,15 +29,20 @@ WalkontableSelection.prototype.clear = function () {
   }
 };
 
-WalkontableSelection.prototype.isSelected = function (TD) {
-  return this.selected.indexOf(TD);
+WalkontableSelection.prototype.isSelected = function (coords) {
+  for (var i = 0, ilen = this.selected.length; i < ilen; i++) {
+    if(this.selected[i][0] === coords[0] && this.selected[i][1] === coords[1]) {
+      return i;
+    }
+  }
+  return -1;
 };
 
 WalkontableSelection.prototype.getSelected = function () {
   return this.selected;
 };
 
-WalkontableSelection.prototype.rectangleSize = function () {
+/*WalkontableSelection.prototype.rectangleSize = function () {
   var that = this
     , rowLengths = {}
     , rowBegins = {}
@@ -129,4 +134,4 @@ WalkontableSelection.prototype.rectangleSize = function () {
   }
 
   return {width: lastRow, height: height};
-};
+};*/
