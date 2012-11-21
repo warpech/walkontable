@@ -10,15 +10,17 @@ function init() {
   wt.draw();
 
   function createButton(label, fn, newLine) {
+    var TABLE = document.getElementsByTagName('TABLE')[0];
+
     if (newLine) {
       var BR = document.createElement('BR');
-      document.body.insertBefore(BR, document.getElementsByTagName('TABLE')[0]);
+      TABLE.parentNode.insertBefore(BR, TABLE);
     }
 
     var BUTTON = document.createElement('BUTTON');
     BUTTON.innerHTML = label;
     $(BUTTON).on('mousedown', fn);
-    document.body.insertBefore(BUTTON, document.getElementsByTagName('TABLE')[0]);
+    TABLE.parentNode.insertBefore(BUTTON, TABLE);
   }
 
   /**

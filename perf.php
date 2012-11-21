@@ -10,9 +10,11 @@
     <script src="src/core.js"></script>
     <script src="src/polyfill.js"></script>
     <script src="src/table.js"></script>
+    <script src="src/scroll.js"></script>
     <script src="src/event.js"></script>
     <script src="src/selection.js"></script>
     <script src="src/dom.js"></script>
+    <script src="src/3rdparty/dragdealer.js"></script>
 
     <script src="perf.js"></script>
     <link href="css/bootstrap.css" rel="stylesheet">
@@ -21,11 +23,11 @@
   <body>
 
     <h1>Walkontable</h1>
-
+    
     <script>
 <?php
 $arr = array();
-for ($i = 0; $i < 10000; $i++) {
+for ($i = 0; $i < 100000; $i++) {
   $arr[] = array($i, 2, 3, 4, 5, 6, 7);
 }
 echo "var arr = " . json_encode($arr);
@@ -59,7 +61,7 @@ echo "var arr = " . json_encode($arr);
       <li>Supports walking with keyboard, mouse and API</li>
       <li>Supports tabindex</li>
     </ul>
-
+    
     <h2>Technical</h2>
 
     <ul>

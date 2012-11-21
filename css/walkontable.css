@@ -10,3 +10,26 @@ table .selected {
 table .current {
   outline: 2px solid #5292F7;
 }
+
+/**
+ * dragdealer
+ */
+
+.dragdealer {
+  position: relative;
+  width: 9px;
+  height: 300px;
+  background: #F8F8F8;
+  border: 1px solid #EEE;
+}
+
+.dragdealer .handle {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  background: #C5C5C5;
+}
+
+.dragdealer .disabled {
+  background: #898989;
+}

@@ -6,9 +6,11 @@ function Walkontable(settings) {
 
   //bootstrap from settings
   this.wtTable = new WalkontableTable(this);
+  this.wtScroll = new WalkontableScroll(this);
   this.wtEvent = new WalkontableEvent(this);
   this.wtDom = new WalkontableDom();
   this.displayColumns = this.wtTable.THEAD.childNodes[0].childNodes.length;
+  this.drawn = false;
 
   this.currentSelection = new WalkontableSelection(function (coords) {
     var TD = that.wtTable.getCell(coords);
@@ -30,6 +32,8 @@ function Walkontable(settings) {
 
 Walkontable.prototype.draw = function () {
   this.wtTable.draw();
+  this.wtScroll.refresh();
+  this.drawn = true;
   return this;
 };
 
