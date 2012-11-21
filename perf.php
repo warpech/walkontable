@@ -8,6 +8,8 @@
     <script src="src/dom.js"></script>
 
     <script src="perf.js"></script>
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/walkontable.css" rel="stylesheet">
   </head>
   <body>
 
@@ -23,7 +25,7 @@ echo "var arr = " . json_encode($arr);
 ?>
     </script>
 
-    <table border="1">
+    <table class="table table-bordered">
       <thead>
         <tr>
           <th>Description</th>
