@@ -3,8 +3,13 @@
   <head>
     <title>Walkontable</title>
     <meta charset="UTF-8">
+    
+    <!-- required only for events -->
+    <script type="text/javascript" src="test/jasmine/lib/jquery.min.js"></script>
+    
     <script src="src/core.js"></script>
     <script src="src/table.js"></script>
+    <script src="src/event.js"></script>
     <script src="src/dom.js"></script>
 
     <script src="perf.js"></script>

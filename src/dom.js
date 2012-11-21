@@ -1,6 +1,27 @@
 function WalkontableDom() {
 }
 
+//goes up the DOM tree (including given element) until it finds an element that matches the nodeName
+WalkontableDom.prototype.closest = function (elem, nodeNames) {
+  while (elem != null) {
+    if (elem.nodeType === 1 && nodeNames.indexOf(elem.nodeName) > -1) {
+      return elem;
+    }
+    elem = elem.parentNode;
+  }
+  return null;
+};
+
+WalkontableDom.prototype.prevSiblings = function (elem) {
+  var out = [];
+  while ((elem = elem.previousSibling) != null) {
+    if (elem.nodeType === 1) {
+      out.push(elem);
+    }
+  }
+  return out;
+};
+
 //http://snipplr.com/view/3561/addclass-removeclass-hasclass/
 WalkontableDom.prototype.hasClass = function (ele, cls) {
   return ele.className.match(new RegExp('(\\s|^)' + cls + '(\\s|$)'));
@@ -17,48 +38,70 @@ WalkontableDom.prototype.removeClass = function (ele, cls) {
   }
 };
 
-//http://net.tutsplus.com/tutorials/javascript-ajax/javascript-from-null-cross-browser-event-binding/
-WalkontableDom.prototype.addEvent = (function () {
-  var that = this;
-  if (document.addEventListener) {
-    return function (elem, type, cb) {
-      if ((elem && !elem.length) || elem === window) {
-        elem.addEventListener(type, cb, false);
-      }
-      else if (elem && elem.length) {
-        var len = elem.length;
-        for (var i = 0; i < len; i++) {
-          that.addEvent(elem[i], type, cb);
-        }
-      }
-    };
-  }
-  else {
-    return function (elem, type, cb) {
-      if ((elem && !elem.length) || elem === window) {
-        elem.attachEvent('on' + type, function () {
+/*//http://net.tutsplus.com/tutorials/javascript-ajax/javascript-from-null-cross-browser-event-binding/
+ WalkontableDom.prototype.addEvent = (function () {
+ var that = this;
+ if (document.addEventListener) {
+ return function (elem, type, cb) {
+ if ((elem && !elem.length) || elem === window) {
+ elem.addEventListener(type, cb, false);
+ }
+ else if (elem && elem.length) {
+ var len = elem.length;
+ for (var i = 0; i < len; i++) {
+ that.addEvent(elem[i], type, cb);
+ }
+ }
+ };
+ }
+ else {
+ return function (elem, type, cb) {
+ if ((elem && !elem.length) || elem === window) {
+ elem.attachEvent('on' + type, function () {
 
-          //normalize
-          //http://stackoverflow.com/questions/4643249/cross-browser-event-object-normalization
-          var e = window['event'];
-          e.target = e.srcElement;
-          //e.offsetX = e.layerX;
-          //e.offsetY = e.layerY;
-          e.relatedTarget = e.relatedTarget || e.type == 'mouseover' ? e.fromElement : e.toElement;
-          if (e.target.nodeType === 3) e.target = e.target.parentNode; //Safari bug
+ //normalize
+ //http://stackoverflow.com/questions/4643249/cross-browser-event-object-normalization
+ var e = window['event'];
+ e.target = e.srcElement;
+ //e.offsetX = e.layerX;
+ //e.offsetY = e.layerY;
+ e.relatedTarget = e.relatedTarget || e.type == 'mouseover' ? e.fromElement : e.toElement;
+ if (e.target.nodeType === 3) e.target = e.target.parentNode; //Safari bug
 
-          return cb.call(elem, e)
-        });
-      }
-      else if (elem.length) {
-        var len = elem.length;
-        for (var i = 0; i < len; i++) {
-          that.addEvent(elem[i], type, cb);
-        }
-      }
-    };
-  }
-})();
+ return cb.call(elem, e)
+ });
+ }
+ else if (elem.length) {
+ var len = elem.length;
+ for (var i = 0; i < len; i++) {
+ that.addEvent(elem[i], type, cb);
+ }
+ }
+ };
+ }
+ })();
+
+ WalkontableDom.prototype.triggerEvent = function (element, eventName, target) {
+ var event;
+ if (document.createEvent) {
+ event = document.createEvent("MouseEvents");
+ event.initEvent(eventName, true, true);
+ } else {
+ event = document.createEventObject();
+ event.eventType = eventName;
+ }
+
+ event.eventName = eventName;
+ event.target = target;
+
+ console.log("próbujem", event, element, target);
+
+ if (document.createEvent) {
+ target.dispatchEvent(event);
+ } else {
+ target.fireEvent("on" + event.eventType, event);
+ }
+ };*/
 
 WalkontableDom.prototype.removeTextNodes = function (elem, parent) {
   if (elem.nodeType === 3) {

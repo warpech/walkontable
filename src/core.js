@@ -4,6 +4,7 @@ function Walkontable(settings) {
 
   //bootstrap from settings
   this.wtTable = new WalkontableTable(this);
+  this.wtEvent = new WalkontableEvent(this);
   this.displayColumns = this.wtTable.THEAD.childNodes[0].childNodes.length;
 }
 
