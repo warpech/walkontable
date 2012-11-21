@@ -46,8 +46,8 @@ WalkontableScroll.prototype.refresh = function () {
 
   this.handle.style.height = handleHeight + 'px';
   this.slider.style.top = this.$table.position().top + 'px';
-  this.slider.style.left = this.$table.width() + 'px';
-  this.slider.style.height = this.$table.height() + 'px';
+  this.slider.style.left = this.$table.outerWidth() - 1 + 'px'; //1 is sliders border-width
+  this.slider.style.height = this.$table.outerHeight() - 2 + 'px'; //2 is sliders border-width
 
   this.dragdealer.setWrapperOffset();
   //this.dragdealer.setBoundsPadding();
