@@ -3,16 +3,18 @@
 <head>
   <title>Walkontable</title>
   <meta charset="UTF-8">
+
+  <!-- required only for events -->
+  <script type="text/javascript" src="test/jasmine/lib/jquery.min.js"></script>
+
   <script src="src/core.js"></script>
   <script src="src/polyfill.js"></script>
-  <script src="src/selection.js"></script>
-  <script src="src/merge.js"></script>
-  <script src="src/cell.js"></script>
-  <script src="src/dom.js"></script>
-  <script src="src/courtain.js"></script>
   <script src="src/table.js"></script>
-  <script src="src/row.js"></script>
-  <script src="src/column.js"></script>
+  <script src="src/scroll.js"></script>
+  <script src="src/event.js"></script>
+  <script src="src/selection.js"></script>
+  <script src="src/dom.js"></script>
+  <script src="src/3rdparty/dragdealer.js"></script>
 
   <script src="index.js"></script>
   <link href="css/bootstrap.css" rel="stylesheet">
@@ -22,10 +24,10 @@
 
 <h1>Walkontable</h1>
 
-<table class="table table-bordered" style="margin-top: 20px;">
+<table class="table table-bordered">
   <thead>
   <tr>
-    <th colspan="2">Description</th>
+    <th>Description</th>
     <th>2007</th>
     <th>2008</th>
     <th>2009</th>
@@ -35,23 +37,7 @@
   </tr>
   </thead>
   <tbody>
-  <tr>
-    <th rowspan="2">Income</th>
-    <th>Passive</th>
-    <td colspan="3"><em>not measured</em></td>
-    <td>4</td>
-    <td>5</td>
-    <td>6</td>
-  </tr>
-  <tr>
-    <th>Active</th>
-    <td>1</td>
-    <td>2</td>
-    <td>3</td>
-    <td>4</td>
-    <td>5</td>
-    <td>6</td>
-  </tr>
+
   </tbody>
 </table>
 

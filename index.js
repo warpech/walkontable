@@ -1,133 +1,57 @@
 function init() {
-  var wt = new Walkontable(document.getElementsByTagName('TABLE')[0]);
-
-
-  var wtTable = new WalkontableTable(document.getElementsByTagName('table')[0]);
-  console.log("row count", wtTable.rows.length);
-  console.log("column count", wtTable.columns.length);
-
+  var startRow = 0;
+  var displayRows = 10;
 
   function createButton(label, fn, newLine) {
+    var TABLE = document.getElementsByTagName('TABLE')[0];
+
     if (newLine) {
       var BR = document.createElement('BR');
-      document.body.insertBefore(BR, document.getElementsByTagName('TABLE')[0]);
+      TABLE.parentNode.insertBefore(BR, TABLE);
     }
 
     var BUTTON = document.createElement('BUTTON');
     BUTTON.innerHTML = label;
-    wt.wtDom.addEvent(BUTTON, 'click', fn);
-    document.body.insertBefore(BUTTON, document.getElementsByTagName('TABLE')[0]);
+    $(BUTTON).on('mousedown', fn);
+    TABLE.parentNode.insertBefore(BUTTON, TABLE);
   }
 
   /**
-   * Merge
+   * Page up/down
    */
 
-  createButton('Merge selected', function () {
-    wt.wtMerge.mergeSelection(wt.areaSelection);
+  createButton('Page down', function () {
+    startRow += 10;
+    if (startRow >= arr.length - 1 - displayRows) {
+      startRow = arr.length - 1 - displayRows;
+    }
+    wt.update({startRow: startRow}).draw();
+  });
+
+  createButton('Page up', function () {
+    startRow -= 10;
+    if (startRow < 0) {
+      startRow = 0;
+    }
+    wt.update({startRow: startRow}).draw();
   });
 
   /**
-   * Detach rows
+   * Init Walkontable
    */
 
-  var detached = [];
+  var arr = [];
+  for (var i = 0; i < 100000; i++) {
+    arr.push([i, "a", "b", "c", "d", "e", "f"]);
+  }
 
-  createButton('Detach top', function () {
-    var index = detached.length;
-    var row = wtTable.getRow(index);
-    if (row) {
-      row.detach();
-      detached.push(index);
-    }
-  }, true);
-
-  createButton('Attach top', function () {
-    if (detached.length > 0) {
-      var index = detached.pop();
-      wtTable.getRow(index).attach();
-    }
+  var wt = new Walkontable({
+    table: document.getElementsByTagName('TABLE')[0],
+    data: arr,
+    startRow: startRow,
+    displayRows: displayRows
   });
-
-  var detachedBottom = [];
-
-  createButton('Detach bottom', function () {
-    var theadOffset = wtTable.TABLE.childNodes[0].getElementsByTagName('TR').length;
-    var count = wtTable.TABLE.childNodes[1].getElementsByTagName('TR').length;
-    if (count) {
-      var row = wtTable.getRow(theadOffset + count - 1);
-      row.detach();
-      detachedBottom.push(theadOffset + count - 1);
-    }
-  });
-
-  createButton('Attach bottom', function () {
-    if (detachedBottom.length > 0) {
-      var index = detachedBottom.pop();
-      wtTable.getRow(index).attach();
-    }
-  });
-
-  var detachedBody = [];
-
-  createButton('Detach body top', function () {
-    var index = detachedBody.length;
-    var row = wtTable.getRow(index + 1);
-    if (row) {
-      row.detach();
-      detachedBody.push(index);
-    }
-  });
-
-  createButton('Attach body top', function () {
-    if (detachedBody.length > 0) {
-      var index = detachedBody.pop();
-      wtTable.getRow(index + 1).attach();
-    }
-  });
-
-  /**
-   * Detach columns
-   */
-
-  var detachedLeft = [];
-
-  createButton('Detach left', function () {
-    var index = detachedLeft.length;
-    var row = wtTable.getColumn(index);
-    if (row) {
-      row.detach();
-      detachedLeft.push(index);
-    }
-  }, true);
-
-  createButton('Attach left', function () {
-    if (detachedLeft.length > 0) {
-      var index = detachedLeft.pop();
-      wtTable.getColumn(index).attach();
-    }
-  });
-
-  var detachedRight = [];
-
-  var colCount = 8;
-
-  createButton('Detach right', function () {
-    if (colCount > 0) {
-      var column = wtTable.getColumn(colCount - 1);
-      column.detach();
-      detachedRight.push(colCount - 1);
-      colCount--;
-    }
-  });
-
-  createButton('Attach right', function () {
-    if (detachedRight.length > 0) {
-      var index = detachedRight.pop();
-      wtTable.getColumn(index).attach();
-      colCount++;
-    }
-  });
+  wt.draw();
 }
 
 window.onload = init;
