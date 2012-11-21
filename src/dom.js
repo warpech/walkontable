@@ -52,6 +52,22 @@ WalkontableDom.prototype.nodeListToArray = function (nodeList) {
   return l;
 };
 
+//http://snipplr.com/view/3561/addclass-removeclass-hasclass/
+WalkontableDom.prototype.hasClass = function (ele, cls) {
+  return ele.className.match(new RegExp('(\\s|^)' + cls + '(\\s|$)'));
+};
+
+WalkontableDom.prototype.addClass = function (ele, cls) {
+  if (!this.hasClass(ele, cls)) ele.className += " " + cls;
+};
+
+WalkontableDom.prototype.removeClass = function (ele, cls) {
+  if (this.hasClass(ele, cls)) { //is this really needed?
+    var reg = new RegExp('(\\s|^)' + cls + '(\\s|$)');
+    ele.className = ele.className.replace(reg, ' ');
+  }
+};
+
 //http://net.tutsplus.com/tutorials/javascript-ajax/javascript-from-null-cross-browser-event-binding/
 WalkontableDom.prototype.addEvent = (function () {
   var that = this;

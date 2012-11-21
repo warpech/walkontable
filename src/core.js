@@ -8,18 +8,18 @@ function Walkontable(TABLE) {
   this.wtCourtain = new WalkontableCourtain(TABLE);
 
   this.currentSelection = new WalkontableSelection(function (TD) {
-    TD.style.backgroundColor = "blue";
+    that.wtDom.addClass(TD, 'current');
   }, function (TD) {
-    TD.style.backgroundColor = "white";
+    that.wtDom.removeClass(TD, 'current');
   });
 
   this.areaSelection = new WalkontableSelection(function (TD) {
-    TD.style.border = "1px solid red";
+    that.wtDom.addClass(TD, 'selected');
   }, function (TD) {
-    TD.style.border = "1px solid white";
+    that.wtDom.removeClass(TD, 'selected');
   });
 
-  this.wtDom.addEvent(TABLE, 'click', function (event) {
+  this.wtDom.addEvent(TABLE, 'mousedown', function (event) {
     var TD = that.wtDom.closest(event.target, ['TD', 'TH']);
     if (TD) { //if not table border
       if (that.areaSelection.isSelected(TD) > -1) {

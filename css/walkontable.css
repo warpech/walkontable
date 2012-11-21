@@ -1,0 +1,12 @@
+table.table {
+  font-family: Arial, sans-serif;
+  width: auto;
+}
+
+table .selected {
+  background-color: #EEF4FF;
+}
+
+table .current {
+  outline: 2px solid #5292F7;
+}
