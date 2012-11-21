@@ -10,6 +10,9 @@
     <script src="src/cell.js"></script>
     <script src="src/dom.js"></script>
     <script src="src/courtain.js"></script>
+    <script src="src/table.js"></script>
+    <script src="src/row.js"></script>
+    <script src="src/column.js"></script>
 
     <script src="perf.js"></script>
   </head>

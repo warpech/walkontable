@@ -1,70 +1,43 @@
 function init() {
-  var wt = new Walkontable(document.getElementsByTagName('TABLE')[0])
-    , i;
+  var startRow = 0;
+  var displayRows = 10;
+  var wt = new Walkontable({
+    table: document.getElementsByTagName('TABLE')[0],
+    data: arr,
+    startRow: startRow,
+    displayRows: displayRows
+  });
 
-  wt.wtCourtain.courtains.bottom.box = [];
-  for (i = arr.length - 1; i >= 0; i--) {
-    var TR = document.createElement('TR');
-    for (var j = 0; j < 7; j++) {
-      var TD = document.createElement('TD');
-      TD.innerHTML = arr[i][j];
-      TR.appendChild(TD);
+  function createButton(label, fn, newLine) {
+    if (newLine) {
+      var BR = document.createElement('BR');
+      document.body.insertBefore(BR, document.getElementsByTagName('TABLE')[0]);
     }
-    wt.wtCourtain.courtains.bottom.box.push([, TR]);
-  }
 
-  for (i = 0; i < 10; i++) {
-    wt.wtCourtain.attachRow('bottom');
-  }
-
-
-  function createButton(label, fn) {
     var BUTTON = document.createElement('BUTTON');
     BUTTON.innerHTML = label;
     wt.wtDom.addEvent(BUTTON, 'click', fn);
     document.body.insertBefore(BUTTON, document.getElementsByTagName('TABLE')[0]);
   }
 
-  createButton('Merge selected', function () {
-    wt.wtMerge.mergeSelection(wt.areaSelection);
-  });
+  /**
+   * Page up/down
+   */
 
-  createButton('Detach right', function () {
-    wt.wtCourtain.detachColumn('right');
-  });
-
-  createButton('Attach right', function () {
-    wt.wtCourtain.attachColumn('right');
-  });
-
-  createButton('Detach left', function () {
-    wt.wtCourtain.detachColumn('left');
-  });
-
-  createButton('Attach left', function () {
-    wt.wtCourtain.attachColumn('left');
-  });
-
-  createButton('Detach top', function () {
-    wt.wtCourtain.detachRow('top');
-  });
-
-  createButton('Attach top', function () {
-    wt.wtCourtain.attachRow('top');
-  });
-
-  createButton('Detach bottom', function () {
-    for (var i = 0; i < 10; i++) {
-      wt.wtCourtain.detachRow('bottom');
-      wt.wtCourtain.attachRow('top');
+  createButton('Page down', function () {
+    startRow += 10;
+    if (startRow >= arr.length - 1 - displayRows) {
+      startRow = arr.length - 1 - displayRows;
     }
+    wt.update({startRow: startRow}).draw();
   });
 
-  createButton('Attach bottom', function () {
-    for (var i = 0; i < 10; i++) {
-      wt.wtCourtain.detachRow('top');
-      wt.wtCourtain.attachRow('bottom');
+  createButton('Page up', function () {
+    startRow -= 10;
+    if (startRow < 0) {
+      startRow = 0;
     }
+    wt.update({startRow: startRow}).draw();
   });
 }
 
