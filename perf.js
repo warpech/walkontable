@@ -17,7 +17,8 @@ function init() {
 
     var BUTTON = document.createElement('BUTTON');
     BUTTON.innerHTML = label;
-    wt.wtDom.addEvent(BUTTON, 'click', fn);
+    var wtDom = new WalkontableDom();
+    wtDom.addEvent(BUTTON, 'click', fn);
     document.body.insertBefore(BUTTON, document.getElementsByTagName('TABLE')[0]);
   }
 
