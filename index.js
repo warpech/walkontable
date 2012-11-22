@@ -1,5 +1,4 @@
 function init() {
-  var startRow = 0;
   var displayRows = 10;
 
   function createButton(label, fn, newLine) {
@@ -21,19 +20,11 @@ function init() {
    */
 
   createButton('Page down', function () {
-    startRow += 10;
-    if (startRow >= arr.length - 1 - displayRows) {
-      startRow = arr.length - 1 - displayRows;
-    }
-    wt.update({startRow: startRow}).draw();
+    wt.scrollVertical(displayRows).draw();
   });
 
   createButton('Page up', function () {
-    startRow -= 10;
-    if (startRow < 0) {
-      startRow = 0;
-    }
-    wt.update({startRow: startRow}).draw();
+    wt.scrollVertical(-displayRows).draw();
   });
 
   /**
@@ -48,7 +39,7 @@ function init() {
   var wt = new Walkontable({
     table: document.getElementsByTagName('TABLE')[0],
     data: arr,
-    startRow: startRow,
+    startRow: 0,
     displayRows: displayRows
   });
   wt.draw();
