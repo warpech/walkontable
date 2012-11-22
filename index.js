@@ -28,6 +28,18 @@ function init() {
   });
 
   /**
+   * Scroll left/right
+   */
+
+  createButton('Scroll left', function () {
+    wt.scrollHorizontal(-100).draw();
+  });
+
+  createButton('Scroll right', function () {
+    wt.scrollHorizontal(100).draw();
+  });
+
+  /**
    * Init Walkontable
    */
 
@@ -56,7 +68,9 @@ function init() {
     table: document.getElementsByTagName('TABLE')[0],
     data: arr,
     startRow: 0,
-    displayRows: displayRows
+    startColumn: 0,
+    displayRows: displayRows,
+    displayColumns: 5
   });
   wt.draw();
 }
