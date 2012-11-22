@@ -31,9 +31,25 @@ function init() {
    * Init Walkontable
    */
 
+  function randomString(length, chars) {
+    var result = '';
+    for (var i = length; i > 0; --i) result += chars[Math.round(Math.random() * (chars.length - 1))];
+    return result;
+  }
+
   var arr = [];
+  var str = 'abcdefghijklmnopqrstuvwxyz';
+
   for (var i = 0; i < 100000; i++) {
-    arr.push([i, "a", "b", "c", "d", "e", "f"]);
+    arr.push([
+      i,
+      randomString(3 * (1 + Math.sin(i)), str),
+      randomString(3 * (1 + Math.sin(i + 2)), str),
+      randomString(3 * (1 + Math.sin(i + 4)), str),
+      randomString(3 * (1 + Math.sin(i + 6)), str),
+      randomString(3 * (1 + Math.sin(i + 8)), str),
+      randomString(3 * (1 + Math.sin(i + 10)), str)
+    ]);
   }
 
   var wt = new Walkontable({
