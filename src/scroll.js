@@ -1,8 +1,9 @@
-function WalkontableScroll(instance) {
+function WalkontableScroll(instance, type) {
   var that = this;
 
   //reference to instance
   this.instance = instance;
+  this.type = type;
   this.$table = $(this.instance.settings.table);
 
   //create elements
@@ -13,6 +14,7 @@ function WalkontableScroll(instance) {
   this.slider = document.createElement('DIV');
   this.slider.style.position = 'absolute';
   this.slider.style.top = '0';
+  this.slider.style.left = '0';
   this.slider.className = 'dragdealer';
 
   this.handle = document.createElement('DIV');
@@ -24,13 +26,18 @@ function WalkontableScroll(instance) {
   holder.appendChild(this.slider);
 
   this.dragdealer = new Dragdealer(this.slider, {
-    vertical: true,
-    horizontal: false,
+    vertical: (type === 'vertical'),
+    horizontal: (type === 'horizontal'),
     speed: 100,
     yPrecision: 100,
     animationCallback: function (x, y) {
       if (that.instance.drawn) {
-        that.instance.update({startRow: Math.round((that.instance.settings.data.length - that.instance.settings.displayRows) * y)});
+        if (that.type === 'vertical') {
+          that.instance.update({startRow: Math.round((that.instance.settings.data.length - that.instance.settings.displayRows) * y)});
+        }
+        else if (that.type === 'horizontal') {
+          that.instance.update({startColumn: Math.round((that.instance.settings.data[0].length - that.instance.settings.displayColumns) * x)});
+        }
         that.instance.draw();
       }
     }
@@ -38,16 +45,31 @@ function WalkontableScroll(instance) {
 }
 
 WalkontableScroll.prototype.refresh = function () {
-  var ratio = this.instance.settings.displayRows / this.instance.settings.data.length;
-  var handleHeight = Math.round($(this.slider).height() * ratio);
-  if (handleHeight < 10) {
-    handleHeight = 30;
-  }
+  var ratio, handleSize;
+  if (this.type === 'vertical') {
+    this.slider.style.top = this.$table.position().top + 'px';
+    this.slider.style.left = this.$table.outerWidth() - 1 + 'px'; //1 is sliders border-width
+    this.slider.style.height = this.$table.outerHeight() - 2 + 'px'; //2 is sliders border-width
 
-  this.handle.style.height = handleHeight + 'px';
-  this.slider.style.top = this.$table.position().top + 'px';
-  this.slider.style.left = this.$table.outerWidth() - 1 + 'px'; //1 is sliders border-width
-  this.slider.style.height = this.$table.outerHeight() - 2 + 'px'; //2 is sliders border-width
+    ratio = this.instance.settings.displayRows / this.instance.settings.data.length;
+    handleSize = Math.round($(this.slider).height() * ratio);
+    if (handleSize < 10) {
+      handleSize = 30;
+    }
+    this.handle.style.height = handleSize + 'px';
+  }
+  else if (this.type === 'horizontal') {
+    this.slider.style.left = this.$table.position().left + 'px';
+    this.slider.style.top = this.$table.outerHeight() - 1 + 'px'; //1 is sliders border-width
+    this.slider.style.width = this.$table.outerWidth() - 2 + 'px'; //2 is sliders border-width
+
+    ratio = this.instance.settings.displayColumns / this.instance.settings.data[0].length;
+    handleSize = Math.round($(this.slider).width() * ratio);
+    if (handleSize < 10) {
+      handleSize = 30;
+    }
+    this.handle.style.width = handleSize + 'px';
+  }
 
   this.dragdealer.setWrapperOffset();
   //this.dragdealer.setBoundsPadding();

@@ -6,7 +6,8 @@ function Walkontable(settings) {
 
   //bootstrap from settings
   this.wtTable = new WalkontableTable(this);
-  this.wtScroll = new WalkontableScroll(this);
+  this.wtScrollV = new WalkontableScroll(this, 'vertical');
+  this.wtScrollH = new WalkontableScroll(this, 'horizontal');
   this.wtWheel = new WalkontableWheel(this);
   this.wtEvent = new WalkontableEvent(this);
   this.wtDom = new WalkontableDom();
@@ -41,7 +42,8 @@ function Walkontable(settings) {
 
 Walkontable.prototype.draw = function () {
   this.wtTable.draw();
-  this.wtScroll.refresh();
+  this.wtScrollV.refresh();
+  this.wtScrollH.refresh();
   this.drawn = true;
   return this;
 };
