@@ -24,6 +24,7 @@ describe('WalkontableEvent', function () {
       table: $table[0],
       data: data,
       startRow: 10,
+      startColumn: 2,
       displayRows: 10,
       displayColumns: 2,
       onCurrentChange: function (coords) {
@@ -35,6 +36,6 @@ describe('WalkontableEvent', function () {
     var $td = $table.find('tbody tr:first td:first');
     $td.trigger('mousedown');
 
-    expect(clicked).toEqual([10,0]);
+    expect(clicked).toEqual([10, 2]);
   });
 });

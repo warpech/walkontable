@@ -1,7 +1,7 @@
 /**
  * walkontable 0.1
  * 
- * Date: Mon Nov 26 2012 13:59:44 GMT+0100 (Central European Standard Time)
+ * Date: Mon Nov 26 2012 14:49:04 GMT+0100 (Central European Standard Time)
 */
 
 function Walkontable(settings) {
@@ -254,10 +254,7 @@ function WalkontableEvent(instance) {
   $(this.instance.settings.table).on('mousedown', function (event) {
     var TD = that.wtDom.closest(event.target, ['TD', 'TH']);
     if (TD) { //if not table border
-      var coords = [
-        that.wtDom.prevSiblings(TD.parentNode).length + that.instance.getSetting('startRow'),
-        TD.cellIndex
-      ];
+      var coords = that.instance.wtTable.getCoords(TD);
 
       if (that.instance.areaSelection.isSelected(coords, TD) > -1) {
         that.instance.areaSelection.remove(coords, TD);
@@ -573,12 +570,24 @@ WalkontableTable.prototype.draw = function () {
 };
 
 WalkontableTable.prototype.getCell = function (coords) {
-  if (coords[0] >= this.instance.settings.startRow && coords[0] <= this.instance.settings.startRow + this.instance.settings.displayRows) {
-    if (coords[1] >= 0 && coords[1] <= this.instance.settings.displayColumns) {
-      return this.TBODY.childNodes[coords[0] - this.instance.settings.startRow].childNodes[coords[1]];
+  var startRow = this.instance.getSetting('startRow')
+    , startColumn = this.instance.getSetting('startColumn')
+    , displayRows = this.instance.getSetting('displayRows')
+    , displayColumns = this.instance.getSetting('displayColumns');
+
+  if (coords[0] >= startRow && coords[0] <= startRow + displayRows) {
+    if (coords[1] >= startColumn && coords[1] <= startColumn + displayColumns) {
+      return this.TBODY.childNodes[coords[0] - startRow].childNodes[coords[1] - startColumn];
     }
   }
   return null;
+};
+
+WalkontableTable.prototype.getCoords = function (TD) {
+  return [
+    this.wtDom.prevSiblings(TD.parentNode).length + this.instance.getSetting('startRow'),
+    TD.cellIndex + this.instance.getSetting('startColumn')
+  ];
 };
 function WalkontableWheel(instance) {
   var that = this;

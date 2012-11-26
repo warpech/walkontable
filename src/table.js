@@ -61,10 +61,22 @@ WalkontableTable.prototype.draw = function () {
 };
 
 WalkontableTable.prototype.getCell = function (coords) {
-  if (coords[0] >= this.instance.settings.startRow && coords[0] <= this.instance.settings.startRow + this.instance.settings.displayRows) {
-    if (coords[1] >= 0 && coords[1] <= this.instance.settings.displayColumns) {
-      return this.TBODY.childNodes[coords[0] - this.instance.settings.startRow].childNodes[coords[1]];
+  var startRow = this.instance.getSetting('startRow')
+    , startColumn = this.instance.getSetting('startColumn')
+    , displayRows = this.instance.getSetting('displayRows')
+    , displayColumns = this.instance.getSetting('displayColumns');
+
+  if (coords[0] >= startRow && coords[0] <= startRow + displayRows) {
+    if (coords[1] >= startColumn && coords[1] <= startColumn + displayColumns) {
+      return this.TBODY.childNodes[coords[0] - startRow].childNodes[coords[1] - startColumn];
     }
   }
   return null;
+};
+
+WalkontableTable.prototype.getCoords = function (TD) {
+  return [
+    this.wtDom.prevSiblings(TD.parentNode).length + this.instance.getSetting('startRow'),
+    TD.cellIndex + this.instance.getSetting('startColumn')
+  ];
 };
