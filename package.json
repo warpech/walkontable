@@ -1,0 +1,6 @@
+{
+  "name": "walkontable",
+  "description": "Table view engine that will enable virtual rendering in HTML/JavaScript",
+  "author": "Marcin Warpechowski <marcin@nextgen.pl>",
+  "version": "0.1"
+}
