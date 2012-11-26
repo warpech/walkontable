@@ -23,7 +23,8 @@ describe('Walkontable', function () {
       table: $table[0],
       data: data,
       startRow: 0,
-      displayRows: 10
+      displayRows: 10,
+      displayColumns: 2
     });
     wt.draw();
     var TDs = $table.find('tbody tr:first td');
@@ -36,7 +37,8 @@ describe('Walkontable', function () {
       table: $table[0],
       data: data,
       startRow: 10,
-      displayRows: 10
+      displayRows: 10,
+      displayColumns: 2
     });
     wt.draw();
     var TDs = $table.find('tbody tr:first td');
@@ -49,7 +51,8 @@ describe('Walkontable', function () {
       table: $table[0],
       data: data,
       startRow: 0,
-      displayRows: 10
+      displayRows: 10,
+      displayColumns: 2
     });
     wt.update({startRow: 10});
     wt.draw();

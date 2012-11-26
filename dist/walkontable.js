@@ -1,14 +1,50 @@
 /**
  * walkontable 0.1
  * 
- * Date: Mon Nov 26 2012 13:09:35 GMT+0100 (Central European Standard Time)
+ * Date: Mon Nov 26 2012 13:59:44 GMT+0100 (Central European Standard Time)
 */
 
 function Walkontable(settings) {
   var that = this;
 
+  //default settings
+  var defaults = {
+    table: void 0,
+    data: void 0,
+    startRow: 0,
+    startColumn: 0,
+    totalRows: function () {
+      return that.settings.data.length;
+    },
+    totalColumns: function () {
+      return that.settings.data[0].length;
+    },
+    displayRows: function () {
+      return that.getSetting('totalRows'); //display all rows by default
+    },
+    displayColumns: function () {
+      if (that.wtTable.THEAD.childNodes[0].childNodes.length) {
+        return that.wtTable.THEAD.childNodes[0].childNodes.length;
+      }
+      else {
+        return that.getSetting('totalColumns'); //display all columns by default
+      }
+    },
+    onCurrentChange: void 0
+  };
+
   //reference to settings
-  this.settings = settings;
+  this.settings = {};
+  for (var i in defaults) {
+    if (defaults.hasOwnProperty(i)) {
+      if (settings[i] !== void 0) {
+        this.settings[i] = settings[i];
+      }
+      else {
+        this.settings[i] = defaults[i];
+      }
+    }
+  }
 
   //bootstrap from settings
   this.wtTable = new WalkontableTable(this);
@@ -17,10 +53,6 @@ function Walkontable(settings) {
   this.wtWheel = new WalkontableWheel(this);
   this.wtEvent = new WalkontableEvent(this);
   this.wtDom = new WalkontableDom();
-  if (this.settings.displayColumns === void 0) {
-    this.settings.displayColumns = this.wtTable.THEAD.childNodes[0].childNodes.length;
-    this.settings.columnHeaders = this.wtTable.THEAD.childNodes[0].childNodes.length;
-  }
   if (this.settings.columnHeaders === void 0) {
     this.settings.columnHeaders = [];
     for (var c = 0, clen = this.wtTable.THEAD.childNodes[0].childNodes.length; c < clen; c++) {
@@ -85,6 +117,15 @@ Walkontable.prototype.scrollHorizontal = function (delta) {
     this.settings.startColumn = max;
   }
   return this;
+};
+
+Walkontable.prototype.getSetting = function (key) {
+  if (typeof this.settings[key] === 'function') {
+    return this.settings[key]();
+  }
+  else {
+    return this.settings[key];
+  }
 };
 function WalkontableDom() {
 }
@@ -214,7 +255,7 @@ function WalkontableEvent(instance) {
     var TD = that.wtDom.closest(event.target, ['TD', 'TH']);
     if (TD) { //if not table border
       var coords = [
-        that.wtDom.prevSiblings(TD.parentNode).length + that.instance.settings.startRow,
+        that.wtDom.prevSiblings(TD.parentNode).length + that.instance.getSetting('startRow'),
         TD.cellIndex
       ];
 
@@ -484,9 +525,12 @@ function WalkontableTable(instance) {
 }
 
 WalkontableTable.prototype.adjustAvailableNodes = function () {
-  while (this.availableTRs < this.instance.settings.displayRows) {
+  var displayRows = this.instance.getSetting('displayRows')
+    , displayColumns = this.instance.getSetting('displayColumns');
+
+  while (this.availableTRs < displayRows) {
     var TR = document.createElement('TR');
-    for (var c = 0; c < this.instance.settings.displayColumns; c++) {
+    for (var c = 0; c < displayColumns; c++) {
       var TD = document.createElement('TD');
       TR.appendChild(TD);
     }
@@ -497,7 +541,7 @@ WalkontableTable.prototype.adjustAvailableNodes = function () {
   var TRs = this.TABLE.getElementsByTagName('TR');
 
   for (var r = 0, rlen = TRs.length; r < rlen; r++) {
-    while (TRs[r].childNodes.length > this.instance.settings.displayColumns) {
+    while (TRs[r].childNodes.length > displayColumns) {
       TRs[r].removeChild(TRs[r].lastChild);
     }
   }
@@ -505,20 +549,24 @@ WalkontableTable.prototype.adjustAvailableNodes = function () {
 
 WalkontableTable.prototype.draw = function () {
   var r
-    , c;
+    , c
+    , startRow = this.instance.getSetting('startRow')
+    , startColumn = this.instance.getSetting('startColumn')
+    , displayRows = this.instance.getSetting('displayRows')
+    , displayColumns = this.instance.getSetting('displayColumns');
   this.adjustAvailableNodes();
 
   //draw THEAD
-  for (c = 0; c < this.instance.settings.displayColumns; c++) {
-    this.THEAD.childNodes[0].childNodes[c].innerHTML = this.instance.settings.columnHeaders[this.instance.settings.startColumn + c];
+  for (c = 0; c < displayColumns; c++) {
+    this.THEAD.childNodes[0].childNodes[c].innerHTML = this.instance.settings.columnHeaders[startColumn + c];
   }
 
   //draw TBODY
-  for (r = 0; r < this.instance.settings.displayRows; r++) {
+  for (r = 0; r < displayRows; r++) {
     var TR = this.TBODY.childNodes[r];
-    for (c = 0; c < this.instance.settings.displayColumns; c++) {
+    for (c = 0; c < displayColumns; c++) {
       var TD = TR.childNodes[c];
-      TD.innerHTML = this.instance.settings.data[this.instance.settings.startRow + r][this.instance.settings.startColumn + c];
+      TD.innerHTML = this.instance.settings.data[startRow + r][startColumn + c];
     }
   }
   return this;

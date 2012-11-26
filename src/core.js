@@ -1,8 +1,44 @@
 function Walkontable(settings) {
   var that = this;
 
+  //default settings
+  var defaults = {
+    table: void 0,
+    data: void 0,
+    startRow: 0,
+    startColumn: 0,
+    totalRows: function () {
+      return that.settings.data.length;
+    },
+    totalColumns: function () {
+      return that.settings.data[0].length;
+    },
+    displayRows: function () {
+      return that.getSetting('totalRows'); //display all rows by default
+    },
+    displayColumns: function () {
+      if (that.wtTable.THEAD.childNodes[0].childNodes.length) {
+        return that.wtTable.THEAD.childNodes[0].childNodes.length;
+      }
+      else {
+        return that.getSetting('totalColumns'); //display all columns by default
+      }
+    },
+    onCurrentChange: void 0
+  };
+
   //reference to settings
-  this.settings = settings;
+  this.settings = {};
+  for (var i in defaults) {
+    if (defaults.hasOwnProperty(i)) {
+      if (settings[i] !== void 0) {
+        this.settings[i] = settings[i];
+      }
+      else {
+        this.settings[i] = defaults[i];
+      }
+    }
+  }
 
   //bootstrap from settings
   this.wtTable = new WalkontableTable(this);
@@ -11,10 +47,6 @@ function Walkontable(settings) {
   this.wtWheel = new WalkontableWheel(this);
   this.wtEvent = new WalkontableEvent(this);
   this.wtDom = new WalkontableDom();
-  if (this.settings.displayColumns === void 0) {
-    this.settings.displayColumns = this.wtTable.THEAD.childNodes[0].childNodes.length;
-    this.settings.columnHeaders = this.wtTable.THEAD.childNodes[0].childNodes.length;
-  }
   if (this.settings.columnHeaders === void 0) {
     this.settings.columnHeaders = [];
     for (var c = 0, clen = this.wtTable.THEAD.childNodes[0].childNodes.length; c < clen; c++) {
@@ -79,4 +111,13 @@ Walkontable.prototype.scrollHorizontal = function (delta) {
     this.settings.startColumn = max;
   }
   return this;
+};
+
+Walkontable.prototype.getSetting = function (key) {
+  if (typeof this.settings[key] === 'function') {
+    return this.settings[key]();
+  }
+  else {
+    return this.settings[key];
+  }
 };

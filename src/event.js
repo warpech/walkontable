@@ -10,7 +10,7 @@ function WalkontableEvent(instance) {
     var TD = that.wtDom.closest(event.target, ['TD', 'TH']);
     if (TD) { //if not table border
       var coords = [
-        that.wtDom.prevSiblings(TD.parentNode).length + that.instance.settings.startRow,
+        that.wtDom.prevSiblings(TD.parentNode).length + that.instance.getSetting('startRow'),
         TD.cellIndex
       ];
 

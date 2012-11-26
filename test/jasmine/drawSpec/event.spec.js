@@ -2,7 +2,7 @@ describe('WalkontableEvent', function () {
   var $table
     , data;
 
-  var debug = true;
+  var debug = false;
 
   beforeEach(function () {
     $table = $('<table><thead><th></th><th></th></thead><tbody></tbody></table>'); //create a table that is not attached to document
@@ -25,6 +25,7 @@ describe('WalkontableEvent', function () {
       data: data,
       startRow: 10,
       displayRows: 10,
+      displayColumns: 2,
       onCurrentChange: function (coords) {
         clicked = coords;
       }

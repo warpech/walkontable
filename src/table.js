@@ -13,9 +13,12 @@ function WalkontableTable(instance) {
 }
 
 WalkontableTable.prototype.adjustAvailableNodes = function () {
-  while (this.availableTRs < this.instance.settings.displayRows) {
+  var displayRows = this.instance.getSetting('displayRows')
+    , displayColumns = this.instance.getSetting('displayColumns');
+
+  while (this.availableTRs < displayRows) {
     var TR = document.createElement('TR');
-    for (var c = 0; c < this.instance.settings.displayColumns; c++) {
+    for (var c = 0; c < displayColumns; c++) {
       var TD = document.createElement('TD');
       TR.appendChild(TD);
     }
@@ -26,7 +29,7 @@ WalkontableTable.prototype.adjustAvailableNodes = function () {
   var TRs = this.TABLE.getElementsByTagName('TR');
 
   for (var r = 0, rlen = TRs.length; r < rlen; r++) {
-    while (TRs[r].childNodes.length > this.instance.settings.displayColumns) {
+    while (TRs[r].childNodes.length > displayColumns) {
       TRs[r].removeChild(TRs[r].lastChild);
     }
   }
@@ -34,20 +37,24 @@ WalkontableTable.prototype.adjustAvailableNodes = function () {
 
 WalkontableTable.prototype.draw = function () {
   var r
-    , c;
+    , c
+    , startRow = this.instance.getSetting('startRow')
+    , startColumn = this.instance.getSetting('startColumn')
+    , displayRows = this.instance.getSetting('displayRows')
+    , displayColumns = this.instance.getSetting('displayColumns');
   this.adjustAvailableNodes();
 
   //draw THEAD
-  for (c = 0; c < this.instance.settings.displayColumns; c++) {
-    this.THEAD.childNodes[0].childNodes[c].innerHTML = this.instance.settings.columnHeaders[this.instance.settings.startColumn + c];
+  for (c = 0; c < displayColumns; c++) {
+    this.THEAD.childNodes[0].childNodes[c].innerHTML = this.instance.settings.columnHeaders[startColumn + c];
   }
 
   //draw TBODY
-  for (r = 0; r < this.instance.settings.displayRows; r++) {
+  for (r = 0; r < displayRows; r++) {
     var TR = this.TBODY.childNodes[r];
-    for (c = 0; c < this.instance.settings.displayColumns; c++) {
+    for (c = 0; c < displayColumns; c++) {
       var TD = TR.childNodes[c];
-      TD.innerHTML = this.instance.settings.data[this.instance.settings.startRow + r][this.instance.settings.startColumn + c];
+      TD.innerHTML = this.instance.settings.data[startRow + r][startColumn + c];
     }
   }
   return this;

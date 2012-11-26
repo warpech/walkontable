@@ -23,7 +23,8 @@ describe('WalkontableTable', function () {
       table: $table[0],
       data: data,
       startRow: 0,
-      displayRows: 10
+      displayRows: 10,
+      displayColumns: 2
     });
     wt.draw();
     expect($table.find('tbody tr').length).toBe(10);
@@ -34,7 +35,8 @@ describe('WalkontableTable', function () {
       table: $table[0],
       data: data,
       startRow: 0,
-      displayRows: 10
+      displayRows: 10,
+      displayColumns: 2
     });
     wt.draw();
     expect($table.find('tbody tr:first td').length).toBe($table.find('thead th').length);
