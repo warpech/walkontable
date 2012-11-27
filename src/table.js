@@ -3,11 +3,11 @@ function WalkontableTable(instance) {
   this.instance = instance;
 
   //bootstrap from settings
+  this.TABLE = this.instance.getSetting('table');
   this.wtDom = new WalkontableDom();
-  this.wtDom.removeTextNodes(this.instance.settings.table);
-  this.TABLE = this.instance.settings.table;
-  this.THEAD = this.instance.settings.table.childNodes[0];
-  this.TBODY = this.instance.settings.table.childNodes[1];
+  this.wtDom.removeTextNodes(this.TABLE);
+  this.THEAD = this.TABLE.childNodes[0];
+  this.TBODY = this.TABLE.childNodes[1];
 
   this.availableTRs = 0;
 }
@@ -41,12 +41,13 @@ WalkontableTable.prototype.draw = function () {
     , startRow = this.instance.getSetting('startRow')
     , startColumn = this.instance.getSetting('startColumn')
     , displayRows = this.instance.getSetting('displayRows')
-    , displayColumns = this.instance.getSetting('displayColumns');
+    , displayColumns = this.instance.getSetting('displayColumns')
+    , columnHeaders = this.instance.getSetting('columnHeaders');
   this.adjustAvailableNodes();
 
   //draw THEAD
   for (c = 0; c < displayColumns; c++) {
-    this.THEAD.childNodes[0].childNodes[c].innerHTML = this.instance.settings.columnHeaders[startColumn + c];
+    this.THEAD.childNodes[0].childNodes[c].innerHTML = columnHeaders[startColumn + c];
   }
 
   //draw TBODY
@@ -54,7 +55,14 @@ WalkontableTable.prototype.draw = function () {
     var TR = this.TBODY.childNodes[r];
     for (c = 0; c < displayColumns; c++) {
       var TD = TR.childNodes[c];
-      TD.innerHTML = this.instance.settings.data[startRow + r][startColumn + c];
+      var dataRow = this.instance.settings.data[startRow + r];
+      var dataCell = dataRow && dataRow[startColumn + c];
+      if (dataCell) {
+        TD.innerHTML = dataCell;
+      }
+      else {
+        TD.innerHTML = '';
+      }
     }
   }
   return this;

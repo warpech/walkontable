@@ -11,7 +11,12 @@ function Walkontable(settings) {
       return that.settings.data.length;
     },
     totalColumns: function () {
-      return that.settings.data[0].length;
+      if(that.settings.data[0]) {
+        return that.settings.data[0].length;
+      }
+      else {
+        throw new Error('Cannot estimate total number of columns because the data source is empty. Please provide totalColumns in settings');
+      }
     },
     displayRows: function () {
       return that.getSetting('totalRows'); //display all rows by default

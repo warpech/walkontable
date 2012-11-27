@@ -1,7 +1,7 @@
 /**
  * walkontable 0.1
  * 
- * Date: Mon Nov 26 2012 14:49:04 GMT+0100 (Central European Standard Time)
+ * Date: Tue Nov 27 2012 13:25:56 GMT+0100 (Central European Standard Time)
 */
 
 function Walkontable(settings) {
@@ -17,7 +17,12 @@ function Walkontable(settings) {
       return that.settings.data.length;
     },
     totalColumns: function () {
-      return that.settings.data[0].length;
+      if(that.settings.data[0]) {
+        return that.settings.data[0].length;
+      }
+      else {
+        throw new Error('Cannot estimate total number of columns because the data source is empty. Please provide totalColumns in settings');
+      }
     },
     displayRows: function () {
       return that.getSetting('totalRows'); //display all rows by default
@@ -298,7 +303,8 @@ function WalkontableScroll(instance, type) {
   //reference to instance
   this.instance = instance;
   this.type = type;
-  this.$table = $(this.instance.settings.table);
+  var TABLE = this.instance.getSetting('table');
+  this.$table = $(TABLE);
 
   //create elements
   var holder = document.createElement('DIV');
@@ -314,9 +320,9 @@ function WalkontableScroll(instance, type) {
   this.handle = document.createElement('DIV');
   this.handle.className = 'handle';
 
-  this.instance.settings.table.parentNode.insertBefore(holder, this.instance.settings.table);
+  TABLE.parentNode.insertBefore(holder, TABLE);
   this.slider.appendChild(this.handle);
-  holder.appendChild(this.instance.settings.table);
+  holder.appendChild(TABLE);
   holder.appendChild(this.slider);
 
   this.dragdealer = new Dragdealer(this.slider, {
@@ -327,10 +333,10 @@ function WalkontableScroll(instance, type) {
     animationCallback: function (x, y) {
       if (that.instance.drawn) {
         if (that.type === 'vertical') {
-          that.instance.update({startRow: Math.round((that.instance.settings.data.length - that.instance.settings.displayRows) * y)});
+          that.instance.update({startRow: Math.round((that.instance.getSetting('totalRows') - that.instance.getSetting('displayRows')) * y)});
         }
         else if (that.type === 'horizontal') {
-          that.instance.update({startColumn: Math.round((that.instance.settings.data[0].length - that.instance.settings.displayColumns) * x)});
+          that.instance.update({startColumn: Math.round((that.instance.getSetting('totalColumns') - that.instance.getSetting('displayColumns')) * x)});
         }
         that.instance.draw();
       }
@@ -339,13 +345,18 @@ function WalkontableScroll(instance, type) {
 }
 
 WalkontableScroll.prototype.refresh = function () {
-  var ratio, handleSize;
+  var ratio = 1
+    , handleSize
+    , totalRows = this.instance.getSetting('totalRows')
+    , totalColumns = this.instance.getSetting('totalColumns');
   if (this.type === 'vertical') {
     this.slider.style.top = this.$table.position().top + 'px';
     this.slider.style.left = this.$table.outerWidth() - 1 + 'px'; //1 is sliders border-width
     this.slider.style.height = this.$table.outerHeight() - 2 + 'px'; //2 is sliders border-width
 
-    ratio = this.instance.settings.displayRows / this.instance.settings.data.length;
+    if (totalRows) {
+      ratio = this.instance.getSetting('displayRows') / totalRows;
+    }
     handleSize = Math.round($(this.slider).height() * ratio);
     if (handleSize < 10) {
       handleSize = 30;
@@ -357,7 +368,9 @@ WalkontableScroll.prototype.refresh = function () {
     this.slider.style.top = this.$table.outerHeight() - 1 + 'px'; //1 is sliders border-width
     this.slider.style.width = this.$table.outerWidth() - 2 + 'px'; //2 is sliders border-width
 
-    ratio = this.instance.settings.displayColumns / this.instance.settings.data[0].length;
+    if (totalColumns) {
+      ratio = this.instance.getSetting('displayColumns') / totalColumns;
+    }
     handleSize = Math.round($(this.slider).width() * ratio);
     if (handleSize < 10) {
       handleSize = 30;
@@ -512,11 +525,11 @@ function WalkontableTable(instance) {
   this.instance = instance;
 
   //bootstrap from settings
+  this.TABLE = this.instance.getSetting('table');
   this.wtDom = new WalkontableDom();
-  this.wtDom.removeTextNodes(this.instance.settings.table);
-  this.TABLE = this.instance.settings.table;
-  this.THEAD = this.instance.settings.table.childNodes[0];
-  this.TBODY = this.instance.settings.table.childNodes[1];
+  this.wtDom.removeTextNodes(this.TABLE);
+  this.THEAD = this.TABLE.childNodes[0];
+  this.TBODY = this.TABLE.childNodes[1];
 
   this.availableTRs = 0;
 }
@@ -550,12 +563,13 @@ WalkontableTable.prototype.draw = function () {
     , startRow = this.instance.getSetting('startRow')
     , startColumn = this.instance.getSetting('startColumn')
     , displayRows = this.instance.getSetting('displayRows')
-    , displayColumns = this.instance.getSetting('displayColumns');
+    , displayColumns = this.instance.getSetting('displayColumns')
+    , columnHeaders = this.instance.getSetting('columnHeaders');
   this.adjustAvailableNodes();
 
   //draw THEAD
   for (c = 0; c < displayColumns; c++) {
-    this.THEAD.childNodes[0].childNodes[c].innerHTML = this.instance.settings.columnHeaders[startColumn + c];
+    this.THEAD.childNodes[0].childNodes[c].innerHTML = columnHeaders[startColumn + c];
   }
 
   //draw TBODY
@@ -563,7 +577,14 @@ WalkontableTable.prototype.draw = function () {
     var TR = this.TBODY.childNodes[r];
     for (c = 0; c < displayColumns; c++) {
       var TD = TR.childNodes[c];
-      TD.innerHTML = this.instance.settings.data[startRow + r][startColumn + c];
+      var dataRow = this.instance.settings.data[startRow + r];
+      var dataCell = dataRow && dataRow[startColumn + c];
+      if (dataCell) {
+        TD.innerHTML = dataCell;
+      }
+      else {
+        TD.innerHTML = '';
+      }
     }
   }
   return this;
