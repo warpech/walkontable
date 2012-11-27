@@ -56,7 +56,7 @@ WalkontableTable.prototype.draw = function () {
       var TD = TR.childNodes[c];
       var dataRow = this.instance.settings.data[offsetRow + r];
       var dataCell = dataRow && dataRow[offsetColumn + c];
-      if (dataCell) {
+      if (dataCell !== void 0) {
         TD.innerHTML = dataCell;
       }
       else {

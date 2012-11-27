@@ -1,7 +1,7 @@
 /**
  * walkontable 0.1
  * 
- * Date: Tue Nov 27 2012 13:53:53 GMT+0100 (Central European Standard Time)
+ * Date: Tue Nov 27 2012 15:10:50 GMT+0100 (Central European Standard Time)
 */
 
 function Walkontable(settings) {
@@ -586,7 +586,7 @@ WalkontableTable.prototype.draw = function () {
       var TD = TR.childNodes[c];
       var dataRow = this.instance.settings.data[offsetRow + r];
       var dataCell = dataRow && dataRow[offsetColumn + c];
-      if (dataCell) {
+      if (dataCell !== void 0) {
         TD.innerHTML = dataCell;
       }
       else {
