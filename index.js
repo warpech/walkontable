@@ -70,7 +70,10 @@ function init() {
     offsetRow: 0,
     offsetColumn: 0,
     displayRows: displayRows,
-    displayColumns: 5
+    displayColumns: 5,
+    rowHeaders: function (row) {
+      return row + 1
+    }
   });
   wt.draw();
 }

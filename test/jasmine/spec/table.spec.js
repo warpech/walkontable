@@ -50,12 +50,30 @@ describe('WalkontableTable', function () {
       offsetRow: 0,
       displayRows: 10,
       displayColumns: 2,
-      columnHeaders: function(column) {
+      columnHeaders: function (column) {
         return headers[column];
       }
     });
     wt.draw();
     expect($table.find('thead tr:first th').length).toBe(2);
     expect($table.find('thead tr:first th:last')[0].innerHTML).toBe('2012');
+  });
+
+  it("should use rowHeaders function to generate row headers", function () {
+    var wt = new Walkontable({
+      table: $table[0],
+      data: data,
+      offsetRow: 0,
+      displayRows: 10,
+      displayColumns: 2,
+      rowHeaders: function (row) {
+        return row + 1;
+      }
+    });
+    wt.draw();
+    expect($table.find('tbody th, tbody td').length).toBe(20); //10*2=20 displayed cells
+    expect($table.find('tbody th').length).toBe(10); //10*2=20 displayed cells, half of which are td
+    expect($table.find('tbody tr:first th').length).toBe(1); //only one th per row
+    expect($table.find('tbody tr:first th')[0].innerHTML).toBe('1'); //this should be the first row header
   });
 });

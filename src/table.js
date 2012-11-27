@@ -14,11 +14,20 @@ function WalkontableTable(instance) {
 
 WalkontableTable.prototype.adjustAvailableNodes = function () {
   var displayRows = this.instance.getSetting('displayRows')
-    , displayColumns = this.instance.getSetting('displayColumns');
+    , displayColumns = this.instance.getSetting('displayColumns')
+    , displayTds = displayColumns;
+
+  if (this.instance.hasSetting('rowHeaders')) {
+    displayTds--;
+  }
 
   while (this.availableTRs < displayRows) {
     var TR = document.createElement('TR');
-    for (var c = 0; c < displayColumns; c++) {
+    if (this.instance.hasSetting('rowHeaders')) {
+      var TH = document.createElement('TH');
+      TR.appendChild(TH);
+    }
+    for (var c = 0; c < displayTds; c++) {
       var TD = document.createElement('TD');
       TR.appendChild(TD);
     }
@@ -41,8 +50,20 @@ WalkontableTable.prototype.draw = function () {
     , offsetRow = this.instance.getSetting('offsetRow')
     , offsetColumn = this.instance.getSetting('offsetColumn')
     , displayRows = this.instance.getSetting('displayRows')
-    , displayColumns = this.instance.getSetting('displayColumns');
+    , displayColumns = this.instance.getSetting('displayColumns')
+    , offsetTd = 0
+    , displayTds = displayColumns
+    , TR
+    , TH
+    , TD
+    , rowData
+    , cellData;
   this.adjustAvailableNodes();
+
+  if (this.instance.hasSetting('rowHeaders')) {
+    displayTds--;
+    offsetTd++;
+  }
 
   //draw THEAD
   for (c = 0; c < displayColumns; c++) {
@@ -51,13 +72,23 @@ WalkontableTable.prototype.draw = function () {
 
   //draw TBODY
   for (r = 0; r < displayRows; r++) {
-    var TR = this.TBODY.childNodes[r];
-    for (c = 0; c < displayColumns; c++) {
-      var TD = TR.childNodes[c];
-      var dataRow = this.instance.settings.data[offsetRow + r];
-      var dataCell = dataRow && dataRow[offsetColumn + c];
-      if (dataCell !== void 0) {
-        TD.innerHTML = dataCell;
+    TR = this.TBODY.childNodes[r];
+    if (this.instance.hasSetting('rowHeaders')) {
+      TH = TR.childNodes[0];
+      cellData = this.instance.getSetting('rowHeaders', r);
+      if (cellData !== void 0) {
+        TH.innerHTML = cellData;
+      }
+      else {
+        TH.innerHTML = '';
+      }
+    }
+    for (c = 0; c < displayTds; c++) {
+      TD = TR.childNodes[c + offsetTd];
+      rowData = this.instance.settings.data[offsetRow + r];
+      cellData = rowData && rowData[offsetColumn + c];
+      if (cellData !== void 0) {
+        TD.innerHTML = cellData;
       }
       else {
         TD.innerHTML = '';

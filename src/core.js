@@ -8,6 +8,7 @@ function Walkontable(settings) {
     data: void 0,
     offsetRow: 0,
     offsetColumn: 0,
+    rowHeaders: false,
     columnHeaders: function (column) {
       if (originalHeaders) {
         return originalHeaders[column];
@@ -133,4 +134,8 @@ Walkontable.prototype.getSetting = function (key, param1) {
   else {
     return this.settings[key];
   }
+};
+
+Walkontable.prototype.hasSetting = function (key) {
+  return !!this.settings[key]
 };
