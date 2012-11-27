@@ -63,11 +63,12 @@ WalkontableTable.prototype.draw = function () {
   if (this.instance.hasSetting('rowHeaders')) {
     displayTds--;
     offsetTd++;
+    this.THEAD.childNodes[0].childNodes[0].innerHTML = '';
   }
 
   //draw THEAD
-  for (c = 0; c < displayColumns; c++) {
-    this.THEAD.childNodes[0].childNodes[c].innerHTML = this.instance.getSetting('columnHeaders', offsetColumn + c);
+  for (c = 0; c < displayTds; c++) {
+    this.THEAD.childNodes[0].childNodes[offsetTd + c].innerHTML = this.instance.getSetting('columnHeaders', offsetColumn + c);
   }
 
   //draw TBODY

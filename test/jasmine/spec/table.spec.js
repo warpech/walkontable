@@ -76,4 +76,21 @@ describe('WalkontableTable', function () {
     expect($table.find('tbody tr:first th').length).toBe(1); //only one th per row
     expect($table.find('tbody tr:first th')[0].innerHTML).toBe('1'); //this should be the first row header
   });
+
+  it("should put a blank cell in the corner if both rowHeaders and colHeaders are set", function () {
+    var wt = new Walkontable({
+      table: $table[0],
+      data: data,
+      offsetRow: 0,
+      displayRows: 10,
+      displayColumns: 2,
+      columnHeaders: "Column",
+      rowHeaders: "Row"
+    });
+    wt.draw();
+    expect($table.find('tr:eq(0) th').length).toBe(2); //2 columns in THEAD
+    expect($table.find('tr:eq(0) th:eq(0)')[0].innerHTML).toBe(''); //corner row is empty
+    expect($table.find('tr:eq(0) th:eq(1)')[0].innerHTML).toBe('Column');
+    expect($table.find('tr:eq(1) th:eq(0)')[0].innerHTML).toBe('Row');
+  });
 });

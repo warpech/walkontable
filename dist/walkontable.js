@@ -1,7 +1,7 @@
 /**
  * walkontable 0.1
  * 
- * Date: Tue Nov 27 2012 16:21:52 GMT+0100 (Central European Standard Time)
+ * Date: Tue Nov 27 2012 17:09:52 GMT+0100 (Central European Standard Time)
 */
 
 function Walkontable(settings) {
@@ -598,11 +598,12 @@ WalkontableTable.prototype.draw = function () {
   if (this.instance.hasSetting('rowHeaders')) {
     displayTds--;
     offsetTd++;
+    this.THEAD.childNodes[0].childNodes[0].innerHTML = '';
   }
 
   //draw THEAD
-  for (c = 0; c < displayColumns; c++) {
-    this.THEAD.childNodes[0].childNodes[c].innerHTML = this.instance.getSetting('columnHeaders', offsetColumn + c);
+  for (c = 0; c < displayTds; c++) {
+    this.THEAD.childNodes[0].childNodes[offsetTd + c].innerHTML = this.instance.getSetting('columnHeaders', offsetColumn + c);
   }
 
   //draw TBODY
