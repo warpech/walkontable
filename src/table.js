@@ -41,13 +41,12 @@ WalkontableTable.prototype.draw = function () {
     , offsetRow = this.instance.getSetting('offsetRow')
     , offsetColumn = this.instance.getSetting('offsetColumn')
     , displayRows = this.instance.getSetting('displayRows')
-    , displayColumns = this.instance.getSetting('displayColumns')
-    , columnHeaders = this.instance.getSetting('columnHeaders');
+    , displayColumns = this.instance.getSetting('displayColumns');
   this.adjustAvailableNodes();
 
   //draw THEAD
   for (c = 0; c < displayColumns; c++) {
-    this.THEAD.childNodes[0].childNodes[c].innerHTML = columnHeaders[offsetColumn + c];
+    this.THEAD.childNodes[0].childNodes[c].innerHTML = this.instance.getSetting('columnHeaders', offsetColumn + c);
   }
 
   //draw TBODY

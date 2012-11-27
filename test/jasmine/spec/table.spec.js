@@ -41,4 +41,21 @@ describe('WalkontableTable', function () {
     wt.draw();
     expect($table.find('tbody tr:first td').length).toBe($table.find('thead th').length);
   });
+
+  it("should use columnHeaders function to generate column headers", function () {
+    var headers = ["Description", 2012, 2013, 2014, 2015];
+    var wt = new Walkontable({
+      table: $table[0],
+      data: data,
+      offsetRow: 0,
+      displayRows: 10,
+      displayColumns: 2,
+      columnHeaders: function(column) {
+        return headers[column];
+      }
+    });
+    wt.draw();
+    expect($table.find('thead tr:first th').length).toBe(2);
+    expect($table.find('thead tr:first th:last')[0].innerHTML).toBe('2012');
+  });
 });

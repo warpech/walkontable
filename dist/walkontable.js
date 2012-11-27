@@ -1,11 +1,12 @@
 /**
  * walkontable 0.1
  * 
- * Date: Tue Nov 27 2012 13:33:04 GMT+0100 (Central European Standard Time)
+ * Date: Tue Nov 27 2012 13:53:53 GMT+0100 (Central European Standard Time)
 */
 
 function Walkontable(settings) {
   var that = this;
+  var originalHeaders = [];
 
   //default settings
   var defaults = {
@@ -13,11 +14,19 @@ function Walkontable(settings) {
     data: void 0,
     offsetRow: 0,
     offsetColumn: 0,
+    columnHeaders: function (column) {
+      if (originalHeaders) {
+        return originalHeaders[column];
+      }
+      else {
+        throw new Error('You must either provide columnHeaders setting or define THEAD THs in table before initialization');
+      }
+    },
     totalRows: function () {
       return that.settings.data.length;
     },
     totalColumns: function () {
-      if(that.settings.data[0]) {
+      if (that.settings.data[0]) {
         return that.settings.data[0].length;
       }
       else {
@@ -58,10 +67,9 @@ function Walkontable(settings) {
   this.wtWheel = new WalkontableWheel(this);
   this.wtEvent = new WalkontableEvent(this);
   this.wtDom = new WalkontableDom();
-  if (this.settings.columnHeaders === void 0) {
-    this.settings.columnHeaders = [];
+  if (this.wtTable.THEAD.childNodes[0].childNodes.length) {
     for (var c = 0, clen = this.wtTable.THEAD.childNodes[0].childNodes.length; c < clen; c++) {
-      this.settings.columnHeaders.push(this.wtTable.THEAD.childNodes[0].childNodes[c].innerHTML);
+      originalHeaders.push(this.wtTable.THEAD.childNodes[0].childNodes[c].innerHTML);
     }
   }
   this.drawn = false;
@@ -124,9 +132,9 @@ Walkontable.prototype.scrollHorizontal = function (delta) {
   return this;
 };
 
-Walkontable.prototype.getSetting = function (key) {
+Walkontable.prototype.getSetting = function (key, param1) {
   if (typeof this.settings[key] === 'function') {
-    return this.settings[key]();
+    return this.settings[key](param1);
   }
   else {
     return this.settings[key];
@@ -563,13 +571,12 @@ WalkontableTable.prototype.draw = function () {
     , offsetRow = this.instance.getSetting('offsetRow')
     , offsetColumn = this.instance.getSetting('offsetColumn')
     , displayRows = this.instance.getSetting('displayRows')
-    , displayColumns = this.instance.getSetting('displayColumns')
-    , columnHeaders = this.instance.getSetting('columnHeaders');
+    , displayColumns = this.instance.getSetting('displayColumns');
   this.adjustAvailableNodes();
 
   //draw THEAD
   for (c = 0; c < displayColumns; c++) {
-    this.THEAD.childNodes[0].childNodes[c].innerHTML = columnHeaders[offsetColumn + c];
+    this.THEAD.childNodes[0].childNodes[c].innerHTML = this.instance.getSetting('columnHeaders', offsetColumn + c);
   }
 
   //draw TBODY
