@@ -22,7 +22,7 @@ describe('WalkontableTable', function () {
     var wt = new Walkontable({
       table: $table[0],
       data: data,
-      startRow: 0,
+      offsetRow: 0,
       displayRows: 10,
       displayColumns: 2
     });
@@ -34,7 +34,7 @@ describe('WalkontableTable', function () {
     var wt = new Walkontable({
       table: $table[0],
       data: data,
-      startRow: 0,
+      offsetRow: 0,
       displayRows: 10,
       displayColumns: 2
     });

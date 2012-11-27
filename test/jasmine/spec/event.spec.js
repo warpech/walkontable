@@ -23,8 +23,8 @@ describe('WalkontableEvent', function () {
     var wt = new Walkontable({
       table: $table[0],
       data: data,
-      startRow: 10,
-      startColumn: 2,
+      offsetRow: 10,
+      offsetColumn: 2,
       displayRows: 10,
       displayColumns: 2,
       onCurrentChange: function (coords) {

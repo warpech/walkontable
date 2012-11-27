@@ -5,8 +5,8 @@ function Walkontable(settings) {
   var defaults = {
     table: void 0,
     data: void 0,
-    startRow: 0,
-    startColumn: 0,
+    offsetRow: 0,
+    offsetColumn: 0,
     totalRows: function () {
       return that.settings.data.length;
     },
@@ -96,24 +96,24 @@ Walkontable.prototype.update = function (settings) {
 
 Walkontable.prototype.scrollVertical = function (delta) {
   var max = this.settings.data.length - 1 - this.settings.displayRows;
-  this.settings.startRow = this.settings.startRow + delta;
-  if (this.settings.startRow < 0) {
-    this.settings.startRow = 0;
+  this.settings.offsetRow = this.settings.offsetRow + delta;
+  if (this.settings.offsetRow < 0) {
+    this.settings.offsetRow = 0;
   }
-  else if (this.settings.startRow >= max) {
-    this.settings.startRow = max;
+  else if (this.settings.offsetRow >= max) {
+    this.settings.offsetRow = max;
   }
   return this;
 };
 
 Walkontable.prototype.scrollHorizontal = function (delta) {
   var max = this.settings.data[0].length - 1 - this.settings.displayColumns;
-  this.settings.startColumn = this.settings.startColumn + delta;
-  if (this.settings.startColumn < 0) {
-    this.settings.startColumn = 0;
+  this.settings.offsetColumn = this.settings.offsetColumn + delta;
+  if (this.settings.offsetColumn < 0) {
+    this.settings.offsetColumn = 0;
   }
-  else if (this.settings.startColumn >= max) {
-    this.settings.startColumn = max;
+  else if (this.settings.offsetColumn >= max) {
+    this.settings.offsetColumn = max;
   }
   return this;
 };

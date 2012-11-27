@@ -34,10 +34,10 @@ function WalkontableScroll(instance, type) {
     animationCallback: function (x, y) {
       if (that.instance.drawn) {
         if (that.type === 'vertical') {
-          that.instance.update({startRow: Math.round((that.instance.getSetting('totalRows') - that.instance.getSetting('displayRows')) * y)});
+          that.instance.update({offsetRow: Math.round((that.instance.getSetting('totalRows') - that.instance.getSetting('displayRows')) * y)});
         }
         else if (that.type === 'horizontal') {
-          that.instance.update({startColumn: Math.round((that.instance.getSetting('totalColumns') - that.instance.getSetting('displayColumns')) * x)});
+          that.instance.update({offsetColumn: Math.round((that.instance.getSetting('totalColumns') - that.instance.getSetting('displayColumns')) * x)});
         }
         that.instance.draw();
       }

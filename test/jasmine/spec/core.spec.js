@@ -22,7 +22,7 @@ describe('Walkontable', function () {
     var wt = new Walkontable({
       table: $table[0],
       data: data,
-      startRow: 0,
+      offsetRow: 0,
       displayRows: 10,
       displayColumns: 2
     });
@@ -36,7 +36,7 @@ describe('Walkontable', function () {
     var wt = new Walkontable({
       table: $table[0],
       data: data,
-      startRow: 10,
+      offsetRow: 10,
       displayRows: 10,
       displayColumns: 2
     });
@@ -50,11 +50,11 @@ describe('Walkontable', function () {
     var wt = new Walkontable({
       table: $table[0],
       data: data,
-      startRow: 0,
+      offsetRow: 0,
       displayRows: 10,
       displayColumns: 2
     });
-    wt.update({startRow: 10});
+    wt.update({offsetRow: 10});
     wt.draw();
     var TDs = $table.find('tbody tr:first td');
     expect(TDs[0].innerHTML).toBe('10');

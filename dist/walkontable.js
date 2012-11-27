@@ -1,7 +1,7 @@
 /**
  * walkontable 0.1
  * 
- * Date: Tue Nov 27 2012 13:25:56 GMT+0100 (Central European Standard Time)
+ * Date: Tue Nov 27 2012 13:33:04 GMT+0100 (Central European Standard Time)
 */
 
 function Walkontable(settings) {
@@ -11,8 +11,8 @@ function Walkontable(settings) {
   var defaults = {
     table: void 0,
     data: void 0,
-    startRow: 0,
-    startColumn: 0,
+    offsetRow: 0,
+    offsetColumn: 0,
     totalRows: function () {
       return that.settings.data.length;
     },
@@ -102,24 +102,24 @@ Walkontable.prototype.update = function (settings) {
 
 Walkontable.prototype.scrollVertical = function (delta) {
   var max = this.settings.data.length - 1 - this.settings.displayRows;
-  this.settings.startRow = this.settings.startRow + delta;
-  if (this.settings.startRow < 0) {
-    this.settings.startRow = 0;
+  this.settings.offsetRow = this.settings.offsetRow + delta;
+  if (this.settings.offsetRow < 0) {
+    this.settings.offsetRow = 0;
   }
-  else if (this.settings.startRow >= max) {
-    this.settings.startRow = max;
+  else if (this.settings.offsetRow >= max) {
+    this.settings.offsetRow = max;
   }
   return this;
 };
 
 Walkontable.prototype.scrollHorizontal = function (delta) {
   var max = this.settings.data[0].length - 1 - this.settings.displayColumns;
-  this.settings.startColumn = this.settings.startColumn + delta;
-  if (this.settings.startColumn < 0) {
-    this.settings.startColumn = 0;
+  this.settings.offsetColumn = this.settings.offsetColumn + delta;
+  if (this.settings.offsetColumn < 0) {
+    this.settings.offsetColumn = 0;
   }
-  else if (this.settings.startColumn >= max) {
-    this.settings.startColumn = max;
+  else if (this.settings.offsetColumn >= max) {
+    this.settings.offsetColumn = max;
   }
   return this;
 };
@@ -333,10 +333,10 @@ function WalkontableScroll(instance, type) {
     animationCallback: function (x, y) {
       if (that.instance.drawn) {
         if (that.type === 'vertical') {
-          that.instance.update({startRow: Math.round((that.instance.getSetting('totalRows') - that.instance.getSetting('displayRows')) * y)});
+          that.instance.update({offsetRow: Math.round((that.instance.getSetting('totalRows') - that.instance.getSetting('displayRows')) * y)});
         }
         else if (that.type === 'horizontal') {
-          that.instance.update({startColumn: Math.round((that.instance.getSetting('totalColumns') - that.instance.getSetting('displayColumns')) * x)});
+          that.instance.update({offsetColumn: Math.round((that.instance.getSetting('totalColumns') - that.instance.getSetting('displayColumns')) * x)});
         }
         that.instance.draw();
       }
@@ -560,8 +560,8 @@ WalkontableTable.prototype.adjustAvailableNodes = function () {
 WalkontableTable.prototype.draw = function () {
   var r
     , c
-    , startRow = this.instance.getSetting('startRow')
-    , startColumn = this.instance.getSetting('startColumn')
+    , offsetRow = this.instance.getSetting('offsetRow')
+    , offsetColumn = this.instance.getSetting('offsetColumn')
     , displayRows = this.instance.getSetting('displayRows')
     , displayColumns = this.instance.getSetting('displayColumns')
     , columnHeaders = this.instance.getSetting('columnHeaders');
@@ -569,7 +569,7 @@ WalkontableTable.prototype.draw = function () {
 
   //draw THEAD
   for (c = 0; c < displayColumns; c++) {
-    this.THEAD.childNodes[0].childNodes[c].innerHTML = columnHeaders[startColumn + c];
+    this.THEAD.childNodes[0].childNodes[c].innerHTML = columnHeaders[offsetColumn + c];
   }
 
   //draw TBODY
@@ -577,8 +577,8 @@ WalkontableTable.prototype.draw = function () {
     var TR = this.TBODY.childNodes[r];
     for (c = 0; c < displayColumns; c++) {
       var TD = TR.childNodes[c];
-      var dataRow = this.instance.settings.data[startRow + r];
-      var dataCell = dataRow && dataRow[startColumn + c];
+      var dataRow = this.instance.settings.data[offsetRow + r];
+      var dataCell = dataRow && dataRow[offsetColumn + c];
       if (dataCell) {
         TD.innerHTML = dataCell;
       }
@@ -591,14 +591,14 @@ WalkontableTable.prototype.draw = function () {
 };
 
 WalkontableTable.prototype.getCell = function (coords) {
-  var startRow = this.instance.getSetting('startRow')
-    , startColumn = this.instance.getSetting('startColumn')
+  var offsetRow = this.instance.getSetting('offsetRow')
+    , offsetColumn = this.instance.getSetting('offsetColumn')
     , displayRows = this.instance.getSetting('displayRows')
     , displayColumns = this.instance.getSetting('displayColumns');
 
-  if (coords[0] >= startRow && coords[0] <= startRow + displayRows) {
-    if (coords[1] >= startColumn && coords[1] <= startColumn + displayColumns) {
-      return this.TBODY.childNodes[coords[0] - startRow].childNodes[coords[1] - startColumn];
+  if (coords[0] >= offsetRow && coords[0] <= offsetRow + displayRows) {
+    if (coords[1] >= offsetColumn && coords[1] <= offsetColumn + displayColumns) {
+      return this.TBODY.childNodes[coords[0] - offsetRow].childNodes[coords[1] - offsetColumn];
     }
   }
   return null;
@@ -606,8 +606,8 @@ WalkontableTable.prototype.getCell = function (coords) {
 
 WalkontableTable.prototype.getCoords = function (TD) {
   return [
-    this.wtDom.prevSiblings(TD.parentNode).length + this.instance.getSetting('startRow'),
-    TD.cellIndex + this.instance.getSetting('startColumn')
+    this.wtDom.prevSiblings(TD.parentNode).length + this.instance.getSetting('offsetRow'),
+    TD.cellIndex + this.instance.getSetting('offsetColumn')
   ];
 };
 function WalkontableWheel(instance) {
