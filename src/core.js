@@ -116,7 +116,10 @@ Walkontable.prototype.scrollVertical = function (delta) {
 };
 
 Walkontable.prototype.scrollHorizontal = function (delta) {
-  var max = this.settings.data[0].length - 1 - this.settings.displayColumns;
+  var max = this.settings.data[0].length - this.settings.displayColumns;
+  if (this.hasSetting('rowHeaders')) {
+    max++;
+  }
   this.settings.offsetColumn = this.settings.offsetColumn + delta;
   if (this.settings.offsetColumn < 0) {
     this.settings.offsetColumn = 0;

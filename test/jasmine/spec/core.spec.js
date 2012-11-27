@@ -60,4 +60,38 @@ describe('Walkontable', function () {
     expect(TDs[0].innerHTML).toBe('10');
     expect(TDs[1].innerHTML).toBe('a');
   });
+
+  it("should scroll to last column when rowHeaders is not in use", function () {
+    var wt = new Walkontable({
+      table: $table[0],
+      data: data,
+      offsetRow: 0,
+      offsetColumn: 0,
+      displayRows: 10,
+      displayColumns: 2
+    });
+    wt.scrollHorizontal(999); //this will scroll to the last column
+    wt.draw();
+    expect($table.find('tbody tr:eq(0) td:last')[0].innerHTML).toBe('c');
+  });
+
+  it("should scroll to last column when rowHeaders is in use", function () {
+    function plusOne(i) {
+      return i + 1;
+    }
+
+    var wt = new Walkontable({
+      table: $table[0],
+      data: data,
+      offsetRow: 0,
+      offsetColumn: 0,
+      displayRows: 10,
+      displayColumns: 2,
+      columnHeaders: plusOne,
+      rowHeaders: plusOne
+    });
+    wt.scrollHorizontal(999); //this will scroll to the last column
+    wt.draw();
+    expect($table.find('tbody tr:eq(0) td:last')[0].innerHTML).toBe('c');
+  });
 });
