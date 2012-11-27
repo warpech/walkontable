@@ -1,7 +1,7 @@
 /**
  * walkontable 0.1
  * 
- * Date: Tue Nov 27 2012 17:09:52 GMT+0100 (Central European Standard Time)
+ * Date: Tue Nov 27 2012 17:25:16 GMT+0100 (Central European Standard Time)
 */
 
 function Walkontable(settings) {
@@ -611,7 +611,7 @@ WalkontableTable.prototype.draw = function () {
     TR = this.TBODY.childNodes[r];
     if (this.instance.hasSetting('rowHeaders')) {
       TH = TR.childNodes[0];
-      cellData = this.instance.getSetting('rowHeaders', r);
+      cellData = this.instance.getSetting('rowHeaders', offsetRow + r);
       if (cellData !== void 0) {
         TH.innerHTML = cellData;
       }

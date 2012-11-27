@@ -76,7 +76,7 @@ WalkontableTable.prototype.draw = function () {
     TR = this.TBODY.childNodes[r];
     if (this.instance.hasSetting('rowHeaders')) {
       TH = TR.childNodes[0];
-      cellData = this.instance.getSetting('rowHeaders', r);
+      cellData = this.instance.getSetting('rowHeaders', offsetRow + r);
       if (cellData !== void 0) {
         TH.innerHTML = cellData;
       }

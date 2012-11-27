@@ -93,4 +93,24 @@ describe('WalkontableTable', function () {
     expect($table.find('tr:eq(0) th:eq(1)')[0].innerHTML).toBe('Column');
     expect($table.find('tr:eq(1) th:eq(0)')[0].innerHTML).toBe('Row');
   });
+
+  it("rowHeaders and colHeaders should respect the offset", function () {
+    function plusOne(i) {
+      return i + 1;
+    }
+
+    var wt = new Walkontable({
+      table: $table[0],
+      data: data,
+      offsetRow: 1,
+      offsetColumn: 1,
+      displayRows: 10,
+      displayColumns: 2,
+      columnHeaders: plusOne,
+      rowHeaders: plusOne
+    });
+    wt.draw();
+    expect($table.find('tr:eq(0) th:eq(1)')[0].innerHTML).toBe('2');
+    expect($table.find('tr:eq(1) th:eq(0)')[0].innerHTML).toBe('2');
+  });
 });
