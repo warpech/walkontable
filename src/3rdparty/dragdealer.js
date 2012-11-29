@@ -1,5 +1,5 @@
 /**
- * Dragdealer JS v0.9.5
+ * Dragdealer JS v0.9.5 - patched by Walkontable at line 66
  * http://code.ovidiu.ch/dragdealer-js
  *
  * Copyright (c) 2010, Ovidiu Chereches
@@ -63,7 +63,7 @@ var Position =
 {
 	get: function(obj)
 	{
-		var curleft = curtop = 0;
+		var curtop = 0, curleft = 0; //Walkontable patch. Original (var curleft = curtop = 0;) created curtop in global scope
 		if(obj.offsetParent)
 		{
 			do
