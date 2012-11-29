@@ -83,7 +83,6 @@ WalkontableTable.prototype.draw = function () {
     , TR
     , TH
     , TD
-    , rowData
     , cellData;
   this.adjustAvailableNodes();
 
@@ -117,8 +116,7 @@ WalkontableTable.prototype.draw = function () {
     }
     for (c = 0; c < displayTds; c++) {
       TD = TR.childNodes[c + offsetTd];
-      rowData = this.instance.settings.data[offsetRow + r];
-      cellData = rowData && rowData[offsetColumn + c];
+      cellData = this.instance.getSetting('data', offsetRow + r, offsetColumn + c);
       if (cellData !== void 0) {
         TD.innerHTML = cellData;
       }

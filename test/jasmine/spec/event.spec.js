@@ -1,15 +1,10 @@
 describe('WalkontableEvent', function () {
   var $table
-    , data;
-
-  var debug = false;
+    , debug = false;
 
   beforeEach(function () {
     $table = $('<table><thead><th></th><th></th></thead><tbody></tbody></table>'); //create a table that is not attached to document
-    data = [];
-    for (var i = 0; i < 100; i++) {
-      data.push([i, "a", "b", "c"]);
-    }
+    createDataArray();
   });
 
   afterEach(function () {
@@ -22,7 +17,9 @@ describe('WalkontableEvent', function () {
     var clicked = false;
     var wt = new Walkontable({
       table: $table[0],
-      data: data,
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
       offsetRow: 10,
       offsetColumn: 2,
       displayRows: 10,

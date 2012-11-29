@@ -1,15 +1,10 @@
 describe('WalkontableTable', function () {
   var $table
-    , data;
-
-  var debug = false;
+    , debug = false;
 
   beforeEach(function () {
     $table = $('<table><thead><th></th><th></th></thead><tbody></tbody></table>'); //create a table that is not attached to document
-    data = [];
-    for (var i = 0; i < 100; i++) {
-      data.push([i, "a", "b", "c"]);
-    }
+    createDataArray();
   });
 
   afterEach(function () {
@@ -21,7 +16,9 @@ describe('WalkontableTable', function () {
   it("should create as many rows as in `displayRows`", function () {
     var wt = new Walkontable({
       table: $table[0],
-      data: data,
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
       offsetRow: 0,
       displayRows: 10,
       displayColumns: 2
@@ -33,7 +30,9 @@ describe('WalkontableTable', function () {
   it("first row should have as many columns as in THEAD", function () {
     var wt = new Walkontable({
       table: $table[0],
-      data: data,
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
       offsetRow: 0,
       displayRows: 10,
       displayColumns: 2
@@ -46,7 +45,9 @@ describe('WalkontableTable', function () {
     var headers = ["Description", 2012, 2013, 2014, 2015];
     var wt = new Walkontable({
       table: $table[0],
-      data: data,
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
       offsetRow: 0,
       displayRows: 10,
       displayColumns: 2,
@@ -62,7 +63,9 @@ describe('WalkontableTable', function () {
   it("should use rowHeaders function to generate row headers", function () {
     var wt = new Walkontable({
       table: $table[0],
-      data: data,
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
       offsetRow: 0,
       displayRows: 10,
       displayColumns: 2,
@@ -80,7 +83,9 @@ describe('WalkontableTable', function () {
   it("should put a blank cell in the corner if both rowHeaders and colHeaders are set", function () {
     var wt = new Walkontable({
       table: $table[0],
-      data: data,
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
       offsetRow: 0,
       displayRows: 10,
       displayColumns: 2,
@@ -101,7 +106,9 @@ describe('WalkontableTable', function () {
 
     var wt = new Walkontable({
       table: $table[0],
-      data: data,
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
       offsetRow: 1,
       offsetColumn: 1,
       displayRows: 10,
