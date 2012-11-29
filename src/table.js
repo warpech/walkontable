@@ -6,8 +6,23 @@ function WalkontableTable(instance) {
   this.TABLE = this.instance.getSetting('table');
   this.wtDom = new WalkontableDom();
   this.wtDom.removeTextNodes(this.TABLE);
-  this.THEAD = this.TABLE.childNodes[0];
-  this.TBODY = this.TABLE.childNodes[1];
+  this.TBODY = this.TABLE.getElementsByTagName('TBODY')[0];
+  if (!this.TBODY) {
+    this.TBODY = document.createElement('TBODY');
+    this.TABLE.appendChild(this.TBODY);
+  }
+  this.THEAD = this.TABLE.getElementsByTagName('THEAD')[0];
+  if (!this.THEAD) {
+    this.THEAD = document.createElement('THEAD');
+    this.TABLE.insertBefore(this.THEAD, this.TBODY);
+  }
+
+  if (this.instance.hasSetting('columnHeaders')) {
+    if (!this.THEAD.childNodes.length) {
+      var TR = document.createElement('TR');
+      this.THEAD.appendChild(TR);
+    }
+  }
 
   this.availableTRs = 0;
 }
@@ -15,20 +30,32 @@ function WalkontableTable(instance) {
 WalkontableTable.prototype.adjustAvailableNodes = function () {
   var displayRows = this.instance.getSetting('displayRows')
     , displayColumns = this.instance.getSetting('displayColumns')
-    , displayTds = displayColumns;
+    , displayTds = displayColumns
+    , TR
+    , TH
+    , TD;
 
   if (this.instance.hasSetting('rowHeaders')) {
     displayTds--;
   }
 
+  if (this.instance.hasSetting('columnHeaders')) {
+    var availableTHs = this.THEAD.childNodes[0].childNodes.length;
+    while (availableTHs < displayColumns) {
+      TH = document.createElement('TH');
+      this.THEAD.firstChild.appendChild(TH);
+      availableTHs++;
+    }
+  }
+
   while (this.availableTRs < displayRows) {
-    var TR = document.createElement('TR');
+    TR = document.createElement('TR');
     if (this.instance.hasSetting('rowHeaders')) {
-      var TH = document.createElement('TH');
+      TH = document.createElement('TH');
       TR.appendChild(TH);
     }
     for (var c = 0; c < displayTds; c++) {
-      var TD = document.createElement('TD');
+      TD = document.createElement('TD');
       TR.appendChild(TD);
     }
     this.TBODY.appendChild(TR);
@@ -63,12 +90,16 @@ WalkontableTable.prototype.draw = function () {
   if (this.instance.hasSetting('rowHeaders')) {
     displayTds--;
     offsetTd++;
-    this.THEAD.childNodes[0].childNodes[0].innerHTML = '';
+    if (this.instance.hasSetting('columnHeaders')) {
+      this.THEAD.childNodes[0].childNodes[0].innerHTML = '';
+    }
   }
 
   //draw THEAD
-  for (c = 0; c < displayTds; c++) {
-    this.THEAD.childNodes[0].childNodes[offsetTd + c].innerHTML = this.instance.getSetting('columnHeaders', offsetColumn + c);
+  if (this.instance.hasSetting('columnHeaders')) {
+    for (c = 0; c < displayTds; c++) {
+      this.THEAD.childNodes[0].childNodes[offsetTd + c].innerHTML = this.instance.getSetting('columnHeaders', offsetColumn + c);
+    }
   }
 
   //draw TBODY

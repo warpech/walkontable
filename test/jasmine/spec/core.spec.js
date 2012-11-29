@@ -94,4 +94,21 @@ describe('Walkontable', function () {
     wt.draw();
     expect($table.find('tbody tr:eq(0) td:last')[0].innerHTML).toBe('c');
   });
+
+  it("should bootstrap table if empty TABLE is given", function () {
+    $table = $('<table>    </table>'); //should also clean the empty text nodes inside
+
+    var wt = new Walkontable({
+      table: $table[0],
+      data: data,
+      offsetRow: 0,
+      offsetColumn: 0,
+      displayRows: 10,
+      displayColumns: 4,
+      columnHeaders: false,
+      rowHeaders: false
+    });
+    wt.draw();
+    expect($table.find('td').length).toBe(40);
+  });
 });

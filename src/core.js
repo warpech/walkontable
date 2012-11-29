@@ -9,14 +9,7 @@ function Walkontable(settings) {
     offsetRow: 0,
     offsetColumn: 0,
     rowHeaders: false,
-    columnHeaders: function (column) {
-      if (originalHeaders) {
-        return originalHeaders[column];
-      }
-      else {
-        throw new Error('You must either provide columnHeaders setting or define THEAD THs in table before initialization');
-      }
-    },
+    columnHeaders: false,
     totalRows: function () {
       return that.settings.data.length;
     },
@@ -62,11 +55,19 @@ function Walkontable(settings) {
   this.wtWheel = new WalkontableWheel(this);
   this.wtEvent = new WalkontableEvent(this);
   this.wtDom = new WalkontableDom();
-  if (this.wtTable.THEAD.childNodes[0].childNodes.length) {
+
+  //find original headers
+  if (this.wtTable.THEAD.childNodes.length && this.wtTable.THEAD.childNodes[0].childNodes.length) {
     for (var c = 0, clen = this.wtTable.THEAD.childNodes[0].childNodes.length; c < clen; c++) {
       originalHeaders.push(this.wtTable.THEAD.childNodes[0].childNodes[c].innerHTML);
     }
+    if (!this.hasSetting('columnHeaders')) {
+      this.settings.columnHeaders = function (column) {
+        return originalHeaders[column];
+      }
+    }
   }
+
   this.drawn = false;
 
   this.currentSelection = new WalkontableSelection(function (coords) {
