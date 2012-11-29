@@ -1,4 +1,4 @@
-function WalkontableScroll(instance, type) {
+function WalkontableScrollbar(instance, type) {
   var that = this;
 
   //reference to instance
@@ -45,7 +45,7 @@ function WalkontableScroll(instance, type) {
   });
 }
 
-WalkontableScroll.prototype.refresh = function () {
+WalkontableScrollbar.prototype.refresh = function () {
   var ratio = 1
     , handleSize
     , totalRows = this.instance.getSetting('totalRows')

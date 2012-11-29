@@ -50,8 +50,8 @@ function Walkontable(settings) {
 
   //bootstrap from settings
   this.wtTable = new WalkontableTable(this);
-  this.wtScrollV = new WalkontableScroll(this, 'vertical');
-  this.wtScrollH = new WalkontableScroll(this, 'horizontal');
+  this.wtScrollV = new WalkontableScrollbar(this, 'vertical');
+  this.wtScrollH = new WalkontableScrollbar(this, 'horizontal');
   this.wtWheel = new WalkontableWheel(this);
   this.wtEvent = new WalkontableEvent(this);
   this.wtDom = new WalkontableDom();
@@ -308,7 +308,7 @@ if (!Array.prototype.indexOf) {
     return -1;
   };
 }
-function WalkontableScroll(instance, type) {
+function WalkontableScrollbar(instance, type) {
   var that = this;
 
   //reference to instance
@@ -355,7 +355,7 @@ function WalkontableScroll(instance, type) {
   });
 }
 
-WalkontableScroll.prototype.refresh = function () {
+WalkontableScrollbar.prototype.refresh = function () {
   var ratio = 1
     , handleSize
     , totalRows = this.instance.getSetting('totalRows')
