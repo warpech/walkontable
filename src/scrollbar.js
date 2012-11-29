@@ -13,7 +13,7 @@ function WalkontableScrollbar(instance, type) {
   this.slider.style.position = 'absolute';
   this.slider.style.top = '0';
   this.slider.style.left = '0';
-  this.slider.className = 'dragdealer';
+  this.slider.className = 'dragdealer ' + type;
 
   this.handle = document.createElement('DIV');
   this.handle.className = 'handle';
@@ -56,14 +56,25 @@ WalkontableScrollbar.prototype.refresh = function () {
   var ratio = 1
     , handleSize
     , totalRows = this.instance.getSetting('totalRows')
-    , totalColumns = this.instance.getSetting('totalColumns');
+    , totalColumns = this.instance.getSetting('totalColumns')
+    , tableWidth = this.$table.outerWidth()
+    , tableHeight = this.$table.outerHeight()
+    , displayRows = Math.min(this.instance.getSetting('displayRows'), totalRows);
+
+  if (!tableWidth) {
+    throw new Error("I could not compute table width. Is the <table> element attached to the DOM?");
+  }
+  if (!tableHeight) {
+    throw new Error("I could not compute table height. Is the <table> element attached to the DOM?");
+  }
+
   if (this.type === 'vertical') {
     this.slider.style.top = this.$table.position().top + 'px';
-    this.slider.style.left = this.$table.outerWidth() - 1 + 'px'; //1 is sliders border-width
-    this.slider.style.height = this.$table.outerHeight() - 2 + 'px'; //2 is sliders border-width
+    this.slider.style.left = tableWidth - 1 + 'px'; //1 is sliders border-width
+    this.slider.style.height = tableHeight - 2 + 'px'; //2 is sliders border-width
 
     if (totalRows) {
-      ratio = this.instance.getSetting('displayRows') / totalRows;
+      ratio = displayRows / totalRows;
     }
     handleSize = Math.round($(this.slider).height() * ratio);
     if (handleSize < 10) {
@@ -73,8 +84,8 @@ WalkontableScrollbar.prototype.refresh = function () {
   }
   else if (this.type === 'horizontal') {
     this.slider.style.left = this.$table.position().left + 'px';
-    this.slider.style.top = this.$table.outerHeight() - 1 + 'px'; //1 is sliders border-width
-    this.slider.style.width = this.$table.outerWidth() - 2 + 'px'; //2 is sliders border-width
+    this.slider.style.top = tableHeight - 1 + 'px'; //1 is sliders border-width
+    this.slider.style.width = tableWidth - 2 + 'px'; //2 is sliders border-width
 
     if (totalColumns) {
       ratio = this.instance.getSetting('displayColumns') / totalColumns;

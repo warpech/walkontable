@@ -1,7 +1,7 @@
 /**
  * walkontable 0.1
  * 
- * Date: Thu Nov 29 2012 22:47:39 GMT+0100 (Central European Standard Time)
+ * Date: Fri Nov 30 2012 00:57:34 GMT+0100 (Central European Standard Time)
 */
 
 function Walkontable(settings) {
@@ -323,7 +323,7 @@ function WalkontableScrollbar(instance, type) {
   this.slider.style.position = 'absolute';
   this.slider.style.top = '0';
   this.slider.style.left = '0';
-  this.slider.className = 'dragdealer';
+  this.slider.className = 'dragdealer ' + type;
 
   this.handle = document.createElement('DIV');
   this.handle.className = 'handle';
@@ -366,14 +366,25 @@ WalkontableScrollbar.prototype.refresh = function () {
   var ratio = 1
     , handleSize
     , totalRows = this.instance.getSetting('totalRows')
-    , totalColumns = this.instance.getSetting('totalColumns');
+    , totalColumns = this.instance.getSetting('totalColumns')
+    , tableWidth = this.$table.outerWidth()
+    , tableHeight = this.$table.outerHeight()
+    , displayRows = Math.min(this.instance.getSetting('displayRows'), totalRows);
+
+  if (!tableWidth) {
+    throw new Error("I could not compute table width. Is the <table> element attached to the DOM?");
+  }
+  if (!tableHeight) {
+    throw new Error("I could not compute table height. Is the <table> element attached to the DOM?");
+  }
+
   if (this.type === 'vertical') {
     this.slider.style.top = this.$table.position().top + 'px';
-    this.slider.style.left = this.$table.outerWidth() - 1 + 'px'; //1 is sliders border-width
-    this.slider.style.height = this.$table.outerHeight() - 2 + 'px'; //2 is sliders border-width
+    this.slider.style.left = tableWidth - 1 + 'px'; //1 is sliders border-width
+    this.slider.style.height = tableHeight - 2 + 'px'; //2 is sliders border-width
 
     if (totalRows) {
-      ratio = this.instance.getSetting('displayRows') / totalRows;
+      ratio = displayRows / totalRows;
     }
     handleSize = Math.round($(this.slider).height() * ratio);
     if (handleSize < 10) {
@@ -383,8 +394,8 @@ WalkontableScrollbar.prototype.refresh = function () {
   }
   else if (this.type === 'horizontal') {
     this.slider.style.left = this.$table.position().left + 'px';
-    this.slider.style.top = this.$table.outerHeight() - 1 + 'px'; //1 is sliders border-width
-    this.slider.style.width = this.$table.outerWidth() - 2 + 'px'; //2 is sliders border-width
+    this.slider.style.top = tableHeight - 1 + 'px'; //1 is sliders border-width
+    this.slider.style.width = tableWidth - 2 + 'px'; //2 is sliders border-width
 
     if (totalColumns) {
       ratio = this.instance.getSetting('displayColumns') / totalColumns;
@@ -568,7 +579,8 @@ function WalkontableTable(instance) {
 }
 
 WalkontableTable.prototype.adjustAvailableNodes = function () {
-  var displayRows = this.instance.getSetting('displayRows')
+  var totalRows = this.instance.getSetting('totalRows')
+    , displayRows = this.instance.getSetting('displayRows')
     , displayColumns = this.instance.getSetting('displayColumns')
     , displayTds = displayColumns
     , TR
@@ -588,6 +600,7 @@ WalkontableTable.prototype.adjustAvailableNodes = function () {
     }
   }
 
+  displayRows = Math.min(displayRows, totalRows);
   while (this.availableTRs < displayRows) {
     TR = document.createElement('TR');
     if (this.instance.hasSetting('rowHeaders')) {
@@ -616,6 +629,7 @@ WalkontableTable.prototype.draw = function () {
     , c
     , offsetRow = this.instance.getSetting('offsetRow')
     , offsetColumn = this.instance.getSetting('offsetColumn')
+    , totalRows = this.instance.getSetting('totalRows')
     , displayRows = this.instance.getSetting('displayRows')
     , displayColumns = this.instance.getSetting('displayColumns')
     , offsetTd = 0
@@ -642,6 +656,7 @@ WalkontableTable.prototype.draw = function () {
   }
 
   //draw TBODY
+  displayRows = Math.min(displayRows, totalRows);
   for (r = 0; r < displayRows; r++) {
     TR = this.TBODY.childNodes[r];
     if (this.instance.hasSetting('rowHeaders')) {

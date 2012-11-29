@@ -3,13 +3,14 @@ describe('Walkontable', function () {
     , debug = false;
 
   beforeEach(function () {
-    $table = $('<table><thead><th></th><th></th></thead><tbody></tbody></table>'); //create a table that is not attached to document
+    $table = $('<table></table>'); //create a table that is not attached to document
+    $table.appendTo('body');
     createDataArray();
   });
 
   afterEach(function () {
-    if (debug) {
-      $table.appendTo('body');
+    if (!debug) {
+      $('.wtHolder').remove();
     }
   });
 
@@ -101,7 +102,9 @@ describe('Walkontable', function () {
   });
 
   it("should bootstrap table if empty TABLE is given", function () {
+    $table.remove();
     $table = $('<table>    </table>'); //should also clean the empty text nodes inside
+    $table.appendTo('body');
 
     var wt = new Walkontable({
       table: $table[0],

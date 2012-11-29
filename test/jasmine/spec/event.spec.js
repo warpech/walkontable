@@ -3,13 +3,14 @@ describe('WalkontableEvent', function () {
     , debug = false;
 
   beforeEach(function () {
-    $table = $('<table><thead><th></th><th></th></thead><tbody></tbody></table>'); //create a table that is not attached to document
+    $table = $('<table></table>'); //create a table that is not attached to document
+    $table.appendTo('body');
     createDataArray();
   });
 
   afterEach(function () {
-    if (debug) {
-      $table.appendTo('body');
+    if (!debug) {
+      $('.wtHolder').remove();
     }
   });
 

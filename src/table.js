@@ -28,7 +28,8 @@ function WalkontableTable(instance) {
 }
 
 WalkontableTable.prototype.adjustAvailableNodes = function () {
-  var displayRows = this.instance.getSetting('displayRows')
+  var totalRows = this.instance.getSetting('totalRows')
+    , displayRows = this.instance.getSetting('displayRows')
     , displayColumns = this.instance.getSetting('displayColumns')
     , displayTds = displayColumns
     , TR
@@ -48,6 +49,7 @@ WalkontableTable.prototype.adjustAvailableNodes = function () {
     }
   }
 
+  displayRows = Math.min(displayRows, totalRows);
   while (this.availableTRs < displayRows) {
     TR = document.createElement('TR');
     if (this.instance.hasSetting('rowHeaders')) {
@@ -76,6 +78,7 @@ WalkontableTable.prototype.draw = function () {
     , c
     , offsetRow = this.instance.getSetting('offsetRow')
     , offsetColumn = this.instance.getSetting('offsetColumn')
+    , totalRows = this.instance.getSetting('totalRows')
     , displayRows = this.instance.getSetting('displayRows')
     , displayColumns = this.instance.getSetting('displayColumns')
     , offsetTd = 0
@@ -102,6 +105,7 @@ WalkontableTable.prototype.draw = function () {
   }
 
   //draw TBODY
+  displayRows = Math.min(displayRows, totalRows);
   for (r = 0; r < displayRows; r++) {
     TR = this.TBODY.childNodes[r];
     if (this.instance.hasSetting('rowHeaders')) {

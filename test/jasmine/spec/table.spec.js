@@ -3,16 +3,16 @@ describe('WalkontableTable', function () {
     , debug = false;
 
   beforeEach(function () {
-    $table = $('<table><thead><th></th><th></th></thead><tbody></tbody></table>'); //create a table that is not attached to document
+    $table = $('<table></table>'); //create a table that is not attached to document
+    $table.appendTo('body');
     createDataArray();
   });
 
   afterEach(function () {
-    if (debug) {
-      $table.appendTo('body');
+    if (!debug) {
+      $('.wtHolder').remove();
     }
   });
-
   it("should create as many rows as in `displayRows`", function () {
     var wt = new Walkontable({
       table: $table[0],
@@ -27,12 +27,29 @@ describe('WalkontableTable', function () {
     expect($table.find('tbody tr').length).toBe(10);
   });
 
+  it("should create as many rows as in `totalRows` if it is smaller than `displayRows`", function () {
+    this.data.splice(5, this.data.length - 1);
+
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      offsetRow: 0,
+      displayRows: 10,
+      displayColumns: 2
+    });
+    wt.draw();
+    expect($table.find('tbody tr').length).toBe(5);
+  });
+
   it("first row should have as many columns as in THEAD", function () {
     var wt = new Walkontable({
       table: $table[0],
       data: getData,
       totalRows: getTotalRows,
       totalColumns: getTotalColumns,
+      columnHeaders: 'A',
       offsetRow: 0,
       displayRows: 10,
       displayColumns: 2
