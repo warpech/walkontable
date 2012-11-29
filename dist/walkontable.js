@@ -1,7 +1,7 @@
 /**
  * walkontable 0.1
  * 
- * Date: Thu Nov 29 2012 15:28:40 GMT+0100 (Central European Standard Time)
+ * Date: Thu Nov 29 2012 22:47:39 GMT+0100 (Central European Standard Time)
 */
 
 function Walkontable(settings) {
@@ -316,12 +316,9 @@ function WalkontableScrollbar(instance, type) {
   this.type = type;
   var TABLE = this.instance.getSetting('table');
   this.$table = $(TABLE);
+  var wtDom = new WalkontableDom();
 
   //create elements
-  var holder = document.createElement('DIV');
-  holder.style.position = 'relative';
-  holder.className = 'wtHolder';
-
   this.slider = document.createElement('DIV');
   this.slider.style.position = 'absolute';
   this.slider.style.top = '0';
@@ -331,10 +328,20 @@ function WalkontableScrollbar(instance, type) {
   this.handle = document.createElement('DIV');
   this.handle.className = 'handle';
 
-  TABLE.parentNode.insertBefore(holder, TABLE);
+  var parent = TABLE.parentNode;
+  if (!parent || parent.nodeType !== 1 || !wtDom.hasClass(parent, 'wtHolder')) {
+    var holder = document.createElement('DIV');
+    holder.style.position = 'relative';
+    holder.className = 'wtHolder';
+    if (parent) {
+      parent.insertBefore(holder, TABLE); //if TABLE is detached (e.g. in Jasmine test), it has no parentNode so we cannot attach holder to it
+    }
+    holder.appendChild(TABLE);
+    parent = holder;
+  }
+
   this.slider.appendChild(this.handle);
-  holder.appendChild(TABLE);
-  holder.appendChild(this.slider);
+  parent.appendChild(this.slider);
 
   this.dragdealer = new Dragdealer(this.slider, {
     vertical: (type === 'vertical'),
