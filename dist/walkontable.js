@@ -1,7 +1,7 @@
 /**
  * walkontable 0.1
  * 
- * Date: Sat Dec 01 2012 17:14:15 GMT+0100 (Central European Standard Time)
+ * Date: Sat Dec 01 2012 17:29:18 GMT+0100 (Central European Standard Time)
 */
 
 function Walkontable(settings) {
@@ -76,14 +76,20 @@ function Walkontable(settings) {
       if (this.settings.selections.hasOwnProperty(i)) {
         this.selections[i] = (function (setting) {
           return new WalkontableSelection(function (coords) {
+            var TD = that.wtTable.getCell(coords);
             if (setting.className) {
-              var TD = that.wtTable.getCell(coords);
               that.wtDom.addClass(TD, setting.className);
             }
+            if (setting.border) {
+              TD.style.outline = setting.border.width + 'px ' + setting.border.style + ' ' + setting.border.color;
+            }
           }, function (coords) {
+            var TD = that.wtTable.getCell(coords);
             if (setting.className) {
-              var TD = that.wtTable.getCell(coords);
               that.wtDom.removeClass(TD, setting.className);
+            }
+            if (setting.border) {
+              TD.style.outline = '';
             }
           });
         })(this.settings.selections[i])

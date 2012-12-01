@@ -90,12 +90,7 @@ function init() {
     },
     selections: {
       area: {
-        className: 'area',
-        border: {
-          width: 1,
-          color: 'red',
-          style: 'dashed'
-        }
+        className: 'area'
       },
       current: {
         className: 'current',

@@ -12,7 +12,7 @@ table .area {
 }
 
 table .current {
-  outline: 2px solid #5292F7;
+  background-color: #FFF;
 }
 
 /**

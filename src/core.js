@@ -70,14 +70,20 @@ function Walkontable(settings) {
       if (this.settings.selections.hasOwnProperty(i)) {
         this.selections[i] = (function (setting) {
           return new WalkontableSelection(function (coords) {
+            var TD = that.wtTable.getCell(coords);
             if (setting.className) {
-              var TD = that.wtTable.getCell(coords);
               that.wtDom.addClass(TD, setting.className);
             }
+            if (setting.border) {
+              TD.style.outline = setting.border.width + 'px ' + setting.border.style + ' ' + setting.border.color;
+            }
           }, function (coords) {
+            var TD = that.wtTable.getCell(coords);
             if (setting.className) {
-              var TD = that.wtTable.getCell(coords);
               that.wtDom.removeClass(TD, setting.className);
+            }
+            if (setting.border) {
+              TD.style.outline = '';
             }
           });
         })(this.settings.selections[i])
