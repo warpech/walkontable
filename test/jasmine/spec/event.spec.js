@@ -14,26 +14,29 @@ describe('WalkontableEvent', function () {
     }
   });
 
-  it("should call `onCurrentChange` callback", function () {
-    var clicked = false;
-    var wt = new Walkontable({
-      table: $table[0],
-      data: getData,
-      totalRows: getTotalRows,
-      totalColumns: getTotalColumns,
-      offsetRow: 10,
-      offsetColumn: 2,
-      displayRows: 10,
-      displayColumns: 2,
-      onCurrentChange: function (coords) {
-        clicked = coords;
-      }
-    });
+  it("should call `onCellMouseDown` callback", function () {
+    var myCoords
+      , myTD
+      , wt = new Walkontable({
+        table: $table[0],
+        data: getData,
+        totalRows: getTotalRows,
+        totalColumns: getTotalColumns,
+        offsetRow: 10,
+        offsetColumn: 2,
+        displayRows: 10,
+        displayColumns: 2,
+        onCellMouseDown: function (event, coords, TD) {
+          myCoords = coords;
+          myTD = TD;
+        }
+      });
     wt.draw();
 
     var $td = $table.find('tbody tr:first td:first');
     $td.trigger('mousedown');
 
-    expect(clicked).toEqual([10, 2]);
+    expect(myCoords).toEqual([10, 2]);
+    expect(myTD).toEqual($td[0]);
   });
 });

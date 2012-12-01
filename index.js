@@ -52,8 +52,9 @@ function init() {
   var arr = [];
   var arrPart = [];
   var str = 'abcdefghijklmnopqrstuvwxyz';
+  var i;
 
-  for (var i = 0; i < 100; i++) {
+  for (i = 0; i < 100; i++) {
     arrPart.push([
       i,
       randomString(3 * (1 + Math.sin(i)), str),
@@ -65,7 +66,7 @@ function init() {
     ]);
   }
 
-  for (var i = 0; i < 100000; i++) {
+  for (i = 0; i < 100000; i++) {
     arr.push(arrPart[i % 100]); //clone 100 row chunks until array has size of 100000
   }
 
@@ -86,6 +87,35 @@ function init() {
     displayColumns: 5,
     rowHeaders: function (row) {
       return row + 1
+    },
+    selections: {
+      area: {
+        className: 'area',
+        border: {
+          width: 1,
+          color: 'red',
+          style: 'dashed'
+        }
+      },
+      current: {
+        className: 'current',
+        border: {
+          width: 1,
+          color: 'blue',
+          style: 'solid'
+        }
+      }
+    },
+    onCellMouseDown: function (event, coords, TD) {
+      if (wt.selections.area.isSelected(coords, TD) > -1) {
+        wt.selections.area.remove(coords, TD);
+      }
+      else {
+        wt.selections.area.add(coords, TD);
+      }
+
+      wt.selections.current.clear();
+      wt.selections.current.add(coords, TD);
     }
   });
   wt.draw();

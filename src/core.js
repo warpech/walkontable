@@ -2,7 +2,7 @@ function Walkontable(settings) {
   var that = this;
   var originalHeaders = [];
 
-  //default settings
+  //default settings. void 0 means it is required, null means it can be empty
   var defaults = {
     table: void 0,
     data: void 0,
@@ -23,7 +23,8 @@ function Walkontable(settings) {
         return that.getSetting('totalColumns'); //display all columns by default
       }
     },
-    onCurrentChange: null
+    selections: null,
+    onCellMouseDown: null
   };
 
   //reference to settings
@@ -62,23 +63,29 @@ function Walkontable(settings) {
     }
   }
 
+  //initialize selections
+  this.selections = {};
+  if (this.settings.selections) {
+    for (i in this.settings.selections) {
+      if (this.settings.selections.hasOwnProperty(i)) {
+        this.selections[i] = (function (setting) {
+          return new WalkontableSelection(function (coords) {
+            if (setting.className) {
+              var TD = that.wtTable.getCell(coords);
+              that.wtDom.addClass(TD, setting.className);
+            }
+          }, function (coords) {
+            if (setting.className) {
+              var TD = that.wtTable.getCell(coords);
+              that.wtDom.removeClass(TD, setting.className);
+            }
+          });
+        })(this.settings.selections[i])
+      }
+    }
+  }
+
   this.drawn = false;
-
-  this.currentSelection = new WalkontableSelection(function (coords) {
-    var TD = that.wtTable.getCell(coords);
-    that.wtDom.addClass(TD, 'current');
-  }, function (coords) {
-    var TD = that.wtTable.getCell(coords);
-    that.wtDom.removeClass(TD, 'current');
-  });
-
-  this.areaSelection = new WalkontableSelection(function (coords) {
-    var TD = that.wtTable.getCell(coords);
-    that.wtDom.addClass(TD, 'selected');
-  }, function (coords) {
-    var TD = that.wtTable.getCell(coords);
-    that.wtDom.removeClass(TD, 'selected');
-  });
 }
 
 Walkontable.prototype.draw = function () {
@@ -90,7 +97,7 @@ Walkontable.prototype.draw = function () {
 };
 
 Walkontable.prototype.update = function (settings, value) {
-  if(value === void 0) { //settings is object
+  if (value === void 0) { //settings is object
     for (var i in settings) {
       if (settings.hasOwnProperty(i)) {
         this.settings[i] = settings[i];
@@ -130,9 +137,9 @@ Walkontable.prototype.scrollHorizontal = function (delta) {
   return this;
 };
 
-Walkontable.prototype.getSetting = function (key, param1, param2) {
+Walkontable.prototype.getSetting = function (key, param1, param2, param3) {
   if (typeof this.settings[key] === 'function') {
-    return this.settings[key](param1, param2);
+    return this.settings[key](param1, param2, param3);
   }
   else {
     return this.settings[key];
