@@ -45,15 +45,16 @@ function init() {
 
   function randomString(length, chars) {
     var result = '';
-    for (var i = length; i > 0; --i) result += chars[Math.round(Math.random() * (chars.length - 1))];
+    for (var i = length; i > 0; --i) result += chars.charAt(Math.round(Math.random() * (chars.length - 1)));
     return result;
   }
 
   var arr = [];
+  var arrPart = [];
   var str = 'abcdefghijklmnopqrstuvwxyz';
 
-  for (var i = 0; i < 100000; i++) {
-    arr.push([
+  for (var i = 0; i < 100; i++) {
+    arrPart.push([
       i,
       randomString(3 * (1 + Math.sin(i)), str),
       randomString(3 * (1 + Math.sin(i + 2)), str),
@@ -62,6 +63,10 @@ function init() {
       randomString(3 * (1 + Math.sin(i + 8)), str),
       randomString(3 * (1 + Math.sin(i + 10)), str)
     ]);
+  }
+
+  for (var i = 0; i < 100000; i++) {
+    arr.push(arrPart[i % 100]); //clone 100 row chunks until array has size of 100000
   }
 
   var wt = new Walkontable({
