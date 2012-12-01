@@ -89,11 +89,16 @@ Walkontable.prototype.draw = function () {
   return this;
 };
 
-Walkontable.prototype.update = function (settings) {
-  for (var i in settings) {
-    if (settings.hasOwnProperty(i)) {
-      this.settings[i] = settings[i];
+Walkontable.prototype.update = function (settings, value) {
+  if(value === void 0) { //settings is object
+    for (var i in settings) {
+      if (settings.hasOwnProperty(i)) {
+        this.settings[i] = settings[i];
+      }
     }
+  }
+  else { //if value is defined then settings is the key
+    this.settings[settings] = value;
   }
   return this;
 };

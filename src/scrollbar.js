@@ -39,18 +39,25 @@ function WalkontableScrollbar(instance, type) {
     speed: 100,
     yPrecision: 100,
     animationCallback: function (x, y) {
-      if (that.instance.drawn) {
-        if (that.type === 'vertical') {
-          that.instance.update({offsetRow: Math.round((that.instance.getSetting('totalRows') - that.instance.getSetting('displayRows')) * y)});
-        }
-        else if (that.type === 'horizontal') {
-          that.instance.update({offsetColumn: Math.round((that.instance.getSetting('totalColumns') - that.instance.getSetting('displayColumns')) * x)});
-        }
-        that.instance.draw();
-      }
+      that.onScroll(type === 'vertical' ? y : x);
     }
   });
 }
+
+WalkontableScrollbar.prototype.onScroll = function (delta) {
+  if (this.instance.drawn) {
+    var keys = this.type === 'vertical' ? ['offsetRow', 'totalRows', 'displayRows'] : ['offsetColumn', 'totalColumns', 'displayColumns'];
+    var total = this.instance.getSetting(keys[1]);
+    var display = this.instance.getSetting(keys[2]);
+    if(total > display) {
+      var newOffset = Math.max(0, Math.round((total - display) * delta));
+      if (newOffset !== this.instance.getSetting(keys[0])) { //is new offset different than old offset
+        this.instance.update(keys[0], newOffset);
+        this.instance.draw();
+      }
+    }
+  }
+};
 
 WalkontableScrollbar.prototype.refresh = function () {
   var ratio = 1
@@ -59,7 +66,8 @@ WalkontableScrollbar.prototype.refresh = function () {
     , totalColumns = this.instance.getSetting('totalColumns')
     , tableWidth = this.$table.outerWidth()
     , tableHeight = this.$table.outerHeight()
-    , displayRows = Math.min(this.instance.getSetting('displayRows'), totalRows);
+    , displayRows = Math.min(this.instance.getSetting('displayRows'), totalRows)
+    , displayColumns = Math.min(this.instance.getSetting('displayColumns'), totalColumns);
 
   if (!tableWidth) {
     throw new Error("I could not compute table width. Is the <table> element attached to the DOM?");
@@ -88,7 +96,7 @@ WalkontableScrollbar.prototype.refresh = function () {
     this.slider.style.width = tableWidth - 2 + 'px'; //2 is sliders border-width
 
     if (totalColumns) {
-      ratio = this.instance.getSetting('displayColumns') / totalColumns;
+      ratio = displayColumns / totalColumns;
     }
     handleSize = Math.round($(this.slider).width() * ratio);
     if (handleSize < 10) {

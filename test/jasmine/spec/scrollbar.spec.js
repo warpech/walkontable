@@ -51,4 +51,35 @@ describe('WalkontableScrollbar', function () {
     expect(slider.height()).toBeGreaterThan(0);
     expect(slider.height()).toEqual(handle.height());
   });
+
+  it("scrolling should have no effect when totalRows/Columns is smaller than displayRows/Columns", function () {
+    this.data.splice(5, this.data.length - 1);
+
+    try {
+      var wt = new Walkontable({
+        table: $table[0],
+        data: getData,
+        totalRows: getTotalRows,
+        totalColumns: getTotalColumns,
+        offsetRow: 0,
+        offsetColumn: 0,
+        displayRows: 10,
+        displayColumns: 10
+      });
+      wt.draw();
+
+      wt.wtScrollH.onScroll(1);
+      expect(wt.getSetting('offsetColumn')).toEqual(0);
+      wt.wtScrollH.onScroll(-1);
+      expect(wt.getSetting('offsetColumn') + 1).toEqual(1); //+1 so it can be distinguished from previous one
+
+      wt.wtScrollV.onScroll(1);
+      expect(wt.getSetting('offsetRow') + 2).toEqual(2); //+2 so it can be distinguished from previous one
+      wt.wtScrollV.onScroll(-1);
+      expect(wt.getSetting('offsetRow') + 3).toEqual(3); //+3 so it can be distinguished from previous one
+    }
+    catch (e) {
+      expect(e).toBeUndefined();
+    }
+  });
 });
