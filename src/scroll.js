@@ -50,9 +50,21 @@ WalkontableScroll.prototype.scrollHorizontal = function (delta) {
  * Scrolls viewport to a cell by minimum number of cells
  */
 WalkontableScroll.prototype.scrollViewport = function (coords) {
-  var offsetColumn = this.instance.getSetting('offsetColumn')
+  var offsetRow = this.instance.getSetting('offsetRow')
+    , offsetColumn = this.instance.getSetting('offsetColumn')
+    , displayRows = this.instance.getSetting('displayRows')
     , displayColumns = this.instance.getSetting('displayColumns')
+    , totalRows = this.instance.getSetting('totalRows')
     , totalColumns = this.instance.getSetting('totalColumns');
+
+  if (displayRows < totalRows) {
+    if (coords[0] > offsetRow + displayRows - 1) {
+      this.scrollVertical(coords[0] - (offsetRow + displayRows - 1));
+    }
+    else if (coords[0] < offsetRow) {
+      this.scrollVertical(coords[0] - offsetRow);
+    }
+  }
 
   if (displayColumns < totalColumns) {
     if (coords[1] > offsetColumn + displayColumns - 1) {

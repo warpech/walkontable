@@ -130,4 +130,34 @@ describe('WalkontableScroll', function () {
     wt.scrollViewport([0, 1]).draw();
     expect(wt.wtTable.getCoords($table.find('tbody tr:eq(0) td:eq(0)')[0])).toEqual([0, 1]);
   });
+
+  it("scroll viewport to a cell on far bottom should make it visible on bottom edge", function () {
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      offsetRow: 0,
+      offsetColumn: 0,
+      displayRows: 10,
+      displayColumns: 2
+    });
+    wt.scrollViewport([12, 0]).draw();
+    expect(wt.wtTable.getCoords($table.find('tbody tr:last td:first')[0])).toEqual([12, 0]);
+  });
+
+  it("scroll viewport to a cell on far top should make it visible on top edge", function () {
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      offsetRow: 20,
+      offsetColumn: 2,
+      displayRows: 10,
+      displayColumns: 2
+    });
+    wt.scrollViewport([12, 0]).draw();
+    expect(wt.wtTable.getCoords($table.find('tbody tr:first td:first')[0])).toEqual([12, 0]);
+  });
 });
