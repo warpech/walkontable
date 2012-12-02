@@ -98,22 +98,7 @@ describe('WalkontableScroll', function () {
       displayColumns: 2
     });
     wt.scrollViewport([0, 1]).draw();
-    expect(wt.wtTable.getCoords($table.find('tbody tr:eq(0) td:eq(1)')[0])).toEqual([0, 1]);
-  });
-
-  it("scroll viewport to a cell on far right should make it visible on right edge", function () {
-    var wt = new Walkontable({
-      table: $table[0],
-      data: getData,
-      totalRows: getTotalRows,
-      totalColumns: getTotalColumns,
-      offsetRow: 0,
-      offsetColumn: 0,
-      displayRows: 10,
-      displayColumns: 2
-    });
-    wt.scrollViewport([0, 2]).draw();
-    expect(wt.wtTable.getCoords($table.find('tbody tr:eq(0) td:eq(1)')[0])).toEqual([0, 2]);
+    expect(wt.wtTable.getCoords($table.find('tbody tr:first td:last')[0])).toEqual([0, 1]);
   });
 
   it("scroll viewport to a cell on far left should make it visible on left edge", function () {
@@ -128,7 +113,54 @@ describe('WalkontableScroll', function () {
       displayColumns: 2
     });
     wt.scrollViewport([0, 1]).draw();
-    expect(wt.wtTable.getCoords($table.find('tbody tr:eq(0) td:eq(0)')[0])).toEqual([0, 1]);
+    expect(wt.wtTable.getCoords($table.find('tbody tr:first td:first')[0])).toEqual([0, 1]);
+  });
+
+  it("scroll viewport to a cell on far right should make it visible on right edge", function () {
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      offsetRow: 0,
+      offsetColumn: 0,
+      displayRows: 10,
+      displayColumns: 2
+    });
+    wt.scrollViewport([0, 2]).draw();
+    expect(wt.wtTable.getCoords($table.find('tbody tr:first td:last')[0])).toEqual([0, 2]);
+  });
+
+  it("scroll viewport to a cell on far left should make it visible on left edge (with row header)", function () {
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      offsetRow: 0,
+      offsetColumn: 2,
+      displayRows: 10,
+      displayColumns: 2,
+      rowHeaders: "Row"
+    });
+    wt.scrollViewport([0, 1]).draw();
+    expect(wt.wtTable.getCoords($table.find('tbody tr:first td:first')[0])).toEqual([0, 1]);
+  });
+
+  it("scroll viewport to a cell on far right should make it visible on right edge (with row header)", function () {
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      offsetRow: 0,
+      offsetColumn: 0,
+      displayRows: 10,
+      displayColumns: 2,
+      rowHeaders: "Row"
+    });
+    wt.scrollViewport([0, 2]).draw();
+    expect(wt.wtTable.getCoords($table.find('tbody tr:first td:last')[0])).toEqual([0, 2]);
   });
 
   it("scroll viewport to a cell on far bottom should make it visible on bottom edge", function () {

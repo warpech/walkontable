@@ -156,20 +156,20 @@ WalkontableTable.prototype.getCell = function (coords) {
     , offsetColumn = this.instance.getSetting('offsetColumn')
     , displayRows = this.instance.getSetting('displayRows')
     , displayColumns = this.instance.getSetting('displayColumns')
-    , rowHeaderOffset = this.instance.hasSetting('rowHeaders') ? 1 : 0;
+    , rowHeadersCount = this.instance.hasSetting('rowHeaders') ? 1 : 0;
 
   if (coords[0] >= offsetRow && coords[0] <= offsetRow + displayRows) {
-    if (coords[1] >= offsetColumn && coords[1] < offsetColumn + displayColumns - rowHeaderOffset) {
-      return this.TBODY.childNodes[coords[0] - offsetRow].childNodes[coords[1] - offsetColumn + rowHeaderOffset];
+    if (coords[1] >= offsetColumn && coords[1] < offsetColumn + displayColumns - rowHeadersCount) {
+      return this.TBODY.childNodes[coords[0] - offsetRow].childNodes[coords[1] - offsetColumn + rowHeadersCount];
     }
   }
   return null;
 };
 
 WalkontableTable.prototype.getCoords = function (TD) {
-  var rowHeaderOffset = this.instance.hasSetting('rowHeaders') ? 1 : 0;
+  var rowHeadersCount = this.instance.hasSetting('rowHeaders') ? 1 : 0;
   return [
     this.wtDom.prevSiblings(TD.parentNode).length + this.instance.getSetting('offsetRow'),
-    TD.cellIndex + this.instance.getSetting('offsetColumn') - rowHeaderOffset
+    TD.cellIndex + this.instance.getSetting('offsetColumn') - rowHeadersCount
   ];
 };

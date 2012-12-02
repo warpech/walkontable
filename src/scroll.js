@@ -55,7 +55,8 @@ WalkontableScroll.prototype.scrollViewport = function (coords) {
     , displayRows = this.instance.getSetting('displayRows')
     , displayColumns = this.instance.getSetting('displayColumns')
     , totalRows = this.instance.getSetting('totalRows')
-    , totalColumns = this.instance.getSetting('totalColumns');
+    , totalColumns = this.instance.getSetting('totalColumns')
+    , rowHeadersCount = this.instance.hasSetting('rowHeaders') ? 1 : 0;
 
   if (displayRows < totalRows) {
     if (coords[0] > offsetRow + displayRows - 1) {
@@ -66,9 +67,9 @@ WalkontableScroll.prototype.scrollViewport = function (coords) {
     }
   }
 
-  if (displayColumns < totalColumns) {
-    if (coords[1] > offsetColumn + displayColumns - 1) {
-      this.scrollHorizontal(coords[1] - (offsetColumn + displayColumns - 1));
+  if (displayColumns - rowHeadersCount < totalColumns) {
+    if (coords[1] > offsetColumn + displayColumns - rowHeadersCount - 1) {
+      this.scrollHorizontal(coords[1] - (offsetColumn + displayColumns - rowHeadersCount - 1));
     }
     else if (coords[1] < offsetColumn) {
       this.scrollHorizontal(coords[1] - offsetColumn);
