@@ -11,7 +11,7 @@ WalkontableScroll.prototype.refreshScrollbars = function () {
 
 WalkontableScroll.prototype.scrollVertical = function (delta) {
   var offsetRow = this.instance.getSetting('offsetRow')
-    , max = this.instance.getSetting('totalRows') - 1 - this.instance.getSetting('displayRows');
+    , max = this.instance.getSetting('totalRows') - this.instance.getSetting('displayRows');
   if (max < 0) {
     max = 0;
   }
