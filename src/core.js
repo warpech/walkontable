@@ -122,6 +122,10 @@ Walkontable.prototype.scrollHorizontal = function (delta) {
   return this.wtScroll.scrollHorizontal(delta);
 };
 
+Walkontable.prototype.scrollViewport = function (coords) {
+  return this.wtScroll.scrollViewport(coords);
+};
+
 Walkontable.prototype.getSetting = function (key, param1, param2, param3) {
   if (typeof this.settings[key] === 'function') {
     return this.settings[key](param1, param2, param3);

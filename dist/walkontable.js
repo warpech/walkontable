@@ -1,7 +1,7 @@
 /**
  * walkontable 0.1
  * 
- * Date: Sun Dec 02 2012 14:37:39 GMT+0100 (Central European Standard Time)
+ * Date: Sun Dec 02 2012 21:15:57 GMT+0100 (Central European Standard Time)
 */
 
 function Walkontable(settings) {
@@ -126,6 +126,10 @@ Walkontable.prototype.scrollVertical = function (delta) {
 
 Walkontable.prototype.scrollHorizontal = function (delta) {
   return this.wtScroll.scrollHorizontal(delta);
+};
+
+Walkontable.prototype.scrollViewport = function (coords) {
+  return this.wtScroll.scrollViewport(coords);
 };
 
 Walkontable.prototype.getSetting = function (key, param1, param2, param3) {
@@ -316,7 +320,7 @@ WalkontableScroll.prototype.scrollVertical = function (delta) {
     offsetRow = max;
   }
   this.instance.update('offsetRow', offsetRow);
-  return this;
+  return this.instance;
 };
 
 WalkontableScroll.prototype.scrollHorizontal = function (delta) {
@@ -336,7 +340,27 @@ WalkontableScroll.prototype.scrollHorizontal = function (delta) {
     offsetColumn = max;
   }
   this.instance.update('offsetColumn', offsetColumn);
-  return this;
+  return this.instance;
+};
+
+/**
+ * Scrolls viewport to a cell by minimum number of cells
+ */
+WalkontableScroll.prototype.scrollViewport = function (coords) {
+  var offsetColumn = this.instance.getSetting('offsetColumn')
+    , displayColumns = this.instance.getSetting('displayColumns')
+    , totalColumns = this.instance.getSetting('totalColumns');
+
+  if (displayColumns < totalColumns) {
+    if (coords[1] > offsetColumn + displayColumns - 1) {
+      this.scrollHorizontal(coords[1] - (offsetColumn + displayColumns - 1));
+    }
+    else if (coords[1] < offsetColumn) {
+      this.scrollHorizontal(coords[1] - offsetColumn);
+    }
+  }
+
+  return this.instance;
 };
 function WalkontableScrollbar(instance, type) {
   var that = this;

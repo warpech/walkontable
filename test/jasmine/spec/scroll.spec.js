@@ -1,6 +1,6 @@
 describe('WalkontableScroll', function () {
   var $table
-    , debug = false;
+    , debug = 1;
 
   beforeEach(function () {
     $table = $('<table></table>'); //create a table that is not attached to document
@@ -84,5 +84,50 @@ describe('WalkontableScroll', function () {
     wt.scrollHorizontal(999); //this will scroll to the last column
     wt.draw();
     expect(wt.wtTable.getCoords($table.find('tbody tr:eq(0) td:eq(0)')[0])).toEqual([0, 0]);
+  });
+
+  it("scroll viewport to a cell that is visible should do nothing", function () {
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      offsetRow: 0,
+      offsetColumn: 0,
+      displayRows: 10,
+      displayColumns: 2
+    });
+    wt.scrollViewport([0, 1]).draw();
+    expect(wt.wtTable.getCoords($table.find('tbody tr:eq(0) td:eq(1)')[0])).toEqual([0, 1]);
+  });
+
+  it("scroll viewport to a cell on far right should make it visible on right edge", function () {
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      offsetRow: 0,
+      offsetColumn: 0,
+      displayRows: 10,
+      displayColumns: 2
+    });
+    wt.scrollViewport([0, 2]).draw();
+    expect(wt.wtTable.getCoords($table.find('tbody tr:eq(0) td:eq(1)')[0])).toEqual([0, 2]);
+  });
+
+  it("scroll viewport to a cell on far left should make it visible on left edge", function () {
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      offsetRow: 0,
+      offsetColumn: 2,
+      displayRows: 10,
+      displayColumns: 2
+    });
+    wt.scrollViewport([0, 1]).draw();
+    expect(wt.wtTable.getCoords($table.find('tbody tr:eq(0) td:eq(0)')[0])).toEqual([0, 1]);
   });
 });

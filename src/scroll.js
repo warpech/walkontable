@@ -23,7 +23,7 @@ WalkontableScroll.prototype.scrollVertical = function (delta) {
     offsetRow = max;
   }
   this.instance.update('offsetRow', offsetRow);
-  return this;
+  return this.instance;
 };
 
 WalkontableScroll.prototype.scrollHorizontal = function (delta) {
@@ -43,5 +43,25 @@ WalkontableScroll.prototype.scrollHorizontal = function (delta) {
     offsetColumn = max;
   }
   this.instance.update('offsetColumn', offsetColumn);
-  return this;
+  return this.instance;
+};
+
+/**
+ * Scrolls viewport to a cell by minimum number of cells
+ */
+WalkontableScroll.prototype.scrollViewport = function (coords) {
+  var offsetColumn = this.instance.getSetting('offsetColumn')
+    , displayColumns = this.instance.getSetting('displayColumns')
+    , totalColumns = this.instance.getSetting('totalColumns');
+
+  if (displayColumns < totalColumns) {
+    if (coords[1] > offsetColumn + displayColumns - 1) {
+      this.scrollHorizontal(coords[1] - (offsetColumn + displayColumns - 1));
+    }
+    else if (coords[1] < offsetColumn) {
+      this.scrollHorizontal(coords[1] - offsetColumn);
+    }
+  }
+
+  return this.instance;
 };
