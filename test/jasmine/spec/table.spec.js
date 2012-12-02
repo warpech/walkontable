@@ -137,4 +137,102 @@ describe('WalkontableTable', function () {
     expect($table.find('tr:eq(0) th:eq(1)')[0].innerHTML).toBe('2');
     expect($table.find('tr:eq(1) th:eq(0)')[0].innerHTML).toBe('2');
   });
+
+  it("getCell should only return cells that are visible", function () {
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      offsetRow: 0,
+      offsetColumn: 0,
+      displayRows: 10,
+      displayColumns: 2
+    });
+    wt.draw();
+
+    wt.update('offsetColumn', 1).draw();
+
+    var $td1 = $table.find('tbody tr:eq(0) td:eq(0)');
+    var $td2 = $table.find('tbody tr:eq(0) td:eq(1)');
+    expect(wt.wtTable.getCell([0, 0])).toBe(null);
+    expect(wt.wtTable.getCell([0, 1])).toBe($td1[0]);
+    expect(wt.wtTable.getCell([0, 2])).toBe($td2[0]);
+    expect(wt.wtTable.getCell([0, 3])).toBe(null);
+  });
+
+  it("getCell should only return cells that are visible (with row header)", function () {
+    function plusOne(i) {
+      return i + 1;
+    }
+
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      offsetRow: 0,
+      offsetColumn: 0,
+      displayRows: 10,
+      displayColumns: 2,
+      rowHeaders: plusOne
+    });
+    wt.draw();
+
+    wt.update('offsetColumn', 1).draw();
+
+    var $td1 = $table.find('tbody tr:eq(0) td:eq(0)');
+    expect(wt.wtTable.getCell([0, 0])).toBe(null);
+    expect(wt.wtTable.getCell([0, 1])).toBe($td1[0]);
+    expect(wt.wtTable.getCell([0, 2])).toBe(null);
+  });
+
+  it("getCoords should return coords of TD", function () {
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      offsetRow: 0,
+      offsetColumn: 0,
+      displayRows: 10,
+      displayColumns: 2
+    });
+    wt.draw();
+
+    wt.update({
+      offsetRow: 1,
+      offsetColumn: 1
+    }).draw();
+
+    var $td2 = $table.find('tbody tr:eq(1) td:eq(1)');
+    expect(wt.wtTable.getCoords($td2[0])).toEqual([2, 2]);
+  });
+
+  it("getCoords should return coords of TD (with row header)", function () {
+    function plusOne(i) {
+      return i + 1;
+    }
+
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      offsetRow: 0,
+      offsetColumn: 0,
+      displayRows: 10,
+      displayColumns: 2,
+      rowHeaders: plusOne
+    });
+    wt.draw();
+
+    wt.update({
+      offsetRow: 1,
+      offsetColumn: 1
+    }).draw();
+
+    var $td2 = $table.find('tbody tr:eq(1) td:eq(0)');
+    expect(wt.wtTable.getCoords($td2[0])).toEqual([2, 1]);
+  });
 });

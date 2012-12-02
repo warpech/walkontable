@@ -127,8 +127,25 @@ WalkontableTable.prototype.draw = function () {
       else {
         TD.innerHTML = '';
       }
+      TD.className = '';
+      TD.style.outline = ''; //temporary code to remove outline
     }
   }
+
+  //redraw selections
+  if (this.instance.selections) {
+    for (i in this.instance.selections) {
+      if (this.instance.selections.hasOwnProperty(i)) {
+        for (c in this.instance.selections[i].selected) {
+          TD = this.getCell(this.instance.selections[i].selected[c]);
+          if (TD) {
+            this.instance.selections[i].onAdd(this.instance.selections[i].selected[c], TD);
+          }
+        }
+      }
+    }
+  }
+
   return this;
 };
 
@@ -136,19 +153,21 @@ WalkontableTable.prototype.getCell = function (coords) {
   var offsetRow = this.instance.getSetting('offsetRow')
     , offsetColumn = this.instance.getSetting('offsetColumn')
     , displayRows = this.instance.getSetting('displayRows')
-    , displayColumns = this.instance.getSetting('displayColumns');
+    , displayColumns = this.instance.getSetting('displayColumns')
+    , rowHeaderOffset = this.instance.hasSetting('rowHeaders') ? 1 : 0;
 
   if (coords[0] >= offsetRow && coords[0] <= offsetRow + displayRows) {
-    if (coords[1] >= offsetColumn && coords[1] <= offsetColumn + displayColumns) {
-      return this.TBODY.childNodes[coords[0] - offsetRow].childNodes[coords[1] - offsetColumn];
+    if (coords[1] >= offsetColumn && coords[1] < offsetColumn + displayColumns - rowHeaderOffset) {
+      return this.TBODY.childNodes[coords[0] - offsetRow].childNodes[coords[1] - offsetColumn + rowHeaderOffset];
     }
   }
   return null;
 };
 
 WalkontableTable.prototype.getCoords = function (TD) {
+  var rowHeaderOffset = this.instance.hasSetting('rowHeaders') ? 1 : 0;
   return [
     this.wtDom.prevSiblings(TD.parentNode).length + this.instance.getSetting('offsetRow'),
-    TD.cellIndex + this.instance.getSetting('offsetColumn')
+    TD.cellIndex + this.instance.getSetting('offsetColumn') - rowHeaderOffset
   ];
 };
