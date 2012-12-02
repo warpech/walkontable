@@ -134,12 +134,14 @@ WalkontableTable.prototype.draw = function () {
 
   //redraw selections
   if (this.instance.selections) {
-    for (i in this.instance.selections) {
-      if (this.instance.selections.hasOwnProperty(i)) {
-        for (c in this.instance.selections[i].selected) {
-          TD = this.getCell(this.instance.selections[i].selected[c]);
-          if (TD) {
-            this.instance.selections[i].onAdd(this.instance.selections[i].selected[c], TD);
+    for (r in this.instance.selections) {
+      if (this.instance.selections.hasOwnProperty(r)) {
+        for (c in this.instance.selections[r].selected) {
+          if (this.instance.selections[r].selected.hasOwnProperty(c)) {
+            TD = this.getCell(this.instance.selections[r].selected[c]);
+            if (TD) {
+              this.instance.selections[r].onAdd(this.instance.selections[r].selected[c], TD);
+            }
           }
         }
       }

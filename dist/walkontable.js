@@ -1,7 +1,7 @@
 /**
  * walkontable 0.1
  * 
- * Date: Sun Dec 02 2012 12:38:35 GMT+0100 (Central European Standard Time)
+ * Date: Sun Dec 02 2012 12:41:10 GMT+0100 (Central European Standard Time)
 */
 
 function Walkontable(settings) {
@@ -697,12 +697,12 @@ WalkontableTable.prototype.draw = function () {
 
   //redraw selections
   if (this.instance.selections) {
-    for (i in this.instance.selections) {
-      if (this.instance.selections.hasOwnProperty(i)) {
-        for (c in this.instance.selections[i].selected) {
-          TD = this.getCell(this.instance.selections[i].selected[c]);
+    for (r in this.instance.selections) {
+      if (this.instance.selections.hasOwnProperty(r)) {
+        for (c in this.instance.selections[r].selected) {
+          TD = this.getCell(this.instance.selections[r].selected[c]);
           if (TD) {
-            this.instance.selections[i].onAdd(this.instance.selections[i].selected[c], TD);
+            this.instance.selections[r].onAdd(this.instance.selections[r].selected[c], TD);
           }
         }
       }
