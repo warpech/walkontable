@@ -1,7 +1,7 @@
 /**
  * walkontable 0.1
  * 
- * Date: Sun Dec 02 2012 21:46:46 GMT+0100 (Central European Standard Time)
+ * Date: Sun Dec 02 2012 22:51:34 GMT+0100 (Central European Standard Time)
 */
 
 function Walkontable(settings) {
@@ -354,6 +354,13 @@ WalkontableScroll.prototype.scrollViewport = function (coords) {
     , totalRows = this.instance.getSetting('totalRows')
     , totalColumns = this.instance.getSetting('totalColumns')
     , rowHeadersCount = this.instance.hasSetting('rowHeaders') ? 1 : 0;
+
+  if (coords[0] < 0 || coords[0] > totalRows - 1) {
+    throw new Error('row ' + coords[0] + ' does not exist');
+  }
+  else if (coords[1] < 0 || coords[1] > totalColumns - 1) {
+    throw new Error('column ' + coords[1] + ' does not exist');
+  }
 
   if (displayRows < totalRows) {
     if (coords[0] > offsetRow + displayRows - 1) {

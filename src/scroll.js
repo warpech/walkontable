@@ -58,6 +58,13 @@ WalkontableScroll.prototype.scrollViewport = function (coords) {
     , totalColumns = this.instance.getSetting('totalColumns')
     , rowHeadersCount = this.instance.hasSetting('rowHeaders') ? 1 : 0;
 
+  if (coords[0] < 0 || coords[0] > totalRows - 1) {
+    throw new Error('row ' + coords[0] + ' does not exist');
+  }
+  else if (coords[1] < 0 || coords[1] > totalColumns - 1) {
+    throw new Error('column ' + coords[1] + ' does not exist');
+  }
+
   if (displayRows < totalRows) {
     if (coords[0] > offsetRow + displayRows - 1) {
       this.scrollVertical(coords[0] - (offsetRow + displayRows - 1));

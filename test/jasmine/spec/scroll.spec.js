@@ -192,4 +192,50 @@ describe('WalkontableScroll', function () {
     wt.scrollViewport([12, 0]).draw();
     expect(wt.wtTable.getCoords($table.find('tbody tr:first td:first')[0])).toEqual([12, 0]);
   });
+
+  it("scroll viewport to a cell that does not exist (vertically) should throw an error", function () {
+    this.data.splice(20);
+
+    var err = 0;
+    try {
+      var wt = new Walkontable({
+        table: $table[0],
+        data: getData,
+        totalRows: getTotalRows,
+        totalColumns: getTotalColumns,
+        offsetRow: 0,
+        offsetColumn: 0,
+        displayRows: 10,
+        displayColumns: 2
+      });
+      wt.scrollViewport([40, 0]).draw();
+    }
+    catch(e) {
+      err++;
+    }
+
+    expect(err).toEqual(1);
+  });
+
+  it("scroll viewport to a cell that does not exist (horizontally) should throw an error", function () {
+    var err = 0;
+    try {
+      var wt = new Walkontable({
+        table: $table[0],
+        data: getData,
+        totalRows: getTotalRows,
+        totalColumns: getTotalColumns,
+        offsetRow: 0,
+        offsetColumn: 0,
+        displayRows: 10,
+        displayColumns: 2
+      });
+      wt.scrollViewport([0, 40]).draw();
+    }
+    catch(e) {
+      err++;
+    }
+
+    expect(err).toEqual(1);
+  });
 });
