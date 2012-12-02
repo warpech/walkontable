@@ -45,8 +45,7 @@ function Walkontable(settings) {
 
   //bootstrap from settings
   this.wtTable = new WalkontableTable(this);
-  this.wtScrollV = new WalkontableScrollbar(this, 'vertical');
-  this.wtScrollH = new WalkontableScrollbar(this, 'horizontal');
+  this.wtScroll = new WalkontableScroll(this);
   this.wtWheel = new WalkontableWheel(this);
   this.wtEvent = new WalkontableEvent(this);
   this.wtDom = new WalkontableDom();
@@ -96,8 +95,7 @@ function Walkontable(settings) {
 
 Walkontable.prototype.draw = function () {
   this.wtTable.draw();
-  this.wtScrollV.refresh();
-  this.wtScrollH.refresh();
+  this.wtScroll.refreshScrollbars();
   this.drawn = true;
   return this;
 };
@@ -117,36 +115,11 @@ Walkontable.prototype.update = function (settings, value) {
 };
 
 Walkontable.prototype.scrollVertical = function (delta) {
-  var max = this.getSetting('totalRows') - 1 - this.getSetting('displayRows');
-  if (max < 0) {
-    max = 0;
-  }
-  this.settings.offsetRow = this.settings.offsetRow + delta;
-  if (this.settings.offsetRow < 0) {
-    this.settings.offsetRow = 0;
-  }
-  else if (this.settings.offsetRow >= max) {
-    this.settings.offsetRow = max;
-  }
-  return this;
+  return this.wtScroll.scrollVertical(delta);
 };
 
 Walkontable.prototype.scrollHorizontal = function (delta) {
-  var max = this.getSetting('totalColumns') - this.settings.displayColumns;
-  if (this.hasSetting('rowHeaders')) {
-    max++;
-  }
-  if (max < 0) {
-    max = 0;
-  }
-  this.settings.offsetColumn = this.settings.offsetColumn + delta;
-  if (this.settings.offsetColumn < 0) {
-    this.settings.offsetColumn = 0;
-  }
-  else if (this.settings.offsetColumn >= max) {
-    this.settings.offsetColumn = max;
-  }
-  return this;
+  return this.wtScroll.scrollHorizontal(delta);
 };
 
 Walkontable.prototype.getSetting = function (key, param1, param2, param3) {

@@ -68,14 +68,14 @@ describe('WalkontableScrollbar', function () {
       });
       wt.draw();
 
-      wt.wtScrollH.onScroll(1);
+      wt.wtScroll.wtScrollbarH.onScroll(1);
       expect(wt.getSetting('offsetColumn')).toEqual(0);
-      wt.wtScrollH.onScroll(-1);
+      wt.wtScroll.wtScrollbarH.onScroll(-1);
       expect(wt.getSetting('offsetColumn') + 1).toEqual(1); //+1 so it can be distinguished from previous one
 
-      wt.wtScrollV.onScroll(1);
+      wt.wtScroll.wtScrollbarV.onScroll(1);
       expect(wt.getSetting('offsetRow') + 2).toEqual(2); //+2 so it can be distinguished from previous one
-      wt.wtScrollV.onScroll(-1);
+      wt.wtScroll.wtScrollbarV.onScroll(-1);
       expect(wt.getSetting('offsetRow') + 3).toEqual(3); //+3 so it can be distinguished from previous one
     }
     catch (e) {
