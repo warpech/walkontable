@@ -117,7 +117,10 @@ Walkontable.prototype.update = function (settings, value) {
 };
 
 Walkontable.prototype.scrollVertical = function (delta) {
-  var max = this.getSetting('totalRows') - 1 - this.settings.displayRows;
+  var max = this.getSetting('totalRows') - 1 - this.getSetting('displayRows');
+  if (max < 0) {
+    max = 0;
+  }
   this.settings.offsetRow = this.settings.offsetRow + delta;
   if (this.settings.offsetRow < 0) {
     this.settings.offsetRow = 0;
@@ -132,6 +135,9 @@ Walkontable.prototype.scrollHorizontal = function (delta) {
   var max = this.getSetting('totalColumns') - this.settings.displayColumns;
   if (this.hasSetting('rowHeaders')) {
     max++;
+  }
+  if (max < 0) {
+    max = 0;
   }
   this.settings.offsetColumn = this.settings.offsetColumn + delta;
   if (this.settings.offsetColumn < 0) {

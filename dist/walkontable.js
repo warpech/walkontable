@@ -1,7 +1,7 @@
 /**
  * walkontable 0.1
  * 
- * Date: Sun Dec 02 2012 12:41:10 GMT+0100 (Central European Standard Time)
+ * Date: Sun Dec 02 2012 13:34:57 GMT+0100 (Central European Standard Time)
 */
 
 function Walkontable(settings) {
@@ -123,7 +123,10 @@ Walkontable.prototype.update = function (settings, value) {
 };
 
 Walkontable.prototype.scrollVertical = function (delta) {
-  var max = this.getSetting('totalRows') - 1 - this.settings.displayRows;
+  var max = this.getSetting('totalRows') - 1 - this.getSetting('displayRows');
+  if (max < 0) {
+    max = 0;
+  }
   this.settings.offsetRow = this.settings.offsetRow + delta;
   if (this.settings.offsetRow < 0) {
     this.settings.offsetRow = 0;
@@ -138,6 +141,9 @@ Walkontable.prototype.scrollHorizontal = function (delta) {
   var max = this.getSetting('totalColumns') - this.settings.displayColumns;
   if (this.hasSetting('rowHeaders')) {
     max++;
+  }
+  if (max < 0) {
+    max = 0;
   }
   this.settings.offsetColumn = this.settings.offsetColumn + delta;
   if (this.settings.offsetColumn < 0) {
@@ -700,9 +706,11 @@ WalkontableTable.prototype.draw = function () {
     for (r in this.instance.selections) {
       if (this.instance.selections.hasOwnProperty(r)) {
         for (c in this.instance.selections[r].selected) {
-          TD = this.getCell(this.instance.selections[r].selected[c]);
-          if (TD) {
-            this.instance.selections[r].onAdd(this.instance.selections[r].selected[c], TD);
+          if (this.instance.selections[r].selected.hasOwnProperty(c)) {
+            TD = this.getCell(this.instance.selections[r].selected[c]);
+            if (TD) {
+              this.instance.selections[r].onAdd(this.instance.selections[r].selected[c], TD);
+            }
           }
         }
       }
@@ -744,7 +752,7 @@ function WalkontableWheel(instance) {
       that.instance.scrollVertical(-deltaY).draw();
     }
     else if (deltaX) {
-
+      that.instance.scrollHorizontal(deltaX).draw();
     }
     event.preventDefault();
   });

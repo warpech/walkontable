@@ -8,7 +8,7 @@ function WalkontableWheel(instance) {
       that.instance.scrollVertical(-deltaY).draw();
     }
     else if (deltaX) {
-
+      that.instance.scrollHorizontal(deltaX).draw();
     }
     event.preventDefault();
   });
