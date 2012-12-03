@@ -14,17 +14,8 @@ function Walkontable(settings) {
     totalColumns: void 0,
     width: null,
     height: null,
-    displayRows: function () {
-      return that.getSetting('totalRows'); //display all rows by default
-    },
-    displayColumns: function () {
-      if (that.wtTable.THEAD.firstChild && that.wtTable.THEAD.firstChild.firstChild) {
-        return that.wtTable.THEAD.firstChild.childNodes.length;
-      }
-      else {
-        return that.getSetting('totalColumns'); //display all columns by default
-      }
-    },
+    displayRows: null,
+    displayColumns: null,
     cellRenderer: function (row, column, TD) {
       var cellData = that.getSetting('data', row, column);
       if (cellData !== void 0) {
@@ -149,6 +140,12 @@ Walkontable.prototype.getSetting = function (key, param1, param2, param3) {
   }
   else if (key === 'displayColumns' && this.settings['width']) {
     return this.settings['width'] / 50; //silly assumption but should be fine for now
+  }
+  else if (key === 'displayRows' && this.settings['displayRows'] === null) {
+    return this.getSetting('totalRows');
+  }
+  else if (key === 'displayColumns' && this.settings['displayColumns'] === null) {
+    return this.settings['rowHeaders'] ? this.getSetting('totalColumns') + 1 : this.getSetting('totalColumns');
   }
 
   if (typeof this.settings[key] === 'function') {

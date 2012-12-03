@@ -48,9 +48,6 @@ WalkontableScrollbar.prototype.onScroll = function (delta) {
   if (this.instance.drawn) {
     var keys = this.type === 'vertical' ? ['offsetRow', 'totalRows', 'displayRows'] : ['offsetColumn', 'totalColumns', 'displayColumns'];
     var total = this.instance.getSetting(keys[1]);
-    if (this.type === 'horizontal') {
-      total += this.instance.hasSetting('rowHeaders') ? 1 : 0; //rowHeadersCount
-    }
     var display = this.instance.getSetting(keys[2]);
     if (total > display) {
       var newOffset = Math.max(0, Math.round((total - display) * delta));
@@ -107,10 +104,8 @@ WalkontableScrollbar.prototype.refresh = function () {
     this.slider.style.top = tableHeight - 1 + 'px'; //1 is sliders border-width
     this.slider.style.width = tableWidth - 2 + 'px'; //2 is sliders border-width
 
-    var rowHeadersCount = this.instance.hasSetting('rowHeaders') ? 1 : 0;
-
     if (totalColumns) {
-      ratio = displayColumns / (totalColumns + rowHeadersCount);
+      ratio = displayColumns / totalColumns;
     }
     handleSize = Math.round($(this.slider).width() * ratio);
     if (handleSize < 10) {
@@ -118,7 +113,7 @@ WalkontableScrollbar.prototype.refresh = function () {
     }
     this.handle.style.width = handleSize + 'px';
 
-    handlePosition = tableWidth * (offsetColumn / (totalColumns + rowHeadersCount));
+    handlePosition = tableWidth * (offsetColumn / totalColumns);
     if (handlePosition > tableWidth - handleSize) {
       handlePosition = tableWidth - handleSize;
     }

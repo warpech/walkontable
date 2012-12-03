@@ -92,7 +92,7 @@ describe('WalkontableTable', function () {
       }
     });
     wt.draw();
-    expect($table.find('tbody th, tbody td').length).toBe(20); //10*2=20 displayed cells
+    expect($table.find('tbody th, tbody td').length).toBe(30); //10*2=20 displayed cells + 10 row headers
     expect($table.find('tbody th').length).toBe(10); //10*2=20 displayed cells, half of which are td
     expect($table.find('tbody tr:first th').length).toBe(1); //only one th per row
     expect($table.find('tbody tr:first th')[0].innerHTML).toBe('1'); //this should be the first row header
@@ -111,10 +111,10 @@ describe('WalkontableTable', function () {
       rowHeaders: "Row"
     });
     wt.draw();
-    expect($table.find('tr:eq(0) th').length).toBe(2); //2 columns in THEAD
-    expect($table.find('tr:eq(0) th:eq(0)')[0].innerHTML).toBe(''); //corner row is empty
-    expect($table.find('tr:eq(0) th:eq(1)')[0].innerHTML).toBe('Column');
-    expect($table.find('tr:eq(1) th:eq(0)')[0].innerHTML).toBe('Row');
+    expect($table.find('thead tr:first th').length).toBe(3); //2 columns in THEAD
+    expect($table.find('thead tr:first th:eq(0)')[0].innerHTML).toBe(''); //corner row is empty
+    expect($table.find('thead tr:first th:eq(1)')[0].innerHTML).toBe('Column');
+    expect($table.find('tbody tr:first th:eq(0)')[0].innerHTML).toBe('Row');
   });
 
   it("rowHeaders and colHeaders should respect the offset", function () {
@@ -182,10 +182,12 @@ describe('WalkontableTable', function () {
 
     wt.update('offsetColumn', 1).draw();
 
-    var $td1 = $table.find('tbody tr:eq(0) td:eq(0)');
+    var $td1 = $table.find('tbody tr:first td:eq(0)');
+    var $td2 = $table.find('tbody tr:first td:eq(1)');
     expect(wt.wtTable.getCell([0, 0])).toBe(null);
     expect(wt.wtTable.getCell([0, 1])).toBe($td1[0]);
-    expect(wt.wtTable.getCell([0, 2])).toBe(null);
+    expect(wt.wtTable.getCell([0, 2])).toBe($td2[0]);
+    expect(wt.wtTable.getCell([0, 3])).toBe(null);
   });
 
   it("getCoords should return coords of TD", function () {
@@ -280,5 +282,54 @@ describe('WalkontableTable', function () {
     this.data.splice(7, this.data.length - 7); //second param is required by IE7-8
     wt.draw();
     expect($table.find('tbody tr').length).toBe(7);
+  });
+
+  it("should render all rows if displayRows is null", function () {
+    this.data.splice(20, this.data.length - 20); //second param is required by IE7-8
+
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      displayColumns: 4,
+      offsetRow: 0,
+      offsetColumn: 0
+    });
+    wt.draw();
+    expect($table.find('tbody tr').length).toBe(20);
+  });
+
+  it("should render all columns if displayColumns is null", function () {
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      displayRows: 10,
+      offsetRow: 0,
+      offsetColumn: 0,
+      columnHeaders: "Col"
+    });
+    wt.draw();
+    expect($table.find('thead tr:first').children().length).toBe(4);
+    expect($table.find('tbody tr:first').children().length).toBe(4);
+  });
+
+  it("should render all columns if displayColumns is null (with row header)", function () {
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      displayRows: 10,
+      offsetRow: 0,
+      offsetColumn: 0,
+      rowHeaders: "Row",
+      columnHeaders: "Col"
+    });
+    wt.draw();
+    expect($table.find('thead tr:first').children().length).toBe(5);
+    expect($table.find('tbody tr:first').children().length).toBe(5);
   });
 });

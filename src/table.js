@@ -29,27 +29,27 @@ function WalkontableTable(instance) {
 
 WalkontableTable.prototype.adjustAvailableNodes = function () {
   var totalRows = this.instance.getSetting('totalRows')
+    , totalColumns = this.instance.getSetting('totalColumns')
     , displayRows = this.instance.getSetting('displayRows')
     , displayColumns = this.instance.getSetting('displayColumns')
-    , displayTds = displayColumns
+    , displayTds
+    , rowHeadersCount = this.instance.hasSetting('rowHeaders') ? 1 : 0
     , TR
     , TH
     , TD;
 
-  if (this.instance.hasSetting('rowHeaders')) {
-    displayTds--;
-  }
+  displayRows = Math.min(displayRows, totalRows);
+  displayTds = Math.min(displayColumns, totalColumns);
 
   if (this.instance.hasSetting('columnHeaders')) {
     var availableTHs = this.THEAD.childNodes[0].childNodes.length;
-    while (availableTHs < displayColumns) {
+    while (availableTHs < displayTds + rowHeadersCount) {
       TH = document.createElement('TH');
       this.THEAD.firstChild.appendChild(TH);
       availableTHs++;
     }
   }
 
-  displayRows = Math.min(displayRows, totalRows);
   while (this.availableTRs < displayRows) {
     TR = document.createElement('TR');
     if (this.instance.hasSetting('rowHeaders')) {
@@ -71,7 +71,7 @@ WalkontableTable.prototype.adjustAvailableNodes = function () {
   var TRs = this.TABLE.getElementsByTagName('TR');
 
   for (var r = 0, rlen = TRs.length; r < rlen; r++) {
-    while (TRs[r].childNodes.length > displayColumns) {
+    while (TRs[r].childNodes.length > displayTds + rowHeadersCount) {
       TRs[r].removeChild(TRs[r].lastChild);
     }
   }
@@ -83,33 +83,32 @@ WalkontableTable.prototype.draw = function () {
     , offsetRow = this.instance.getSetting('offsetRow')
     , offsetColumn = this.instance.getSetting('offsetColumn')
     , totalRows = this.instance.getSetting('totalRows')
+    , totalColumns = this.instance.getSetting('totalColumns')
     , displayRows = this.instance.getSetting('displayRows')
     , displayColumns = this.instance.getSetting('displayColumns')
-    , offsetTd = 0
-    , displayTds = displayColumns
+    , displayTds
+    , rowHeadersCount = this.instance.hasSetting('rowHeaders') ? 1 : 0
     , TR
     , TH
     , TD
     , cellData;
   this.adjustAvailableNodes();
 
-  if (this.instance.hasSetting('rowHeaders')) {
-    displayTds--;
-    offsetTd++;
-    if (this.instance.hasSetting('columnHeaders')) {
-      this.THEAD.childNodes[0].childNodes[0].innerHTML = '';
-    }
+  displayRows = Math.min(displayRows, totalRows);
+  displayTds = Math.min(displayColumns, totalColumns);
+
+  if (this.instance.hasSetting('rowHeaders') && this.instance.hasSetting('columnHeaders')) {
+    this.THEAD.childNodes[0].childNodes[0].innerHTML = '';
   }
 
   //draw THEAD
   if (this.instance.hasSetting('columnHeaders')) {
     for (c = 0; c < displayTds; c++) {
-      this.THEAD.childNodes[0].childNodes[offsetTd + c].innerHTML = this.instance.getSetting('columnHeaders', offsetColumn + c);
+      this.THEAD.childNodes[0].childNodes[rowHeadersCount + c].innerHTML = this.instance.getSetting('columnHeaders', offsetColumn + c);
     }
   }
 
   //draw TBODY
-  displayRows = Math.min(displayRows, totalRows);
   for (r = 0; r < displayRows; r++) {
     TR = this.TBODY.childNodes[r];
     if (this.instance.hasSetting('rowHeaders')) {
@@ -123,7 +122,7 @@ WalkontableTable.prototype.draw = function () {
       }
     }
     for (c = 0; c < displayTds; c++) {
-      this.instance.getSetting('cellRenderer', offsetRow + r, offsetColumn + c, TR.childNodes[c + offsetTd]);
+      this.instance.getSetting('cellRenderer', offsetRow + r, offsetColumn + c, TR.childNodes[c + rowHeadersCount]);
     }
   }
 
@@ -154,7 +153,7 @@ WalkontableTable.prototype.getCell = function (coords) {
     , rowHeadersCount = this.instance.hasSetting('rowHeaders') ? 1 : 0;
 
   if (coords[0] >= offsetRow && coords[0] <= offsetRow + displayRows) {
-    if (coords[1] >= offsetColumn && coords[1] < offsetColumn + displayColumns - rowHeadersCount) {
+    if (coords[1] >= offsetColumn && coords[1] < offsetColumn + displayColumns) {
       return this.TBODY.childNodes[coords[0] - offsetRow].childNodes[coords[1] - offsetColumn + rowHeadersCount];
     }
   }

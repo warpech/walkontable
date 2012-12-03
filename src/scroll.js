@@ -27,22 +27,22 @@ WalkontableScroll.prototype.scrollVertical = function (delta) {
 };
 
 WalkontableScroll.prototype.scrollHorizontal = function (delta) {
-  var offsetColumn = this.instance.getSetting('offsetColumn')
-    , max = this.instance.getSetting('totalColumns') - this.instance.getSetting('displayColumns');
-  if (this.instance.hasSetting('rowHeaders')) {
-    max++;
+  var displayColumns = this.instance.getSetting('displayColumns');
+  if (displayColumns !== null) {
+    var offsetColumn = this.instance.getSetting('offsetColumn')
+      , max = this.instance.getSetting('totalColumns') - displayColumns;
+    if (max < 0) {
+      max = 0;
+    }
+    offsetColumn = offsetColumn + delta;
+    if (offsetColumn < 0) {
+      offsetColumn = 0;
+    }
+    else if (offsetColumn >= max) {
+      offsetColumn = max;
+    }
+    this.instance.update('offsetColumn', offsetColumn);
   }
-  if (max < 0) {
-    max = 0;
-  }
-  offsetColumn = offsetColumn + delta;
-  if (offsetColumn < 0) {
-    offsetColumn = 0;
-  }
-  else if (offsetColumn >= max) {
-    offsetColumn = max;
-  }
-  this.instance.update('offsetColumn', offsetColumn);
   return this.instance;
 };
 
@@ -55,8 +55,7 @@ WalkontableScroll.prototype.scrollViewport = function (coords) {
     , displayRows = this.instance.getSetting('displayRows')
     , displayColumns = this.instance.getSetting('displayColumns')
     , totalRows = this.instance.getSetting('totalRows')
-    , totalColumns = this.instance.getSetting('totalColumns')
-    , rowHeadersCount = this.instance.hasSetting('rowHeaders') ? 1 : 0;
+    , totalColumns = this.instance.getSetting('totalColumns');
 
   if (coords[0] < 0 || coords[0] > totalRows - 1) {
     throw new Error('row ' + coords[0] + ' does not exist');
@@ -74,9 +73,9 @@ WalkontableScroll.prototype.scrollViewport = function (coords) {
     }
   }
 
-  if (displayColumns - rowHeadersCount < totalColumns) {
-    if (coords[1] > offsetColumn + displayColumns - rowHeadersCount - 1) {
-      this.scrollHorizontal(coords[1] - (offsetColumn + displayColumns - rowHeadersCount - 1));
+  if (displayColumns < totalColumns) {
+    if (coords[1] > offsetColumn + displayColumns - 1) {
+      this.scrollHorizontal(coords[1] - (offsetColumn + displayColumns - 1));
     }
     else if (coords[1] < offsetColumn) {
       this.scrollHorizontal(coords[1] - offsetColumn);
