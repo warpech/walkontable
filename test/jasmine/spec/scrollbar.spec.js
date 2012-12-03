@@ -32,7 +32,7 @@ describe('WalkontableScrollbar', function () {
   });
 
   it("handle should have the size of scrollbar if totalRows is smaller or equal displayRows", function () {
-    this.data.splice(5, this.data.length - 1);
+    this.data.splice(5, this.data.length - 5);
 
     var wt = new Walkontable({
       table: $table[0],
@@ -53,7 +53,7 @@ describe('WalkontableScrollbar', function () {
   });
 
   it("scrolling should have no effect when totalRows/Columns is smaller than displayRows/Columns", function () {
-    this.data.splice(5, this.data.length - 1);
+    this.data.splice(5, this.data.length - 5);
 
     try {
       var wt = new Walkontable({
@@ -84,7 +84,7 @@ describe('WalkontableScrollbar', function () {
   });
 
   it("vertical scrollbar position should change if table is scrolled using API", function () {
-    this.data.splice(20, this.data.length - 1);
+    this.data.splice(20, this.data.length - 20);
 
     var wt = new Walkontable({
       table: $table[0],
@@ -106,7 +106,7 @@ describe('WalkontableScrollbar', function () {
   });
 
   it("horizontal scrollbar position should change if table is scrolled using API", function () {
-    this.data.splice(20, this.data.length - 1);
+    this.data.splice(20, this.data.length - 20);
 
     var wt = new Walkontable({
       table: $table[0],

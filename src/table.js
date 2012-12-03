@@ -63,6 +63,10 @@ WalkontableTable.prototype.adjustAvailableNodes = function () {
     this.TBODY.appendChild(TR);
     this.availableTRs++;
   }
+  while (this.availableTRs > displayRows) {
+    this.TBODY.removeChild(this.TBODY.lastChild);
+    this.availableTRs--;
+  }
 
   var TRs = this.TABLE.getElementsByTagName('TR');
 

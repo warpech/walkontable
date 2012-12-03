@@ -29,7 +29,7 @@ describe('WalkontableTable', function () {
   });
 
   it("should create as many rows as in `totalRows` if it is smaller than `displayRows`", function () {
-    this.data.splice(5, this.data.length - 1);
+    this.data.splice(5, this.data.length - 5);
 
     var wt = new Walkontable({
       table: $table[0],
@@ -260,5 +260,25 @@ describe('WalkontableTable', function () {
     });
     wt.draw();
     expect($table.find('td:first')[0].style.backgroundColor).toBe('yellow');
+  });
+
+  it("should remove rows if they were removed in data source", function () {
+    this.data.splice(8, this.data.length - 8); //second param is required by IE7-8
+
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      offsetRow: 0,
+      displayRows: 10,
+      displayColumns: 2
+    });
+    wt.draw();
+    expect($table.find('tbody tr').length).toBe(8);
+
+    this.data.splice(7, this.data.length - 7); //second param is required by IE7-8
+    wt.draw();
+    expect($table.find('tbody tr').length).toBe(7);
   });
 });

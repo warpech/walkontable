@@ -51,7 +51,7 @@ describe('WalkontableScroll', function () {
   });
 
   it("scroll vertical should take totalRows if it is smaller than displayRows", function () {
-    this.data.splice(5);
+    this.data.splice(5, this.data.length - 5);
 
     var wt = new Walkontable({
       table: $table[0],
@@ -98,7 +98,7 @@ describe('WalkontableScroll', function () {
   });
 
   it("scroll vertical should scroll to last row if given number bigger than totalRows", function () {
-    this.data.splice(20);
+    this.data.splice(20, this.data.length - 20);
 
     var wt = new Walkontable({
       table: $table[0],
@@ -252,7 +252,7 @@ describe('WalkontableScroll', function () {
   });
 
   it("scroll viewport to a cell that does not exist (vertically) should throw an error", function () {
-    this.data.splice(20);
+    this.data.splice(20, this.data.length - 20);
 
     var err = 0;
     try {
