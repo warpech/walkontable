@@ -122,4 +122,58 @@ describe('WalkontableSelection', function () {
     expect($td1[0].style.outline).toEqual('1px solid red');
     expect($td2[0].style.outline).toEqual('');
   });
+
+  it("should add a selection that is outside of the viewport", function () {
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      offsetRow: 0,
+      offsetColumn: 0,
+      displayRows: 10,
+      displayColumns: 3,
+      selections: {
+        current: {
+          border: {
+            width: 1,
+            color: 'red',
+            style: 'solid'
+          }
+        }
+      }
+    });
+    wt.draw();
+
+    wt.selections.current.add([20, 0]);
+    expect(wt.wtTable.getCoords($table.find('tbody tr:first td:first')[0])).toEqual([0, 0]);
+  });
+
+  it("should clear a selection that is outside of the viewport", function () {
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      offsetRow: 0,
+      offsetColumn: 0,
+      displayRows: 10,
+      displayColumns: 3,
+      selections: {
+        current: {
+          border: {
+            width: 1,
+            color: 'red',
+            style: 'solid'
+          }
+        }
+      }
+    });
+    wt.draw();
+
+    wt.selections.current.add([0, 0]);
+    wt.scrollVertical(10).draw();
+    wt.selections.current.clear();
+    expect(wt.wtTable.getCoords($table.find('tbody tr:first td:first')[0])).toEqual([10, 0]);
+  });
 });
