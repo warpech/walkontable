@@ -1,6 +1,6 @@
 describe('WalkontableScrollbar', function () {
   var $table
-    , debug = false;
+    , debug = 1;
 
   beforeEach(function () {
     $table = $('<table></table>'); //create a table that is not attached to document
@@ -81,5 +81,49 @@ describe('WalkontableScrollbar', function () {
     catch (e) {
       expect(e).toBeUndefined();
     }
+  });
+
+  it("vertical scrollbar position should change if table is scrolled using API", function () {
+    this.data.splice(20, this.data.length - 1);
+
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      offsetRow: 0,
+      offsetColumn: 0,
+      displayRows: 10,
+      displayColumns: 2
+    });
+    wt.draw();
+
+    var bar = $table.parent().find('.dragdealer.vertical .handle');
+    var originalPosition = bar.css('top');
+
+    wt.scrollVertical(10).draw();
+    expect(bar.css('top')).toBeGreaterThan(originalPosition);
+  });
+
+  it("horizontal scrollbar position should change if table is scrolled using API", function () {
+    this.data.splice(20, this.data.length - 1);
+
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      offsetRow: 0,
+      offsetColumn: 0,
+      displayRows: 10,
+      displayColumns: 2
+    });
+    wt.draw();
+
+    var bar = $table.parent().find('.dragdealer.horizontal .handle');
+    var originalPosition = bar.css('left');
+
+    wt.scrollHorizontal(10).draw();
+    expect(bar.css('left')).toBeGreaterThan(originalPosition);
   });
 });
