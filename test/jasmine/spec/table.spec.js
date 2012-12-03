@@ -284,6 +284,40 @@ describe('WalkontableTable', function () {
     expect($table.find('tbody tr').length).toBe(7);
   });
 
+  it("should add columns when displayColumns is increased", function () {
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      offsetRow: 0,
+      displayRows: 10,
+      displayColumns: 2
+    });
+    wt.draw();
+    expect($table.find('tbody tr:first td').length).toBe(2);
+
+    wt.update('displayColumns', 3).draw();
+    expect($table.find('tbody tr:first td').length).toBe(3);
+  });
+
+  it("should remove rows when displayColumns is decreased", function () {
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      offsetRow: 0,
+      displayRows: 10,
+      displayColumns: 3
+    });
+    wt.draw();
+    expect($table.find('tbody tr:first td').length).toBe(3);
+
+    wt.update('displayColumns', 2).draw();
+    expect($table.find('tbody tr:first td').length).toBe(2);
+  });
+
   it("should render all rows if displayRows is null", function () {
     this.data.splice(20, this.data.length - 20); //second param is required by IE7-8
 

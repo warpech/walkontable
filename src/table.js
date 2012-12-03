@@ -34,9 +34,7 @@ WalkontableTable.prototype.adjustAvailableNodes = function () {
     , displayColumns = this.instance.getSetting('displayColumns')
     , displayTds
     , rowHeadersCount = this.instance.hasSetting('rowHeaders') ? 1 : 0
-    , TR
-    , TH
-    , TD;
+    , TR;
 
   displayRows = Math.min(displayRows, totalRows);
   displayTds = Math.min(displayColumns, totalColumns);
@@ -44,8 +42,7 @@ WalkontableTable.prototype.adjustAvailableNodes = function () {
   if (this.instance.hasSetting('columnHeaders')) {
     var availableTHs = this.THEAD.childNodes[0].childNodes.length;
     while (availableTHs < displayTds + rowHeadersCount) {
-      TH = document.createElement('TH');
-      this.THEAD.firstChild.appendChild(TH);
+      this.THEAD.firstChild.appendChild(document.createElement('TH'));
       availableTHs++;
     }
   }
@@ -53,12 +50,10 @@ WalkontableTable.prototype.adjustAvailableNodes = function () {
   while (this.availableTRs < displayRows) {
     TR = document.createElement('TR');
     if (this.instance.hasSetting('rowHeaders')) {
-      TH = document.createElement('TH');
-      TR.appendChild(TH);
+      TR.appendChild(document.createElement('TH'));
     }
     for (var c = 0; c < displayTds; c++) {
-      TD = document.createElement('TD');
-      TR.appendChild(TD);
+      TR.appendChild(document.createElement('TD'));
     }
     this.TBODY.appendChild(TR);
     this.availableTRs++;
@@ -71,6 +66,9 @@ WalkontableTable.prototype.adjustAvailableNodes = function () {
   var TRs = this.TABLE.getElementsByTagName('TR');
 
   for (var r = 0, rlen = TRs.length; r < rlen; r++) {
+    while (TRs[r].childNodes.length < displayTds + rowHeadersCount) {
+      TRs[r].appendChild(document.createElement('TD'));
+    }
     while (TRs[r].childNodes.length > displayTds + rowHeadersCount) {
       TRs[r].removeChild(TRs[r].lastChild);
     }
