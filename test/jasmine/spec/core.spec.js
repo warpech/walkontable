@@ -83,4 +83,32 @@ describe('Walkontable', function () {
     wt.draw();
     expect($table.find('td').length).toBe(40);
   });
+
+  it("should figure out the displayRows property if height param given", function () {
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      offsetRow: 0,
+      offsetColumn: 0,
+      height: 400
+    });
+    wt.draw();
+    expect($table.find('tbody tr').length).toBe(20);
+  });
+
+  it("should figure out the displayColumns property if width param given", function () {
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      offsetRow: 0,
+      offsetColumn: 0,
+      width: 100
+    });
+    wt.draw();
+    expect($table.find('tbody tr:first td').length).toBe(2);
+  });
 });

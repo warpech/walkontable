@@ -1,7 +1,7 @@
 /**
  * walkontable 0.1
  * 
- * Date: Mon Dec 03 2012 13:30:35 GMT+0100 (Central European Standard Time)
+ * Date: Mon Dec 03 2012 14:28:03 GMT+0100 (Central European Standard Time)
 */
 
 function Walkontable(settings) {
@@ -18,12 +18,14 @@ function Walkontable(settings) {
     columnHeaders: false,
     totalRows: void 0,
     totalColumns: void 0,
+    width: null,
+    height: null,
     displayRows: function () {
       return that.getSetting('totalRows'); //display all rows by default
     },
     displayColumns: function () {
-      if (that.wtTable.THEAD.childNodes[0].childNodes.length) {
-        return that.wtTable.THEAD.childNodes[0].childNodes.length;
+      if (that.wtTable.THEAD.firstChild && that.wtTable.THEAD.firstChild.firstChild) {
+        return that.wtTable.THEAD.firstChild.childNodes.length;
       }
       else {
         return that.getSetting('totalColumns'); //display all columns by default
@@ -148,6 +150,13 @@ Walkontable.prototype.scrollViewport = function (coords) {
 };
 
 Walkontable.prototype.getSetting = function (key, param1, param2, param3) {
+  if (key === 'displayRows' && this.settings['height']) {
+    return this.settings['height'] / 20; //silly assumption but should be fine for now
+  }
+  else if (key === 'displayColumns' && this.settings['width']) {
+    return this.settings['width'] / 50; //silly assumption but should be fine for now
+  }
+
   if (typeof this.settings[key] === 'function') {
     return this.settings[key](param1, param2, param3);
   }
