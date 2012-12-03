@@ -119,16 +119,7 @@ WalkontableTable.prototype.draw = function () {
       }
     }
     for (c = 0; c < displayTds; c++) {
-      TD = TR.childNodes[c + offsetTd];
-      cellData = this.instance.getSetting('data', offsetRow + r, offsetColumn + c);
-      if (cellData !== void 0) {
-        TD.innerHTML = cellData;
-      }
-      else {
-        TD.innerHTML = '';
-      }
-      TD.className = '';
-      TD.style.outline = ''; //temporary code to remove outline
+      this.instance.getSetting('cellRenderer', offsetRow + r, offsetColumn + c, TR.childNodes[c + offsetTd]);
     }
   }
 

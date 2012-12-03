@@ -13,6 +13,7 @@ describe('WalkontableTable', function () {
       $('.wtHolder').remove();
     }
   });
+
   it("should create as many rows as in `displayRows`", function () {
     var wt = new Walkontable({
       table: $table[0],
@@ -234,5 +235,30 @@ describe('WalkontableTable', function () {
 
     var $td2 = $table.find('tbody tr:eq(1) td:eq(0)');
     expect(wt.wtTable.getCoords($td2[0])).toEqual([2, 1]);
+  });
+
+  it("should use custom cell renderer if provided", function () {
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      offsetRow: 0,
+      displayRows: 10,
+      displayColumns: 2,
+      cellRenderer: function (row, column, TD) {
+        var cellData = getData(row, column);
+        if (cellData !== void 0) {
+          TD.innerHTML = cellData;
+        }
+        else {
+          TD.innerHTML = '';
+        }
+        TD.className = '';
+        TD.style.backgroundColor = 'yellow';
+      }
+    });
+    wt.draw();
+    expect($table.find('td:first')[0].style.backgroundColor).toBe('yellow');
   });
 });

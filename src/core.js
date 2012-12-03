@@ -23,6 +23,17 @@ function Walkontable(settings) {
         return that.getSetting('totalColumns'); //display all columns by default
       }
     },
+    cellRenderer: function (row, column, TD) {
+      var cellData = that.getSetting('data', row, column);
+      if (cellData !== void 0) {
+        TD.innerHTML = cellData;
+      }
+      else {
+        TD.innerHTML = '';
+      }
+      TD.className = '';
+      TD.style.outline = ''; //temporary code to remove outline
+    },
     selections: null,
     onCellMouseDown: null
   };
