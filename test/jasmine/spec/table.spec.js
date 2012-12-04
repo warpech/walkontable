@@ -139,7 +139,28 @@ describe('WalkontableTable', function () {
     expect($table.find('tr:eq(1) th:eq(0)')[0].innerHTML).toBe('2');
   });
 
-  it("getCell should only return cells that are visible", function () {
+  it("getCell should only return cells from visible rows", function () {
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      offsetRow: 10,
+      offsetColumn: 0,
+      displayRows: 10,
+      displayColumns: 2
+    });
+    wt.draw();
+
+    var $td1 = $table.find('tbody tr:first td:first');
+    var $td2 = $table.find('tbody tr:last td:first');
+    expect(wt.wtTable.getCell([9, 0])).toBe(null);
+    expect(wt.wtTable.getCell([10, 0])).toBe($td1[0]);
+    expect(wt.wtTable.getCell([19, 0])).toBe($td2[0]);
+    expect(wt.wtTable.getCell([20, 0])).toBe(null);
+  });
+
+  it("getCell should only return cells from visible columns", function () {
     var wt = new Walkontable({
       table: $table[0],
       data: getData,
@@ -162,7 +183,7 @@ describe('WalkontableTable', function () {
     expect(wt.wtTable.getCell([0, 3])).toBe(null);
   });
 
-  it("getCell should only return cells that are visible (with row header)", function () {
+  it("getCell should only return cells from visible columns (with row header)", function () {
     function plusOne(i) {
       return i + 1;
     }

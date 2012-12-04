@@ -103,7 +103,6 @@ WalkontableTable.prototype.draw = function () {
     , rowHeadersCount = this.instance.hasSetting('rowHeaders') ? 1 : 0
     , TR
     , TH
-    , TD
     , cellData;
   this.adjustAvailableNodes();
 
@@ -157,14 +156,7 @@ WalkontableTable.prototype.draw = function () {
   if (this.instance.selections) {
     for (r in this.instance.selections) {
       if (this.instance.selections.hasOwnProperty(r)) {
-        for (c in this.instance.selections[r].selected) {
-          if (this.instance.selections[r].selected.hasOwnProperty(c)) {
-            TD = this.getCell(this.instance.selections[r].selected[c]);
-            if (TD) {
-              this.instance.selections[r].onAdd(this.instance.selections[r].selected[c], TD);
-            }
-          }
-        }
+        this.instance.selections[r].draw();
       }
     }
   }
@@ -179,7 +171,7 @@ WalkontableTable.prototype.getCell = function (coords) {
     , displayColumns = this.instance.getSetting('displayColumns')
     , rowHeadersCount = this.instance.hasSetting('rowHeaders') ? 1 : 0;
 
-  if (coords[0] >= offsetRow && coords[0] <= offsetRow + displayRows) {
+  if (coords[0] >= offsetRow && coords[0] <= offsetRow + displayRows - 1) {
     if (coords[1] >= offsetColumn && coords[1] < offsetColumn + displayColumns) {
       return this.TBODY.childNodes[coords[0] - offsetRow].childNodes[coords[1] - offsetColumn + rowHeadersCount];
     }

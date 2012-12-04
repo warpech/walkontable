@@ -1,5 +1,5 @@
 function WalkontableSelection(instance, settings) {
-  var that = this;
+  this.instance = instance;
   this.selected = [];
   if (settings.border) {
     this.border = new WalkontableBorder(instance, settings);
@@ -10,9 +10,6 @@ function WalkontableSelection(instance, settings) {
       if (settings.className) {
         instance.wtDom.addClass(TD, settings.className);
       }
-      if (that.border) {
-        that.border.appear(this.getCorners());
-      }
     }
   };
   this.onRemove = function (coords) {
@@ -21,9 +18,6 @@ function WalkontableSelection(instance, settings) {
       if (settings.className) {
         instance.wtDom.removeClass(TD, settings.className);
       }
-      if (that.border) {
-        that.border.disappear(this.getCorners());
-      }
     }
   };
 }
@@ -31,6 +25,7 @@ function WalkontableSelection(instance, settings) {
 WalkontableSelection.prototype.add = function (coords) {
   this.selected.push(coords);
   this.onAdd(coords);
+  this.draw();
 };
 
 WalkontableSelection.prototype.remove = function (coords) {
@@ -96,6 +91,24 @@ WalkontableSelection.prototype.getCorners = function () {
   }
 
   return [minRow, minColumn, maxRow, maxColumn];
+};
+
+WalkontableSelection.prototype.draw = function () {
+  var TD;
+  for (var i = 0, ilen = this.selected.length; i < ilen; i++) {
+    TD = this.instance.wtTable.getCell(this.selected[i]);
+    if (TD) {
+      this.onAdd(this.selected[i], TD);
+    }
+  }
+  if (this.border) {
+    if (ilen > 0) {
+      this.border.appear(this.getCorners());
+    }
+    else {
+      this.border.disappear(this.getCorners());
+    }
+  }
 };
 
 /*WalkontableSelection.prototype.rectangleSize = function () {
