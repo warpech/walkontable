@@ -16,6 +16,11 @@ function WalkontableTable(instance) {
     this.THEAD = document.createElement('THEAD');
     this.TABLE.insertBefore(this.THEAD, this.TBODY);
   }
+  this.COLGROUP = this.TABLE.getElementsByTagName('COLGROUP')[0];
+  if (!this.COLGROUP) {
+    this.COLGROUP = document.createElement('COLGROUP');
+    this.TABLE.insertBefore(this.COLGROUP, this.THEAD);
+  }
 
   if (this.instance.hasSetting('columnHeaders')) {
     if (!this.THEAD.childNodes.length) {
@@ -39,6 +44,15 @@ WalkontableTable.prototype.adjustAvailableNodes = function () {
   displayRows = Math.min(displayRows, totalRows);
   displayTds = Math.min(displayColumns, totalColumns);
 
+  //adjust COLGROUP
+  while (this.COLGROUP.childNodes.length < displayTds + rowHeadersCount) {
+    this.COLGROUP.appendChild(document.createElement('COL'));
+  }
+  while (this.COLGROUP.length > displayTds + rowHeadersCount) {
+    this.COLGROUP.removeChild(this.COLGROUP.lastChild);
+  }
+
+  //adjust THEAD
   if (this.instance.hasSetting('columnHeaders')) {
     var availableTHs = this.THEAD.childNodes[0].childNodes.length;
     while (availableTHs < displayTds + rowHeadersCount) {
@@ -47,6 +61,7 @@ WalkontableTable.prototype.adjustAvailableNodes = function () {
     }
   }
 
+  //adjust TBODY
   while (this.availableTRs < displayRows) {
     TR = document.createElement('TR');
     if (this.instance.hasSetting('rowHeaders')) {
@@ -95,11 +110,25 @@ WalkontableTable.prototype.draw = function () {
   displayRows = Math.min(displayRows, totalRows);
   displayTds = Math.min(displayColumns, totalColumns);
 
+  //draw COLGROUP
+  if (this.instance.hasSetting('rowHeaders')) {
+    this.wtDom.addClass(this.COLGROUP.childNodes[0], 'rowHeader');
+  }
+  else {
+    this.wtDom.removeClass(this.COLGROUP.childNodes[0], 'rowHeader');
+  }
+
+  if (this.instance.hasSetting('columnWidth')) {
+    for (c = 0; c < displayTds; c++) {
+      this.COLGROUP.childNodes[c + rowHeadersCount].style.width = this.instance.getSetting('columnWidth', offsetColumn + c) + 'px';
+    }
+  }
+
+  //draw THEAD
   if (this.instance.hasSetting('rowHeaders') && this.instance.hasSetting('columnHeaders')) {
     this.THEAD.childNodes[0].childNodes[0].innerHTML = '';
   }
 
-  //draw THEAD
   if (this.instance.hasSetting('columnHeaders')) {
     for (c = 0; c < displayTds; c++) {
       this.THEAD.childNodes[0].childNodes[rowHeadersCount + c].innerHTML = this.instance.getSetting('columnHeaders', offsetColumn + c);

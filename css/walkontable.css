@@ -3,8 +3,12 @@ table.table {
   width: auto;
 }
 
-table th {
+table col {
   width: 65px;
+}
+
+table col.rowHeader {
+  width: 70px;
 }
 
 table .area {
