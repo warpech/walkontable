@@ -75,11 +75,11 @@ describe('WalkontableSelection', function () {
     var $td1 = $table.find('tbody td:eq(0)');
     var $td2 = $table.find('tbody td:eq(1)');
     $td1.mousedown();
-    expect($td1[0].style.outline).toEqual('1px solid red');
+    expect($td1.css('outline-width')).toEqual('1px');
 
     $td2.mousedown();
-    expect($td1[0].style.outline).toEqual('');
-    expect($td2[0].style.outline).toEqual('1px solid red');
+    expect($td1.css('outline-width')).not.toEqual('1px');
+    expect($td2.css('outline-width')).toEqual('1px');
   });
 
   it("should move the selection when table is scrolled", function () {
@@ -111,7 +111,7 @@ describe('WalkontableSelection', function () {
     var $td1 = $table.find('tbody tr:eq(1) td:eq(0)');
     var $td2 = $table.find('tbody tr:eq(2) td:eq(1)');
     $td2.mousedown();
-    expect($td2[0].style.outline).toEqual('1px solid red');
+    expect($td2.css('outline-width')).toEqual('1px');
 
     wt.update({
       offsetRow: 1,
@@ -119,8 +119,8 @@ describe('WalkontableSelection', function () {
     });
     wt.draw();
 
-    expect($td1[0].style.outline).toEqual('1px solid red');
-    expect($td2[0].style.outline).toEqual('');
+    expect($td1.css('outline-width')).toEqual('1px');
+    expect($td2.css('outline-width')).not.toEqual('1px');
   });
 
   it("should add a selection that is outside of the viewport", function () {
