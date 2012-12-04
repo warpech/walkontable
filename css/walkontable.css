@@ -19,6 +19,10 @@ table .current {
   background-color: #FFF;
 }
 
+.wtBorder {
+  position: absolute;
+}
+
 /**
  * dragdealer
  */

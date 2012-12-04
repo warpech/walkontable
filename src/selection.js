@@ -1,24 +1,28 @@
-function WalkontableSelection(instance, setting) {
+function WalkontableSelection(instance, settings) {
+  var that = this;
   this.selected = [];
+  if (settings.border) {
+    this.border = new WalkontableBorder(instance, settings);
+  }
   this.onAdd = function (coords) {
     var TD = instance.wtTable.getCell(coords);
     if (TD) {
-      if (setting.className) {
-        instance.wtDom.addClass(TD, setting.className);
+      if (settings.className) {
+        instance.wtDom.addClass(TD, settings.className);
       }
-      if (setting.border) {
-        TD.style.outline = setting.border.width + 'px ' + setting.border.style + ' ' + setting.border.color;
+      if (that.border) {
+        that.border.appear(this.getCorners());
       }
     }
   };
   this.onRemove = function (coords) {
     var TD = instance.wtTable.getCell(coords);
     if (TD) {
-      if (setting.className) {
-        instance.wtDom.removeClass(TD, setting.className);
+      if (settings.className) {
+        instance.wtDom.removeClass(TD, settings.className);
       }
-      if (setting.border) {
-        TD.style.outline = '';
+      if (that.border) {
+        that.border.disappear(this.getCorners());
       }
     }
   };
@@ -54,6 +58,44 @@ WalkontableSelection.prototype.isSelected = function (coords) {
 
 WalkontableSelection.prototype.getSelected = function () {
   return this.selected;
+};
+
+/**
+ * Returns the top left (TL) and bottom right (BR) selection coordinates
+ * @returns {Object}
+ */
+WalkontableSelection.prototype.getCorners = function () {
+  var minRow
+    , minColumn
+    , maxRow
+    , maxColumn
+    , i
+    , ilen = this.selected.length;
+
+  if (ilen > 0) {
+    minRow = maxRow = this.selected[0][0];
+    minColumn = maxColumn = this.selected[0][1];
+
+    if (ilen > 1) {
+      for (i = 1; i < ilen; i++) {
+        if (this.selected[i][0] < minRow) {
+          minRow = this.selected[i][0];
+        }
+        else if (this.selected[i][0] > maxRow) {
+          maxRow = this.selected[i][0];
+        }
+
+        if (this.selected[i][1] < minColumn) {
+          minColumn = this.selected[i][1];
+        }
+        else if (this.selected[i][1] > maxColumn) {
+          maxColumn = this.selected[i][1];
+        }
+      }
+    }
+  }
+
+  return [minRow, minColumn, maxRow, maxColumn];
 };
 
 /*WalkontableSelection.prototype.rectangleSize = function () {

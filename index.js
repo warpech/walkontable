@@ -90,13 +90,18 @@ function init() {
     },
     selections: {
       area: {
-        className: 'area'
+        className: 'area',
+        border: {
+          width: 1,
+          color: '#5292F7',
+          style: 'solid'
+        }
       },
       current: {
         className: 'current',
         border: {
-          width: 1,
-          color: 'blue',
+          width: 2,
+          color: '#5292F7',
           style: 'solid'
         }
       }

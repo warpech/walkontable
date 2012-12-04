@@ -1,9 +1,97 @@
 /**
  * walkontable 0.1
  * 
- * Date: Tue Dec 04 2012 16:12:45 GMT+0100 (Central European Standard Time)
+ * Date: Tue Dec 04 2012 16:46:30 GMT+0100 (Central European Standard Time)
 */
 
+function WalkontableBorder(instance, settings) {
+  //reference to instance
+  this.instance = instance;
+  this.settings = settings;
+
+  this.main = document.createElement("div");
+  this.main.style.position = 'absolute';
+  this.main.style.top = 0;
+  this.main.style.left = 0;
+
+  for (var i = 0; i < 4; i++) {
+    var DIV = document.createElement('DIV');
+    DIV.className = 'wtBorder ' + settings.className;
+    DIV.style.backgroundColor = settings.border.color;
+    DIV.style.height = settings.border.width + 'px';
+    DIV.style.width = settings.border.width + 'px';
+    this.main.appendChild(DIV);
+  }
+
+  this.top = this.main.childNodes[0];
+  this.left = this.main.childNodes[1];
+  this.bottom = this.main.childNodes[2];
+  this.right = this.main.childNodes[3];
+
+  this.disappear();
+  instance.wtTable.TABLE.parentNode.appendChild(this.main);
+}
+
+/**
+ * Show border around one or many cells
+ * @param {Array} corners
+ */
+WalkontableBorder.prototype.appear = function (corners) {
+  var $from, $to, fromOffset, toOffset, containerOffset, top, minTop, left, minLeft, height, width;
+  if (this.disabled) {
+    return;
+  }
+
+  $from = $(this.instance.wtTable.getCell([corners[0], corners[1]]));
+  $to = (corners.length > 2) ? $(this.instance.wtTable.getCell([corners[2], corners[3]])) : $from;
+  fromOffset = $from.offset();
+  toOffset = (corners.length > 2) ? $to.offset() : fromOffset;
+  containerOffset = $(this.instance.wtTable.TABLE).offset();
+
+  minTop = fromOffset.top;
+  height = toOffset.top + $to.outerHeight() - minTop;
+  minLeft = fromOffset.left;
+  width = toOffset.left + $to.outerWidth() - minLeft;
+
+  top = minTop - containerOffset.top - 1;
+  left = minLeft - containerOffset.left - 1;
+
+  if (parseInt($from.css('border-top-width')) > 0) {
+    top += 1;
+    //height -= 1;
+  }
+  if (parseInt($from.css('border-left-width')) > 0) {
+    left += 1;
+    //width -= 1;
+  }
+
+  this.top.style.top = top + 'px';
+  this.top.style.left = left + 'px';
+  this.top.style.width = width + 'px';
+
+  this.left.style.top = top + 'px';
+  this.left.style.left = left + 'px';
+  this.left.style.height = height + 'px';
+
+  var delta = Math.floor(this.settings.border.width / 2);
+
+  this.bottom.style.top = top + height - delta + 'px';
+  this.bottom.style.left = left + 'px';
+  this.bottom.style.width = width + 'px';
+
+  this.right.style.top = top + 'px';
+  this.right.style.left = left + width - delta + 'px';
+  this.right.style.height = height + 1 + 'px';
+
+  this.main.style.display = 'block';
+};
+
+/**
+ * Hide border
+ */
+WalkontableBorder.prototype.disappear = function () {
+  this.main.style.display = 'none';
+};
 function Walkontable(settings) {
   var that = this;
   var originalHeaders = [];
@@ -511,27 +599,31 @@ WalkontableScrollbar.prototype.refresh = function () {
   this.dragdealer.setBounds();
   //this.dragdealer.setSteps();
 };
-function WalkontableSelection(instance, setting) {
+function WalkontableSelection(instance, settings) {
+  var that = this;
   this.selected = [];
+  if (settings.border) {
+    this.border = new WalkontableBorder(instance, settings);
+  }
   this.onAdd = function (coords) {
     var TD = instance.wtTable.getCell(coords);
     if (TD) {
-      if (setting.className) {
-        instance.wtDom.addClass(TD, setting.className);
+      if (settings.className) {
+        instance.wtDom.addClass(TD, settings.className);
       }
-      if (setting.border) {
-        TD.style.outline = setting.border.width + 'px ' + setting.border.style + ' ' + setting.border.color;
+      if (that.border) {
+        that.border.appear(this.getCorners());
       }
     }
   };
   this.onRemove = function (coords) {
     var TD = instance.wtTable.getCell(coords);
     if (TD) {
-      if (setting.className) {
-        instance.wtDom.removeClass(TD, setting.className);
+      if (settings.className) {
+        instance.wtDom.removeClass(TD, settings.className);
       }
-      if (setting.border) {
-        TD.style.outline = '';
+      if (that.border) {
+        that.border.disappear(this.getCorners());
       }
     }
   };
@@ -567,6 +659,44 @@ WalkontableSelection.prototype.isSelected = function (coords) {
 
 WalkontableSelection.prototype.getSelected = function () {
   return this.selected;
+};
+
+/**
+ * Returns the top left (TL) and bottom right (BR) selection coordinates
+ * @returns {Object}
+ */
+WalkontableSelection.prototype.getCorners = function () {
+  var minRow
+    , minColumn
+    , maxRow
+    , maxColumn
+    , i
+    , ilen = this.selected.length;
+
+  if (ilen > 0) {
+    minRow = maxRow = this.selected[0][0];
+    minColumn = maxColumn = this.selected[0][1];
+
+    if (ilen > 1) {
+      for (i = 1; i < ilen; i++) {
+        if (this.selected[i][0] < minRow) {
+          minRow = this.selected[i][0];
+        }
+        else if (this.selected[i][0] > maxRow) {
+          maxRow = this.selected[i][0];
+        }
+
+        if (this.selected[i][1] < minColumn) {
+          minColumn = this.selected[i][1];
+        }
+        else if (this.selected[i][1] > maxColumn) {
+          maxColumn = this.selected[i][1];
+        }
+      }
+    }
+  }
+
+  return [minRow, minColumn, maxRow, maxColumn];
 };
 
 /*WalkontableSelection.prototype.rectangleSize = function () {
