@@ -92,11 +92,11 @@ WalkontableBorder.prototype.appear = function (corners) {
 
     if (parseInt($from.css('border-top-width')) > 0) {
       top += 1;
-      //height -= 1;
+      height -= 1;
     }
     if (parseInt($from.css('border-left-width')) > 0) {
       left += 1;
-      //width -= 1;
+      width -= 1;
     }
   }
 
