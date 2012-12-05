@@ -159,6 +159,92 @@ describe('WalkontableSelection', function () {
     expect($table.find('td.current').length).toBe(1);
   });
 
+  it("should move the selection when table is scrolled vertically (table with height instead of displayRows)", function () {
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      offsetRow: 0,
+      offsetColumn: 0,
+      height: 200,
+      selections: {
+        current: {
+          className: 'current',
+          border: {
+            width: 1,
+            color: 'red',
+            style: 'solid'
+          }
+        }
+      },
+      onCellMouseDown: function (event, coords, TD) {
+        wt.selections.current.clear();
+        wt.selections.current.add(coords);
+        wt.draw();
+      }
+    });
+    wt.draw();
+
+    var $td1 = $table.find('tbody tr:eq(2) td:eq(0)');
+    var $top = $(wt.selections.current.border.top);
+    $td1.mousedown();
+    var pos1 = $top.position();
+
+    wt.update({
+      offsetRow: 20
+    });
+    wt.draw();
+
+    var pos2 = $top.position();
+    expect(pos2.top).toBeLessThan(pos1.top);
+    expect(pos2.left).toBeLessThan(pos1.left);
+    expect($table.find('td.current').length).toBe(0);
+  });
+
+  it("should move the selection when table is scrolled horizontally (table with height instead of displayRows)", function () {
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      offsetRow: 0,
+      offsetColumn: 0,
+      width: 100,
+      selections: {
+        current: {
+          className: 'current',
+          border: {
+            width: 1,
+            color: 'red',
+            style: 'solid'
+          }
+        }
+      },
+      onCellMouseDown: function (event, coords, TD) {
+        wt.selections.current.clear();
+        wt.selections.current.add(coords);
+        wt.draw();
+      }
+    });
+    wt.draw();
+
+    var $td1 = $table.find('tbody tr:eq(2) td:eq(0)');
+    var $top = $(wt.selections.current.border.top);
+    $td1.mousedown();
+    var pos1 = $top.position();
+
+    wt.update({
+      offsetColumn: 3
+    });
+    wt.draw();
+
+    var pos2 = $top.position();
+    expect(pos2.top).toBeLessThan(pos1.top);
+    expect(pos2.left).toBeLessThan(pos1.left);
+    expect($table.find('td.current').length).toBe(0);
+  });
+
   it("should add a selection that is outside of the viewport", function () {
     var wt = new Walkontable({
       table: $table[0],

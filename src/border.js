@@ -43,7 +43,7 @@ WalkontableBorder.prototype.appear = function (corners) {
 
   var hideTop, hideLeft, hideBottom, hideRight;
 
-  if (this.instance.hasSetting('displayRows')) {
+  if (displayRows !== null) {
     if (corners[0] > offsetRow + displayRows - 1 || corners[2] < offsetRow) {
       hideTop = hideLeft = hideBottom = hideRight = true;
     }
@@ -59,7 +59,7 @@ WalkontableBorder.prototype.appear = function (corners) {
     }
   }
 
-  if (this.instance.hasSetting('displayColumns')) {
+  if (displayColumns !== null) {
     if (corners[1] > offsetColumn + displayColumns - 1 || corners[3] < offsetColumn) {
       hideTop = hideLeft = hideBottom = hideRight = true;
     }
