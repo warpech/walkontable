@@ -12,4 +12,11 @@ function WalkontableEvent(instance) {
       that.instance.getSetting('onCellMouseDown', event, that.instance.wtTable.getCoords(TD), TD);
     }
   });
+
+  $(this.instance.settings.table).on('mouseover', function (event) {
+    if (that.instance.settings.onCellMouseOver) {
+      var TD = that.wtDom.closest(event.target, ['TD', 'TH']);
+      that.instance.getSetting('onCellMouseOver', event, that.instance.wtTable.getCoords(TD), TD);
+    }
+  });
 }
