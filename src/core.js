@@ -24,8 +24,6 @@ function Walkontable(settings) {
       else {
         TD.innerHTML = '';
       }
-      TD.className = '';
-      TD.style.outline = ''; //temporary code to remove outline
     },
     columnWidth: null,
     selections: null,

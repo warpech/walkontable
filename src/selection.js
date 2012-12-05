@@ -12,32 +12,29 @@ function WalkontableSelection(instance, settings) {
       }
     }
   };
-  this.onRemove = function (coords) {
-    var TD = instance.wtTable.getCell(coords);
-    if (TD) {
-      if (settings.className) {
-        instance.wtDom.removeClass(TD, settings.className);
-      }
-    }
-  };
+  /*this.onRemove = function (coords) {
+   var TD = instance.wtTable.getCell(coords);
+   if (TD) {
+   if (settings.className) {
+   instance.wtDom.removeClass(TD, settings.className);
+   }
+   }
+   };*/
 }
 
 WalkontableSelection.prototype.add = function (coords) {
   this.selected.push(coords);
-  this.onAdd(coords);
-  this.draw();
 };
 
 WalkontableSelection.prototype.remove = function (coords) {
   var index = this.isSelected(coords);
   if (index > -1) {
     this.selected.splice(index, 1);
-    this.onRemove(coords);
   }
 };
 
 WalkontableSelection.prototype.clear = function () {
-  for (var i = 0, ilen = this.selected.length; i < ilen; i++) {
+  for (var i = this.selected.length - 1; i >= 0; i--) {
     this.remove(this.selected[i]);
   }
 };

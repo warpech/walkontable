@@ -103,6 +103,7 @@ WalkontableTable.prototype.draw = function () {
     , rowHeadersCount = this.instance.hasSetting('rowHeaders') ? 1 : 0
     , TR
     , TH
+    , TD
     , cellData;
   this.adjustAvailableNodes();
 
@@ -148,7 +149,9 @@ WalkontableTable.prototype.draw = function () {
       }
     }
     for (c = 0; c < displayTds; c++) {
-      this.instance.getSetting('cellRenderer', offsetRow + r, offsetColumn + c, TR.childNodes[c + rowHeadersCount]);
+      TD = TR.childNodes[c + rowHeadersCount];
+      TD.className = '';
+      this.instance.getSetting('cellRenderer', offsetRow + r, offsetColumn + c, TD);
     }
   }
 

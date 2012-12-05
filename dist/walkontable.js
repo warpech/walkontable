@@ -1,7 +1,7 @@
 /**
  * walkontable 0.1
  * 
- * Date: Tue Dec 04 2012 17:43:43 GMT+0100 (Central European Standard Time)
+ * Date: Wed Dec 05 2012 14:48:01 GMT+0100 (Central European Standard Time)
 */
 
 function WalkontableBorder(instance, settings) {
@@ -184,8 +184,6 @@ function Walkontable(settings) {
       else {
         TD.innerHTML = '';
       }
-      TD.className = '';
-      TD.style.outline = ''; //temporary code to remove outline
     },
     columnWidth: null,
     selections: null,
@@ -666,7 +664,6 @@ WalkontableScrollbar.prototype.refresh = function () {
   //this.dragdealer.setSteps();
 };
 function WalkontableSelection(instance, settings) {
-  var that = this;
   this.instance = instance;
   this.selected = [];
   if (settings.border) {
@@ -680,32 +677,29 @@ function WalkontableSelection(instance, settings) {
       }
     }
   };
-  this.onRemove = function (coords) {
-    var TD = instance.wtTable.getCell(coords);
-    if (TD) {
-      if (settings.className) {
-        instance.wtDom.removeClass(TD, settings.className);
-      }
-    }
-  };
+  /*this.onRemove = function (coords) {
+   var TD = instance.wtTable.getCell(coords);
+   if (TD) {
+   if (settings.className) {
+   instance.wtDom.removeClass(TD, settings.className);
+   }
+   }
+   };*/
 }
 
 WalkontableSelection.prototype.add = function (coords) {
   this.selected.push(coords);
-  this.onAdd(coords);
-  this.draw();
 };
 
 WalkontableSelection.prototype.remove = function (coords) {
   var index = this.isSelected(coords);
   if (index > -1) {
     this.selected.splice(index, 1);
-    this.onRemove(coords);
   }
 };
 
 WalkontableSelection.prototype.clear = function () {
-  for (var i = 0, ilen = this.selected.length; i < ilen; i++) {
+  for (var i = this.selected.length - 1; i >= 0; i--) {
     this.remove(this.selected[i]);
   }
 };
@@ -1023,7 +1017,9 @@ WalkontableTable.prototype.draw = function () {
       }
     }
     for (c = 0; c < displayTds; c++) {
-      this.instance.getSetting('cellRenderer', offsetRow + r, offsetColumn + c, TR.childNodes[c + rowHeadersCount]);
+      TD = TR.childNodes[c + rowHeadersCount];
+      TD.className = '';
+      this.instance.getSetting('cellRenderer', offsetRow + r, offsetColumn + c, TD);
     }
   }
 
