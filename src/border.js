@@ -2,6 +2,7 @@ function WalkontableBorder(instance, settings) {
   //reference to instance
   this.instance = instance;
   this.settings = settings;
+  this.wtDom = new WalkontableDom();
 
   this.main = document.createElement("div");
   this.main.style.position = 'absolute';
@@ -78,9 +79,9 @@ WalkontableBorder.prototype.appear = function (corners) {
   if (!(hideTop == hideLeft == hideBottom == hideRight == true)) {
     $from = $(this.instance.wtTable.getCell([corners[0], corners[1]]));
     $to = (corners.length > 2) ? $(this.instance.wtTable.getCell([corners[2], corners[3]])) : $from;
-    fromOffset = $from.offset();
-    toOffset = (corners.length > 2) ? $to.offset() : fromOffset;
-    containerOffset = $(this.instance.wtTable.TABLE).offset();
+    fromOffset = this.wtDom.offset($from[0]);
+    toOffset = (corners.length > 2) ? this.wtDom.offset($to[0]) : fromOffset;
+    containerOffset = this.wtDom.offset(this.instance.wtTable.TABLE);
 
     minTop = fromOffset.top;
     height = toOffset.top + $to.outerHeight() - minTop;

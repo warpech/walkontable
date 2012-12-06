@@ -114,3 +114,39 @@ WalkontableDom.prototype.removeTextNodes = function (elem, parent) {
     }
   }
 };
+
+WalkontableDom.prototype.offset = function (elem) {
+  return elem.getBoundingClientRect();
+};
+
+//seems getBounding is always faster: http://jsperf.com/offset-vs-getboundingclientrect/3
+/*
+ WalkontableDom.prototype.offsetLeft = function (elem) {
+ var offset = elem.offsetLeft;
+ while (elem = elem.offsetParent) {
+ offset += elem.offsetLeft;
+ }
+ return offset;
+ };
+
+ WalkontableDom.prototype.offsetTop = function (elem) {
+ var offset = elem.offsetTop;
+ while (elem = elem.offsetParent) {
+ offset += elem.offsetTop;
+ }
+ return offset;
+ };
+
+ WalkontableDom.prototype.offset = function (elem) {
+ var offsetLeft = elem.offsetLeft
+ , offsetTop = elem.offsetTop;
+ while (elem = elem.offsetParent) {
+ offsetLeft += elem.offsetLeft;
+ offsetTop += elem.offsetTop;
+ }
+ return {
+ left: offsetLeft,
+ top: offsetTop
+ };
+ };
+ */

@@ -116,6 +116,7 @@ function init() {
 
       wt.selections.current.clear();
       wt.selections.current.add(coords, TD);
+      wt.draw();
     }
   });
   wt.draw();
