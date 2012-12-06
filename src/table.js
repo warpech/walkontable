@@ -29,7 +29,11 @@ function WalkontableTable(instance) {
     }
   }
 
-  this.availableTRs = 0;
+  this.colgroupChildrenLength = this.COLGROUP.childNodes.length;
+  if (this.instance.hasSetting('columnHeaders')) {
+    this.theadChildrenLength = this.THEAD.childNodes[0].childNodes.length;
+  }
+  this.tbodyChildrenLength = this.TBODY.childNodes.length;
 }
 
 WalkontableTable.prototype.adjustAvailableNodes = function () {
@@ -45,24 +49,25 @@ WalkontableTable.prototype.adjustAvailableNodes = function () {
   displayTds = Math.min(displayColumns, totalColumns);
 
   //adjust COLGROUP
-  while (this.COLGROUP.childNodes.length < displayTds + rowHeadersCount) {
+  while (this.colgroupChildrenLength < displayTds + rowHeadersCount) {
     this.COLGROUP.appendChild(document.createElement('COL'));
+    this.colgroupChildrenLength++;
   }
-  while (this.COLGROUP.length > displayTds + rowHeadersCount) {
+  while (this.colgroupChildrenLength > displayTds + rowHeadersCount) {
     this.COLGROUP.removeChild(this.COLGROUP.lastChild);
+    this.colgroupChildrenLength--;
   }
 
   //adjust THEAD
   if (this.instance.hasSetting('columnHeaders')) {
-    var availableTHs = this.THEAD.childNodes[0].childNodes.length;
-    while (availableTHs < displayTds + rowHeadersCount) {
+    while (this.theadChildrenLength < displayTds + rowHeadersCount) {
       this.THEAD.firstChild.appendChild(document.createElement('TH'));
-      availableTHs++;
+      this.theadChildrenLength++;
     }
   }
 
   //adjust TBODY
-  while (this.availableTRs < displayRows) {
+  while (this.tbodyChildrenLength < displayRows) {
     TR = document.createElement('TR');
     if (this.instance.hasSetting('rowHeaders')) {
       TR.appendChild(document.createElement('TH'));
@@ -71,21 +76,24 @@ WalkontableTable.prototype.adjustAvailableNodes = function () {
       TR.appendChild(document.createElement('TD'));
     }
     this.TBODY.appendChild(TR);
-    this.availableTRs++;
+    this.tbodyChildrenLength++;
   }
-  while (this.availableTRs > displayRows) {
+  while (this.tbodyChildrenLength > displayRows) {
     this.TBODY.removeChild(this.TBODY.lastChild);
-    this.availableTRs--;
+    this.tbodyChildrenLength--;
   }
 
-  var TRs = this.TABLE.getElementsByTagName('TR');
-
+  var TRs = this.TBODY.childNodes;
+  var trChildrenLength;
   for (var r = 0, rlen = TRs.length; r < rlen; r++) {
-    while (TRs[r].childNodes.length < displayTds + rowHeadersCount) {
+    trChildrenLength = TRs[r].childNodes.length;
+    while (trChildrenLength < displayTds + rowHeadersCount) {
       TRs[r].appendChild(document.createElement('TD'));
+      trChildrenLength++;
     }
-    while (TRs[r].childNodes.length > displayTds + rowHeadersCount) {
+    while (trChildrenLength > displayTds + rowHeadersCount) {
       TRs[r].removeChild(TRs[r].lastChild);
+      trChildrenLength--;
     }
   }
 };
@@ -149,7 +157,7 @@ WalkontableTable.prototype.draw = function () {
         TH.innerHTML = '';
       }
     }
-    for (c = 0; c < displayTds; c++) {
+    for (c = 0; c < displayTds; c++) { //in future use nextSibling; http://jsperf.com/nextsibling-vs-indexed-childnodes
       TD = TR.childNodes[c + rowHeadersCount];
       TD.className = '';
       this.instance.getSetting('cellRenderer', offsetRow + r, offsetColumn + c, TD);
