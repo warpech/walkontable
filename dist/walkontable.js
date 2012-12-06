@@ -1,7 +1,7 @@
 /**
  * walkontable 0.1
  * 
- * Date: Thu Dec 06 2012 02:21:23 GMT+0100 (Central European Standard Time)
+ * Date: Thu Dec 06 2012 11:15:34 GMT+0100 (Central European Standard Time)
 */
 
 function WalkontableBorder(instance, settings) {
@@ -1109,13 +1109,17 @@ function WalkontableWheel(instance) {
 
   //reference to instance
   this.instance = instance;
+  var wheelTimeout;
   $(this.instance.settings.table).on('mousewheel', function (event, delta, deltaX, deltaY) {
-    if (deltaY) {
-      that.instance.scrollVertical(-deltaY).draw();
-    }
-    else if (deltaX) {
-      that.instance.scrollHorizontal(deltaX).draw();
-    }
+    clearTimeout(wheelTimeout);
+    wheelTimeout = setTimeout(function () { //timeout is needed because with fast-wheel scrolling mousewheel event comes dozen times per second
+      if (deltaY) {
+        that.instance.scrollVertical(-deltaY).draw();
+      }
+      else if (deltaX) {
+        that.instance.scrollHorizontal(deltaX).draw();
+      }
+    }, 0);
     event.preventDefault();
   });
 }
