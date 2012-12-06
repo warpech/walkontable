@@ -84,6 +84,27 @@ describe('Walkontable', function () {
     expect($table.find('td').length).toBe(40);
   });
 
+  it("should bootstrap column headers if THEAD is given", function () {
+    $table.remove();
+    $table = $('<table><thead><tr><th>A</th><th>B</th><th>C</th><th>D</th></tr></thead></table>');
+    $table.appendTo('body');
+
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      offsetRow: 0,
+      offsetColumn: 0,
+      displayRows: 10,
+      rowHeaders: "Row"
+    });
+    wt.draw();
+    expect($table.find('thead th').length).toBe(5); //include corner TH
+    expect($table.find('tbody tr:first th').length).toBe(1);
+    expect($table.find('tbody tr:first td').length).toBe(4);
+  });
+
   it("should figure out the displayRows property if height param given", function () {
     var wt = new Walkontable({
       table: $table[0],

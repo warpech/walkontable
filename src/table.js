@@ -30,9 +30,7 @@ function WalkontableTable(instance) {
   }
 
   this.colgroupChildrenLength = this.COLGROUP.childNodes.length;
-  if (this.instance.hasSetting('columnHeaders')) {
-    this.theadChildrenLength = this.THEAD.childNodes[0].childNodes.length;
-  }
+  this.theadChildrenLength = this.THEAD.firstChild ? this.THEAD.firstChild.childNodes.length : 0;
   this.tbodyChildrenLength = this.TBODY.childNodes.length;
 }
 
@@ -63,6 +61,10 @@ WalkontableTable.prototype.adjustAvailableNodes = function () {
     while (this.theadChildrenLength < displayTds + rowHeadersCount) {
       this.THEAD.firstChild.appendChild(document.createElement('TH'));
       this.theadChildrenLength++;
+    }
+    while (this.theadChildrenLength > displayTds + rowHeadersCount) {
+      this.THEAD.firstChild.removeChild(this.THEAD.firstChild.lastChild);
+      this.theadChildrenLength--;
     }
   }
 

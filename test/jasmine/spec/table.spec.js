@@ -322,7 +322,7 @@ describe('WalkontableTable', function () {
     expect($table.find('tbody tr:first td').length).toBe(3);
   });
 
-  it("should remove rows when displayColumns is decreased", function () {
+  it("should remove columns when displayColumns is decreased", function () {
     var wt = new Walkontable({
       table: $table[0],
       data: getData,
@@ -336,6 +336,26 @@ describe('WalkontableTable', function () {
     expect($table.find('tbody tr:first td').length).toBe(3);
 
     wt.update('displayColumns', 2).draw();
+    expect($table.find('tbody tr:first td').length).toBe(2);
+  });
+
+  it("should remove columns when displayColumns is decreased (with column header)", function () {
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      offsetRow: 0,
+      displayRows: 10,
+      displayColumns: 3,
+      columnHeaders: "Col"
+    });
+    wt.draw();
+    expect($table.find('thead tr:first th').length).toBe(3);
+    expect($table.find('tbody tr:first td').length).toBe(3);
+
+    wt.update('displayColumns', 2).draw();
+    expect($table.find('thead tr:first th').length).toBe(2);
     expect($table.find('tbody tr:first td').length).toBe(2);
   });
 
