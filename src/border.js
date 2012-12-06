@@ -32,7 +32,7 @@ function WalkontableBorder(instance, settings) {
  * @param {Array} corners
  */
 WalkontableBorder.prototype.appear = function (corners) {
-  var $from, $to, fromOffset, toOffset, containerOffset, top, minTop, left, minLeft, height, width;
+  var isMultiple, $from, $to, fromOffset, toOffset, containerOffset, top, minTop, left, minLeft, height, width;
   if (this.disabled) {
     return;
   }
@@ -77,10 +77,11 @@ WalkontableBorder.prototype.appear = function (corners) {
   }
 
   if (!(hideTop == hideLeft == hideBottom == hideRight == true)) {
+    isMultiple = (corners[0] !== corners[2] || corners[1] !== corners[3]);
     $from = $(this.instance.wtTable.getCell([corners[0], corners[1]]));
-    $to = (corners.length > 2) ? $(this.instance.wtTable.getCell([corners[2], corners[3]])) : $from;
+    $to = isMultiple ? $(this.instance.wtTable.getCell([corners[2], corners[3]])) : $from;
     fromOffset = this.wtDom.offset($from[0]);
-    toOffset = (corners.length > 2) ? this.wtDom.offset($to[0]) : fromOffset;
+    toOffset = isMultiple ? this.wtDom.offset($to[0]) : fromOffset;
     containerOffset = this.wtDom.offset(this.instance.wtTable.TABLE);
 
     minTop = fromOffset.top;

@@ -106,6 +106,7 @@ WalkontableTable.prototype.draw = function () {
     , TD
     , cellData;
   this.adjustAvailableNodes();
+  this.tableOffset = this.wtDom.offset(this.TABLE);
 
   displayRows = Math.min(displayRows, totalRows);
   displayTds = Math.min(displayColumns, totalColumns);
