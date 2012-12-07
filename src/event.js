@@ -27,7 +27,7 @@ function WalkontableEvent(instance) {
   var dblClickOrigin
     , dblClickTimeout;
   $(this.instance.settings.table).on('mouseup', function (event) {
-    if (that.instance.settings.onCellDblClick) {
+    if (event.which !== 2 && that.instance.settings.onCellDblClick) { //if not right mouse button
       var TD = that.wtDom.closest(event.target, ['TD', 'TH']);
       if (dblClickOrigin === TD) {
         that.instance.getSetting('onCellDblClick', event, that.instance.wtTable.getCoords(TD), TD);

@@ -91,4 +91,29 @@ describe('WalkontableEvent', function () {
     expect(myCoords).toEqual([10, 2]);
     expect(myTD).toEqual($td[0]);
   });
+
+  it("should not call `onCellDblClick` callback when right-clicked", function () {
+    var called = false
+      , wt = new Walkontable({
+        table: $table[0],
+        data: getData,
+        totalRows: getTotalRows,
+        totalColumns: getTotalColumns,
+        offsetRow: 10,
+        offsetColumn: 2,
+        displayRows: 10,
+        displayColumns: 2,
+        onCellDblClick: function (event, coords, TD) {
+          called = true
+        }
+      });
+    wt.draw();
+
+    var $td = $table.find('tbody tr:first td:first');
+    var ev = $.Event('mouseup');
+    ev.which = 2; //right mouse button
+    $td.trigger(ev);
+    $td.trigger(ev);
+    expect(called).toEqual(false);
+  });
 });
