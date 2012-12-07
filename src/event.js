@@ -13,10 +13,38 @@ function WalkontableEvent(instance) {
     }
   });
 
+  var lastMouseOver;
   $(this.instance.settings.table).on('mouseover', function (event) {
     if (that.instance.settings.onCellMouseOver) {
       var TD = that.wtDom.closest(event.target, ['TD', 'TH']);
-      that.instance.getSetting('onCellMouseOver', event, that.instance.wtTable.getCoords(TD), TD);
+      if (TD !== lastMouseOver) {
+        lastMouseOver = TD;
+        that.instance.getSetting('onCellMouseOver', event, that.instance.wtTable.getCoords(TD), TD);
+      }
     }
   });
+
+  var dblClickOrigin
+    , dblClickTimeout;
+  $(this.instance.settings.table).on('mouseup', function (event) {
+    if (that.instance.settings.onCellDblClick) {
+      var TD = that.wtDom.closest(event.target, ['TD', 'TH']);
+      if (dblClickOrigin === TD) {
+        that.instance.getSetting('onCellDblClick', event, that.instance.wtTable.getCoords(TD), TD);
+        dblClickOrigin = null;
+      }
+      else {
+        dblClickOrigin = TD;
+        clearTimeout(dblClickTimeout);
+        dblClickTimeout = setTimeout(function () {
+          dblClickOrigin = null;
+        }, 500);
+      }
+    }
+  });
+
+  //TODO: add border events
+  //instance.container.find('.htBorder.current').on('mousedown', onDblClick);
+  //instance.container.find('.htBorder.current').on('mouseover', onDblClick);
+  //instance.container.find('.htBorder.current').on('dblclick', onDblClick);
 }

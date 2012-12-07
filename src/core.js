@@ -28,7 +28,8 @@ function Walkontable(settings) {
     columnWidth: null,
     selections: null,
     onCellMouseDown: null,
-    onCellMouseOver: null
+    onCellMouseOver: null,
+    onCellDblClick: null
   };
 
   //reference to settings

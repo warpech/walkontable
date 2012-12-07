@@ -15,8 +15,8 @@ describe('WalkontableEvent', function () {
   });
 
   it("should call `onCellMouseDown` callback", function () {
-    var myCoords
-      , myTD
+    var myCoords = null
+      , myTD = null
       , wt = new Walkontable({
         table: $table[0],
         data: getData,
@@ -41,8 +41,8 @@ describe('WalkontableEvent', function () {
   });
 
   it("should call `onCellMouseOver` callback", function () {
-    var myCoords
-      , myTD
+    var myCoords = null
+      , myTD = null
       , wt = new Walkontable({
         table: $table[0],
         data: getData,
@@ -62,6 +62,32 @@ describe('WalkontableEvent', function () {
     var $td = $table.find('tbody tr:first td:first');
     $td.trigger('mouseover');
 
+    expect(myCoords).toEqual([10, 2]);
+    expect(myTD).toEqual($td[0]);
+  });
+
+  it("should call `onCellDblClick` callback", function () {
+    var myCoords = null
+      , myTD = null
+      , wt = new Walkontable({
+        table: $table[0],
+        data: getData,
+        totalRows: getTotalRows,
+        totalColumns: getTotalColumns,
+        offsetRow: 10,
+        offsetColumn: 2,
+        displayRows: 10,
+        displayColumns: 2,
+        onCellDblClick: function (event, coords, TD) {
+          myCoords = coords;
+          myTD = TD;
+        }
+      });
+    wt.draw();
+
+    var $td = $table.find('tbody tr:first td:first');
+    $td.trigger('mouseup');
+    $td.trigger('mouseup');
     expect(myCoords).toEqual([10, 2]);
     expect(myTD).toEqual($td[0]);
   });
