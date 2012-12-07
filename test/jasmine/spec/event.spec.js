@@ -1,6 +1,6 @@
 describe('WalkontableEvent', function () {
   var $table
-    , debug = false;
+    , debug = 1;
 
   beforeEach(function () {
     $table = $('<table></table>'); //create a table that is not attached to document
@@ -115,5 +115,81 @@ describe('WalkontableEvent', function () {
     $td.trigger(ev);
     $td.trigger(ev);
     expect(called).toEqual(false);
+  });
+
+  it("border click should call `onCellMouseDown` callback", function () {
+    var myCoords = null
+      , myTD = null
+      , wt = new Walkontable({
+        table: $table[0],
+        data: getData,
+        totalRows: getTotalRows,
+        totalColumns: getTotalColumns,
+        offsetRow: 10,
+        offsetColumn: 2,
+        displayRows: 10,
+        displayColumns: 2,
+        selections: {
+          current: {
+            className: 'current',
+            border: {
+              width: 1,
+              color: 'red',
+              style: 'solid'
+            }
+          }
+        },
+        onCellMouseDown: function (event, coords, TD) {
+          myCoords = coords;
+          myTD = TD;
+        }
+      });
+    wt.selections.current.add([10, 2]);
+    wt.draw();
+
+    var $td = $table.find('tbody tr:first td:first');
+    var $border = $table.parent().find('.wtBorder:first');
+    $border.trigger('mousedown');
+
+    expect(myCoords).toEqual([10, 2]);
+    expect(myTD).toEqual($td[0]);
+  });
+
+  it("border click should call `onCellDblClick` callback", function () {
+    var myCoords = null
+      , myTD = null
+      , wt = new Walkontable({
+        table: $table[0],
+        data: getData,
+        totalRows: getTotalRows,
+        totalColumns: getTotalColumns,
+        offsetRow: 10,
+        offsetColumn: 2,
+        displayRows: 10,
+        displayColumns: 2,
+        selections: {
+          current: {
+            className: 'current',
+            border: {
+              width: 1,
+              color: 'red',
+              style: 'solid'
+            }
+          }
+        },
+        onCellDblClick: function (event, coords, TD) {
+          myCoords = coords;
+          myTD = TD;
+        }
+      });
+    wt.selections.current.add([10, 2]);
+    wt.draw();
+
+    var $td = $table.find('tbody tr:first td:first');
+    var $border = $table.parent().find('.wtBorder:first');
+    $border.trigger('mouseup');
+    $border.trigger('mouseup');
+    expect(myCoords).toEqual([10, 2]);
+    expect(myTD).toEqual($td[0]);
   });
 });

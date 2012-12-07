@@ -4,9 +4,7 @@ function WalkontableScrollbar(instance, type) {
   //reference to instance
   this.instance = instance;
   this.type = type;
-  var TABLE = this.instance.getSetting('table');
-  this.$table = $(TABLE);
-  var wtDom = new WalkontableDom();
+  this.$table = $(this.instance.wtTable.TABLE);
 
   //create elements
   this.slider = document.createElement('DIV');
@@ -18,20 +16,8 @@ function WalkontableScrollbar(instance, type) {
   this.handle = document.createElement('DIV');
   this.handle.className = 'handle';
 
-  var parent = TABLE.parentNode;
-  if (!parent || parent.nodeType !== 1 || !wtDom.hasClass(parent, 'wtHolder')) {
-    var holder = document.createElement('DIV');
-    holder.style.position = 'relative';
-    holder.className = 'wtHolder';
-    if (parent) {
-      parent.insertBefore(holder, TABLE); //if TABLE is detached (e.g. in Jasmine test), it has no parentNode so we cannot attach holder to it
-    }
-    holder.appendChild(TABLE);
-    parent = holder;
-  }
-
   this.slider.appendChild(this.handle);
-  parent.appendChild(this.slider);
+  this.instance.wtTable.parent.appendChild(this.slider);
 
   this.dragdealer = new Dragdealer(this.slider, {
     vertical: (type === 'vertical'),

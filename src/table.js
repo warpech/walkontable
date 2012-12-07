@@ -1,11 +1,24 @@
 function WalkontableTable(instance) {
   //reference to instance
   this.instance = instance;
-
-  //bootstrap from settings
   this.TABLE = this.instance.getSetting('table');
   this.wtDom = new WalkontableDom();
   this.wtDom.removeTextNodes(this.TABLE);
+
+  //wtHolder
+  var parent = this.TABLE.parentNode;
+  if (!parent || parent.nodeType !== 1 || !this.wtDom.hasClass(parent, 'wtHolder')) {
+    var holder = document.createElement('DIV');
+    holder.style.position = 'relative';
+    holder.className = 'wtHolder';
+    if (parent) {
+      parent.insertBefore(holder, this.TABLE); //if TABLE is detached (e.g. in Jasmine test), it has no parentNode so we cannot attach holder to it
+    }
+    holder.appendChild(this.TABLE);
+    this.parent = holder;
+  }
+
+  //bootstrap from settings
   this.TBODY = this.TABLE.getElementsByTagName('TBODY')[0];
   if (!this.TBODY) {
     this.TBODY = document.createElement('TBODY');

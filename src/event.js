@@ -6,15 +6,23 @@ function WalkontableEvent(instance) {
 
   this.wtDom = new WalkontableDom();
 
-  $(this.instance.settings.table).on('mousedown', function (event) {
+  var onMouseDown = function (event) {
     if (that.instance.settings.onCellMouseDown) {
-      var TD = that.wtDom.closest(event.target, ['TD', 'TH']);
-      that.instance.getSetting('onCellMouseDown', event, that.instance.wtTable.getCoords(TD), TD);
+      var coords
+        , TD = that.wtDom.closest(event.target, ['TD', 'TH']);
+      if (TD) {
+        coords = that.instance.wtTable.getCoords(TD);
+      }
+      else if (!TD && that.wtDom.hasClass(event.target, 'wtBorder') && that.wtDom.hasClass(event.target, 'current')) {
+        coords = that.instance.selections.current.selected[0];
+        TD = that.instance.wtTable.getCell(coords);
+      }
+      that.instance.getSetting('onCellMouseDown', event, coords, TD);
     }
-  });
+  };
 
   var lastMouseOver;
-  $(this.instance.settings.table).on('mouseover', function (event) {
+  var onMouseOver = function (event) {
     if (that.instance.settings.onCellMouseOver) {
       var TD = that.wtDom.closest(event.target, ['TD', 'TH']);
       if (TD !== lastMouseOver) {
@@ -22,15 +30,24 @@ function WalkontableEvent(instance) {
         that.instance.getSetting('onCellMouseOver', event, that.instance.wtTable.getCoords(TD), TD);
       }
     }
-  });
+  };
 
   var dblClickOrigin
     , dblClickTimeout;
-  $(this.instance.settings.table).on('mouseup', function (event) {
+  var onMouseUp = function (event) {
     if (event.which !== 2 && that.instance.settings.onCellDblClick) { //if not right mouse button
-      var TD = that.wtDom.closest(event.target, ['TD', 'TH']);
+      var coords
+        , TD = that.wtDom.closest(event.target, ['TD', 'TH']);
+      if (TD) {
+        coords = that.instance.wtTable.getCoords(TD);
+      }
+      else if (!TD && that.wtDom.hasClass(event.target, 'wtBorder') && that.wtDom.hasClass(event.target, 'current')) {
+        coords = that.instance.selections.current.selected[0];
+        TD = that.instance.wtTable.getCell(coords);
+      }
+
       if (dblClickOrigin === TD) {
-        that.instance.getSetting('onCellDblClick', event, that.instance.wtTable.getCoords(TD), TD);
+        that.instance.getSetting('onCellDblClick', event, coords, TD);
         dblClickOrigin = null;
       }
       else {
@@ -41,10 +58,9 @@ function WalkontableEvent(instance) {
         }, 500);
       }
     }
-  });
+  };
 
-  //TODO: add border events
-  //instance.container.find('.htBorder.current').on('mousedown', onDblClick);
-  //instance.container.find('.htBorder.current').on('mouseover', onDblClick);
-  //instance.container.find('.htBorder.current').on('dblclick', onDblClick);
+  $(this.instance.wtTable.parent).on('mousedown', onMouseDown);
+  $(this.instance.settings.table).on('mouseover', onMouseOver);
+  $(this.instance.wtTable.parent).on('mouseup', onMouseUp);
 }
