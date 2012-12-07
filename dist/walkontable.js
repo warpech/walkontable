@@ -1,7 +1,7 @@
 /**
  * walkontable 0.1
  * 
- * Date: Fri Dec 07 2012 18:14:07 GMT+0100 (Central European Standard Time)
+ * Date: Fri Dec 07 2012 22:30:59 GMT+0100 (Central European Standard Time)
 */
 
 function WalkontableBorder(instance, settings) {
@@ -417,11 +417,18 @@ WalkontableDom.prototype.removeTextNodes = function (elem, parent) {
   }
 };
 
+/**
+ * seems getBounding is usually faster: http://jsperf.com/offset-vs-getboundingclientrect/4
+ * but maybe offset + cache would work?
+ */
 WalkontableDom.prototype.offset = function (elem) {
-  return elem.getBoundingClientRect();
+  var rect = elem.getBoundingClientRect();
+  return {
+    top: rect.top + document.documentElement.scrollTop,
+    left: rect.left + document.documentElement.scrollLeft
+  };
 };
 
-//seems getBounding is always faster: http://jsperf.com/offset-vs-getboundingclientrect/3
 /*
  WalkontableDom.prototype.offsetLeft = function (elem) {
  var offset = elem.offsetLeft;
