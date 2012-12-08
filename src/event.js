@@ -35,7 +35,7 @@ function WalkontableEvent(instance) {
   var dblClickOrigin
     , dblClickTimeout;
   var onMouseUp = function (event) {
-    if (event.which !== 2 && that.instance.settings.onCellDblClick) { //if not right mouse button
+    if (event.button !== 2 && that.instance.settings.onCellDblClick) { //if not right mouse button
       var coords
         , TD = that.wtDom.closest(event.target, ['TD', 'TH']);
       if (TD) {
