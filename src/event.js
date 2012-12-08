@@ -17,7 +17,9 @@ function WalkontableEvent(instance) {
         coords = that.instance.selections.current.selected[0];
         TD = that.instance.wtTable.getCell(coords);
       }
-      that.instance.getSetting('onCellMouseDown', event, coords, TD);
+      if(TD) {
+        that.instance.getSetting('onCellMouseDown', event, coords, TD);
+      }
     }
   };
 
@@ -46,7 +48,7 @@ function WalkontableEvent(instance) {
         TD = that.instance.wtTable.getCell(coords);
       }
 
-      if (dblClickOrigin === TD) {
+      if (TD && dblClickOrigin === TD) {
         that.instance.getSetting('onCellDblClick', event, coords, TD);
         dblClickOrigin = null;
       }
