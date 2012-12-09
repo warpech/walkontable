@@ -111,7 +111,7 @@ describe('WalkontableEvent', function () {
 
     var $td = $table.find('tbody tr:first td:first');
     var ev = $.Event('mouseup');
-    ev.which = 2; //right mouse button
+    ev.button = 2; //right mouse button
     $td.trigger(ev);
     $td.trigger(ev);
     expect(called).toEqual(false);
