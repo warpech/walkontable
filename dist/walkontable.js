@@ -1,7 +1,7 @@
 /**
  * walkontable 0.1
  * 
- * Date: Tue Dec 11 2012 11:27:15 GMT+0100 (Central European Standard Time)
+ * Date: Tue Dec 11 2012 19:11:15 GMT+0100 (Central European Standard Time)
 */
 
 function WalkontableBorder(instance, settings) {
@@ -788,9 +788,7 @@ WalkontableSelection.prototype.remove = function (coords) {
 };
 
 WalkontableSelection.prototype.clear = function () {
-  for (var i = this.selected.length - 1; i >= 0; i--) {
-    this.remove(this.selected[i]);
-  }
+  this.selected.length = 0; //http://jsperf.com/clear-arrayxxx
 };
 
 WalkontableSelection.prototype.isSelected = function (coords) {

@@ -34,9 +34,7 @@ WalkontableSelection.prototype.remove = function (coords) {
 };
 
 WalkontableSelection.prototype.clear = function () {
-  for (var i = this.selected.length - 1; i >= 0; i--) {
-    this.remove(this.selected[i]);
-  }
+  this.selected.length = 0; //http://jsperf.com/clear-arrayxxx
 };
 
 WalkontableSelection.prototype.isSelected = function (coords) {
