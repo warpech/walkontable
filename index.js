@@ -85,9 +85,9 @@ function init() {
     offsetColumn: 0,
     displayRows: displayRows,
     displayColumns: 5,
-    rowHeaders: function (row) {
+    frozenColumns: [function (row) {
       return row + 1
-    },
+    }],
     selections: {
       area: {
         className: 'area',

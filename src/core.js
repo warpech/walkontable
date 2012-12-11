@@ -8,7 +8,7 @@ function Walkontable(settings) {
     data: void 0,
     offsetRow: 0,
     offsetColumn: 0,
-    rowHeaders: false,
+    frozenColumns: null,
     columnHeaders: false,
     totalRows: void 0,
     totalColumns: void 0,

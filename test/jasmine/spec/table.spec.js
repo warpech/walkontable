@@ -87,9 +87,9 @@ describe('WalkontableTable', function () {
       offsetRow: 0,
       displayRows: 10,
       displayColumns: 2,
-      rowHeaders: function (row) {
+      frozenColumns: [function (row) {
         return row + 1;
-      }
+      }]
     });
     wt.draw();
     expect($table.find('tbody th, tbody td').length).toBe(30); //10*2=20 displayed cells + 10 row headers
@@ -108,7 +108,7 @@ describe('WalkontableTable', function () {
       displayRows: 10,
       displayColumns: 2,
       columnHeaders: "Column",
-      rowHeaders: "Row"
+      frozenColumns: ['Row']
     });
     wt.draw();
     expect($table.find('thead tr:first th').length).toBe(3); //2 columns in THEAD
@@ -132,7 +132,7 @@ describe('WalkontableTable', function () {
       displayRows: 10,
       displayColumns: 2,
       columnHeaders: plusOne,
-      rowHeaders: plusOne
+      frozenColumns: [plusOne]
     });
     wt.draw();
     expect($table.find('tr:eq(0) th:eq(1)')[0].innerHTML).toBe('2');
@@ -197,7 +197,7 @@ describe('WalkontableTable', function () {
       offsetColumn: 0,
       displayRows: 10,
       displayColumns: 2,
-      rowHeaders: plusOne
+      frozenColumns: [plusOne]
     });
     wt.draw();
 
@@ -247,7 +247,7 @@ describe('WalkontableTable', function () {
       offsetColumn: 0,
       displayRows: 10,
       displayColumns: 2,
-      rowHeaders: plusOne
+      frozenColumns: [plusOne]
     });
     wt.draw();
 
@@ -400,7 +400,7 @@ describe('WalkontableTable', function () {
       displayRows: 10,
       offsetRow: 0,
       offsetColumn: 0,
-      rowHeaders: "Row",
+      frozenColumns: ['Row'],
       columnHeaders: "Col"
     });
     wt.draw();
@@ -417,7 +417,7 @@ describe('WalkontableTable', function () {
       displayRows: 10,
       offsetRow: 0,
       offsetColumn: 0,
-      rowHeaders: "Row",
+      frozenColumns: ['Row'],
       columnHeaders: "Col"
     });
     wt.draw();
@@ -433,7 +433,7 @@ describe('WalkontableTable', function () {
       displayRows: 10,
       offsetRow: 0,
       offsetColumn: 0,
-      rowHeaders: "Row",
+      frozenColumns: ['Row'],
       columnHeaders: "Col",
       columnWidth: function (column) {
         return (column + 1) * 50
@@ -455,7 +455,7 @@ describe('WalkontableTable', function () {
       displayRows: 10,
       offsetRow: 0,
       offsetColumn: 0,
-      rowHeaders: "Row",
+      frozenColumns: ['Row'],
       columnHeaders: "Col",
       columnWidth: 100
     });
@@ -464,5 +464,27 @@ describe('WalkontableTable', function () {
     expect($.inArray($table.find('tbody tr:first td:eq(1)').width(), [98, 100]) > -1).toBe(true); //IE7 reports 98, other browsers report 100
     expect($.inArray($table.find('tbody tr:first td:eq(2)').width(), [98, 100]) > -1).toBe(true); //IE7 reports 148, other browsers report 150
     expect($.inArray($table.find('tbody tr:first td:eq(3)').width(), [98, 100]) > -1).toBe(true); //IE7 reports 198, other browsers report 200
+  });
+
+  it("should render as much frozen columns as defined", function () {
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      displayRows: 10,
+      offsetRow: 0,
+      offsetColumn: 0,
+      frozenColumns: [
+        'Some',
+        'thing'
+      ],
+      columnHeaders: "Col",
+      columnWidth: 100
+    });
+    wt.draw();
+    expect($table.find('thead tr:first th').length).toBe(getTotalColumns() + 2);
+    expect($table.find('tbody tr:first th:eq(0)').html()).toBe("Some");
+    expect($table.find('tbody tr:first th:eq(1)').html()).toBe("thing");
   });
 });
