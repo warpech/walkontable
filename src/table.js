@@ -141,6 +141,9 @@ WalkontableTable.prototype.draw = function () {
   for (c = 0; c < this.colgroupChildrenLength; c++) {
     if (c < frozenColumnsCount) {
       this.wtDom.addClass(this.COLGROUP.childNodes[c], 'rowHeader');
+      if (typeof frozenColumns[c] === "function") {
+        frozenColumns[c](null, this.COLGROUP.childNodes[c])
+      }
     }
     else {
       this.wtDom.removeClass(this.COLGROUP.childNodes[c], 'rowHeader');
@@ -156,7 +159,12 @@ WalkontableTable.prototype.draw = function () {
   //draw THEAD
   if (frozenColumnsCount && this.instance.hasSetting('columnHeaders')) {
     for (c = 0; c < frozenColumnsCount; c++) {
-      this.THEAD.childNodes[0].childNodes[c].innerHTML = '';
+      if (typeof frozenColumns[c] === "function") {
+        frozenColumns[c](null, this.THEAD.childNodes[0].childNodes[c])
+      }
+      else {
+        this.THEAD.childNodes[0].childNodes[c].innerHTML = '';
+      }
     }
   }
 
@@ -171,13 +179,15 @@ WalkontableTable.prototype.draw = function () {
     TR = this.TBODY.childNodes[r];
     for (c = 0; c < frozenColumnsCount; c++) { //in future use nextSibling; http://jsperf.com/nextsibling-vs-indexed-childnodes
       TH = TR.childNodes[c];
-      cellData = typeof frozenColumns[c] === "function" ? frozenColumns[c](offsetRow + r) : frozenColumns[c];
+      cellData = typeof frozenColumns[c] === "function" ? frozenColumns[c](offsetRow + r, TH) : frozenColumns[c];
       if (cellData !== void 0) {
         TH.innerHTML = cellData;
       }
-      else {
-        TH.innerHTML = '';
-      }
+      /*
+       we can assume that frozenColumns[c] function took care of inserting content into TH
+       else {
+       TH.innerHTML = '';
+       }*/
     }
     for (c = 0; c < displayTds; c++) { //in future use nextSibling; http://jsperf.com/nextsibling-vs-indexed-childnodes
       TD = TR.childNodes[c + frozenColumnsCount];

@@ -1,7 +1,7 @@
 /**
  * walkontable 0.1
  * 
- * Date: Tue Dec 11 2012 01:04:40 GMT+0100 (Central European Standard Time)
+ * Date: Tue Dec 11 2012 02:33:54 GMT+0100 (Central European Standard Time)
 */
 
 function WalkontableBorder(instance, settings) {
@@ -1095,6 +1095,9 @@ WalkontableTable.prototype.draw = function () {
   for (c = 0; c < this.colgroupChildrenLength; c++) {
     if (c < frozenColumnsCount) {
       this.wtDom.addClass(this.COLGROUP.childNodes[c], 'rowHeader');
+      if (typeof frozenColumns[c] === "function") {
+        frozenColumns[c](null, this.COLGROUP.childNodes[c])
+      }
     }
     else {
       this.wtDom.removeClass(this.COLGROUP.childNodes[c], 'rowHeader');
@@ -1110,7 +1113,12 @@ WalkontableTable.prototype.draw = function () {
   //draw THEAD
   if (frozenColumnsCount && this.instance.hasSetting('columnHeaders')) {
     for (c = 0; c < frozenColumnsCount; c++) {
-      this.THEAD.childNodes[0].childNodes[c].innerHTML = '';
+      if (typeof frozenColumns[c] === "function") {
+        frozenColumns[c](null, this.THEAD.childNodes[0].childNodes[c])
+      }
+      else {
+        this.THEAD.childNodes[0].childNodes[c].innerHTML = '';
+      }
     }
   }
 
@@ -1125,13 +1133,15 @@ WalkontableTable.prototype.draw = function () {
     TR = this.TBODY.childNodes[r];
     for (c = 0; c < frozenColumnsCount; c++) { //in future use nextSibling; http://jsperf.com/nextsibling-vs-indexed-childnodes
       TH = TR.childNodes[c];
-      cellData = typeof frozenColumns[c] === "function" ? frozenColumns[c](offsetRow + r) : frozenColumns[c];
+      cellData = typeof frozenColumns[c] === "function" ? frozenColumns[c](offsetRow + r, TH) : frozenColumns[c];
       if (cellData !== void 0) {
         TH.innerHTML = cellData;
       }
-      else {
-        TH.innerHTML = '';
-      }
+      /*
+       we can assume that frozenColumns[c] function took care of inserting content into TH
+       else {
+       TH.innerHTML = '';
+       }*/
     }
     for (c = 0; c < displayTds; c++) { //in future use nextSibling; http://jsperf.com/nextsibling-vs-indexed-childnodes
       TD = TR.childNodes[c + frozenColumnsCount];
@@ -1158,7 +1168,7 @@ WalkontableTable.prototype.getCell = function (coords) {
     , displayRows = this.instance.getSetting('displayRows')
     , displayColumns = this.instance.getSetting('displayColumns')
     , frozenColumns = this.instance.getSetting('frozenColumns')
-    , frozenColumnsCount = frozenColumns ? frozenColumns.length : 0
+    , frozenColumnsCount = frozenColumns ? frozenColumns.length : 0;
 
   if (coords[0] >= offsetRow && coords[0] <= offsetRow + displayRows - 1) {
     if (coords[1] >= offsetColumn && coords[1] < offsetColumn + displayColumns) {
@@ -1170,7 +1180,7 @@ WalkontableTable.prototype.getCell = function (coords) {
 
 WalkontableTable.prototype.getCoords = function (TD) {
   var frozenColumns = this.instance.getSetting('frozenColumns')
-    , frozenColumnsCount = frozenColumns ? frozenColumns.length : 0
+    , frozenColumnsCount = frozenColumns ? frozenColumns.length : 0;
   return [
     this.wtDom.prevSiblings(TD.parentNode).length + this.instance.getSetting('offsetRow'),
     TD.cellIndex + this.instance.getSetting('offsetColumn') - frozenColumnsCount
