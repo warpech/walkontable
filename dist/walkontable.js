@@ -1,7 +1,7 @@
 /**
  * walkontable 0.1
  * 
- * Date: Tue Dec 11 2012 23:48:10 GMT+0100 (Central European Standard Time)
+ * Date: Tue Dec 11 2012 23:56:50 GMT+0100 (Central European Standard Time)
 */
 
 function WalkontableBorder(instance, settings) {
@@ -474,24 +474,16 @@ function WalkontableEvent(instance) {
     , dblClickTimeout = null;
 
   var onMouseDown = function (event) {
-    var coords
-      , TD = that.wtDom.closest(event.target, ['TD', 'TH']);
-    if (TD) {
-      coords = that.instance.wtTable.getCoords(TD);
-    }
-    else if (!TD && that.wtDom.hasClass(event.target, 'wtBorder') && that.wtDom.hasClass(event.target, 'current')) {
-      coords = that.instance.selections.current.selected[0];
-      TD = that.instance.wtTable.getCell(coords);
-    }
+    var cell = that.parentCell(event.target);
 
-    if (that.instance.settings.onCellMouseDown) {
-      if (TD && TD.nodeName === 'TD') {
-        that.instance.getSetting('onCellMouseDown', event, coords, TD);
+    if (cell.TD && cell.TD.nodeName === 'TD') {
+      if (that.instance.settings.onCellMouseDown) {
+        that.instance.getSetting('onCellMouseDown', event, cell.coords, cell.TD);
       }
-    }
-    if (event.button !== 2 && that.instance.settings.onCellDblClick && TD.nodeName === 'TD') { //if not right mouse button
-      dblClickOrigin.shift();
-      dblClickOrigin.push(TD);
+      if (event.button !== 2 && that.instance.settings.onCellDblClick) { //if not right mouse button
+        dblClickOrigin.shift();
+        dblClickOrigin.push(cell.TD);
+      }
     }
   };
 
@@ -510,30 +502,24 @@ function WalkontableEvent(instance) {
 
   var onMouseUp = function (event) {
     if (event.button !== 2 && that.instance.settings.onCellDblClick) { //if not right mouse button
-      var coords
-        , TD = that.wtDom.closest(event.target, ['TD', 'TH']);
-      if (TD) {
-        coords = that.instance.wtTable.getCoords(TD);
-      }
-      else if (!TD && that.wtDom.hasClass(event.target, 'wtBorder') && that.wtDom.hasClass(event.target, 'current')) {
-        coords = that.instance.selections.current.selected[0];
-        TD = that.instance.wtTable.getCell(coords);
-      }
+      var cell = that.parentCell(event.target);
 
-      dblClickOrigin.shift();
-      dblClickOrigin.push(TD);
+      if (cell.TD && cell.TD.nodeName === 'TD') {
+        dblClickOrigin.shift();
+        dblClickOrigin.push(cell.TD);
 
-      if(dblClickOrigin[4] !== null && dblClickOrigin[3] === dblClickOrigin[2]) {
-        if (dblClickTimeout && dblClickOrigin[2] === dblClickOrigin[1] && dblClickOrigin[1] === dblClickOrigin[0]) {
-          that.instance.getSetting('onCellDblClick', event, coords, TD);
-          clearTimeout(dblClickTimeout);
-          dblClickTimeout = null;
-        }
-        else {
-          clearTimeout(dblClickTimeout);
-          dblClickTimeout = setTimeout(function () {
+        if (dblClickOrigin[4] !== null && dblClickOrigin[3] === dblClickOrigin[2]) {
+          if (dblClickTimeout && dblClickOrigin[2] === dblClickOrigin[1] && dblClickOrigin[1] === dblClickOrigin[0]) {
+            that.instance.getSetting('onCellDblClick', event, cell.coords, cell.TD);
+            clearTimeout(dblClickTimeout);
             dblClickTimeout = null;
-          }, 500);
+          }
+          else {
+            clearTimeout(dblClickTimeout);
+            dblClickTimeout = setTimeout(function () {
+              dblClickTimeout = null;
+            }, 500);
+          }
         }
       }
     }
@@ -543,6 +529,19 @@ function WalkontableEvent(instance) {
   $(this.instance.settings.table).on('mouseover', onMouseOver);
   $(this.instance.wtTable.parent).on('mouseup', onMouseUp);
 }
+
+WalkontableEvent.prototype.parentCell = function (elem) {
+  var cell = {};
+  cell.TD = this.wtDom.closest(elem, ['TD', 'TH']);
+  if (cell.TD) {
+    cell.coords = this.instance.wtTable.getCoords(cell.TD);
+  }
+  else if (!cell.TD && this.wtDom.hasClass(elem, 'wtBorder') && this.wtDom.hasClass(elem, 'current')) {
+    cell.coords = this.instance.selections.current.selected[0];
+    cell.TD = this.instance.wtTable.getCell(cell.coords);
+  }
+  return cell;
+};
 //http://stackoverflow.com/questions/3629183/why-doesnt-indexof-work-on-an-array-ie8
 if (!Array.prototype.indexOf) {
   Array.prototype.indexOf = function (elt /*, from*/) {
