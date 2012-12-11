@@ -1,7 +1,7 @@
 /**
  * walkontable 0.1
  * 
- * Date: Tue Dec 11 2012 23:17:55 GMT+0100 (Central European Standard Time)
+ * Date: Tue Dec 11 2012 23:26:57 GMT+0100 (Central European Standard Time)
 */
 
 function WalkontableBorder(instance, settings) {
@@ -470,17 +470,23 @@ function WalkontableEvent(instance) {
 
   this.wtDom = new WalkontableDom();
 
+  var dblClickOrigin = null
+    , dblClickTimeout = null;
+
   var onMouseDown = function (event) {
+    var coords
+      , TD = that.wtDom.closest(event.target, ['TD', 'TH']);
+    if (TD) {
+      coords = that.instance.wtTable.getCoords(TD);
+    }
+    else if (!TD && that.wtDom.hasClass(event.target, 'wtBorder') && that.wtDom.hasClass(event.target, 'current')) {
+      coords = that.instance.selections.current.selected[0];
+      TD = that.instance.wtTable.getCell(coords);
+    }
+    if (dblClickOrigin === null) {
+      dblClickOrigin = TD;
+    }
     if (that.instance.settings.onCellMouseDown) {
-      var coords
-        , TD = that.wtDom.closest(event.target, ['TD', 'TH']);
-      if (TD) {
-        coords = that.instance.wtTable.getCoords(TD);
-      }
-      else if (!TD && that.wtDom.hasClass(event.target, 'wtBorder') && that.wtDom.hasClass(event.target, 'current')) {
-        coords = that.instance.selections.current.selected[0];
-        TD = that.instance.wtTable.getCell(coords);
-      }
       if (TD && TD.nodeName === 'TD') {
         that.instance.getSetting('onCellMouseDown', event, coords, TD);
       }
@@ -500,8 +506,6 @@ function WalkontableEvent(instance) {
     }
   };
 
-  var dblClickOrigin
-    , dblClickTimeout;
   var onMouseUp = function (event) {
     if (event.button !== 2 && that.instance.settings.onCellDblClick) { //if not right mouse button
       var coords
@@ -517,12 +521,13 @@ function WalkontableEvent(instance) {
       if (TD && dblClickOrigin === TD && TD.nodeName === 'TD') {
         that.instance.getSetting('onCellDblClick', event, coords, TD);
         dblClickOrigin = null;
+        dblClickTimeout = null;
       }
       else {
-        dblClickOrigin = TD;
         clearTimeout(dblClickTimeout);
         dblClickTimeout = setTimeout(function () {
           dblClickOrigin = null;
+          dblClickTimeout = null;
         }, 500);
       }
     }

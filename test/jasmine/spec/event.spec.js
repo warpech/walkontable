@@ -86,7 +86,9 @@ describe('WalkontableEvent', function () {
     wt.draw();
 
     var $td = $table.find('tbody tr:first td:first');
+    $td.trigger('mousedown');
     $td.trigger('mouseup');
+    $td.trigger('mousedown');
     $td.trigger('mouseup');
     expect(myCoords).toEqual([10, 2]);
     expect(myTD).toEqual($td[0]);
@@ -157,7 +159,9 @@ describe('WalkontableEvent', function () {
     wt.draw();
 
     var $th = $table.find('th:first');
+    $th.trigger('mousedown');
     $th.trigger('mouseup');
+    $th.trigger('mousedown');
     $th.trigger('mouseup');
     expect(called).toEqual(false);
   });
@@ -180,10 +184,39 @@ describe('WalkontableEvent', function () {
     wt.draw();
 
     var $td = $table.find('tbody tr:first td:first');
-    var ev = $.Event('mouseup');
-    ev.button = 2; //right mouse button
-    $td.trigger(ev);
-    $td.trigger(ev);
+    var mouseup = $.Event('mouseup');
+    var mousedown = $.Event('mousedown');
+    mouseup.button = mouseup.button = 2; //right mouse button
+    $td.trigger(mousedown);
+    $td.trigger(mouseup);
+    $td.trigger(mousedown);
+    $td.trigger(mouseup);
+    expect(called).toEqual(false);
+  });
+
+  it("should not call `onCellDblClick` when first mouse up came from mouse drag", function () {
+    var called = false
+      , wt = new Walkontable({
+        table: $table[0],
+        data: getData,
+        totalRows: getTotalRows,
+        totalColumns: getTotalColumns,
+        offsetRow: 10,
+        offsetColumn: 2,
+        displayRows: 10,
+        displayColumns: 2,
+        onCellDblClick: function (event, coords, TD) {
+          called = true
+        }
+      });
+    wt.draw();
+
+    var $td = $table.find('tbody tr:first td:first');
+    var $td2 = $table.find('tbody tr:first td:eq(1)');
+    $td2.trigger('mousedown');
+    $td.trigger('mouseup');
+    $td.trigger('mousedown');
+    $td.trigger('mouseup');
     expect(called).toEqual(false);
   });
 
@@ -257,7 +290,9 @@ describe('WalkontableEvent', function () {
 
     var $td = $table.find('tbody tr:first td:first');
     var $border = $table.parent().find('.wtBorder:first');
+    $border.trigger('mousedown');
     $border.trigger('mouseup');
+    $border.trigger('mousedown');
     $border.trigger('mouseup');
     expect(myCoords).toEqual([10, 2]);
     expect(myTD).toEqual($td[0]);
