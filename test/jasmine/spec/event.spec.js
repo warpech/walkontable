@@ -1,6 +1,6 @@
 describe('WalkontableEvent', function () {
   var $table
-    , debug = 1;
+    , debug = false;
 
   beforeEach(function () {
     $table = $('<table></table>'); //create a table that is not attached to document
@@ -90,6 +90,76 @@ describe('WalkontableEvent', function () {
     $td.trigger('mouseup');
     expect(myCoords).toEqual([10, 2]);
     expect(myTD).toEqual($td[0]);
+  });
+
+  it("should not call `onCellMouseDown` callback when clicked on TH", function () {
+    var called = false
+      , wt = new Walkontable({
+        table: $table[0],
+        data: getData,
+        totalRows: getTotalRows,
+        totalColumns: getTotalColumns,
+        offsetRow: 10,
+        offsetColumn: 2,
+        displayRows: 10,
+        displayColumns: 2,
+        columnHeaders: 'Col',
+        onCellMouseDown: function (event, coords, TD) {
+          called = true
+        }
+      });
+    wt.draw();
+
+    var $th = $table.find('th:first');
+    $th.trigger('mousedown');
+    expect(called).toEqual(false);
+  });
+
+  it("should not call `onCellMouseOver` callback when clicked on TH", function () {
+    var called = false
+      , wt = new Walkontable({
+        table: $table[0],
+        data: getData,
+        totalRows: getTotalRows,
+        totalColumns: getTotalColumns,
+        offsetRow: 10,
+        offsetColumn: 2,
+        displayRows: 10,
+        displayColumns: 2,
+        columnHeaders: 'Col',
+        onCellMouseOver: function (event, coords, TD) {
+          called = true
+        }
+      });
+    wt.draw();
+
+    var $th = $table.find('th:first');
+    $th.trigger('mouseover');
+    expect(called).toEqual(false);
+  });
+
+  it("should not call `onCellDblClick` callback when clicked on TH", function () {
+    var called = false
+      , wt = new Walkontable({
+        table: $table[0],
+        data: getData,
+        totalRows: getTotalRows,
+        totalColumns: getTotalColumns,
+        offsetRow: 10,
+        offsetColumn: 2,
+        displayRows: 10,
+        displayColumns: 2,
+        columnHeaders: 'Col',
+        onCellDblClick: function (event, coords, TD) {
+          called = true
+        }
+      });
+    wt.draw();
+
+    var $th = $table.find('th:first');
+    $th.trigger('mouseup');
+    $th.trigger('mouseup');
+    expect(called).toEqual(false);
   });
 
   it("should not call `onCellDblClick` callback when right-clicked", function () {

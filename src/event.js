@@ -17,7 +17,7 @@ function WalkontableEvent(instance) {
         coords = that.instance.selections.current.selected[0];
         TD = that.instance.wtTable.getCell(coords);
       }
-      if(TD) {
+      if (TD && TD.nodeName === 'TD') {
         that.instance.getSetting('onCellMouseDown', event, coords, TD);
       }
     }
@@ -29,7 +29,9 @@ function WalkontableEvent(instance) {
       var TD = that.wtDom.closest(event.target, ['TD', 'TH']);
       if (TD !== lastMouseOver) {
         lastMouseOver = TD;
-        that.instance.getSetting('onCellMouseOver', event, that.instance.wtTable.getCoords(TD), TD);
+        if (TD.nodeName === 'TD') {
+          that.instance.getSetting('onCellMouseOver', event, that.instance.wtTable.getCoords(TD), TD);
+        }
       }
     }
   };
@@ -48,7 +50,7 @@ function WalkontableEvent(instance) {
         TD = that.instance.wtTable.getCell(coords);
       }
 
-      if (TD && dblClickOrigin === TD) {
+      if (TD && dblClickOrigin === TD && TD.nodeName === 'TD') {
         that.instance.getSetting('onCellDblClick', event, coords, TD);
         dblClickOrigin = null;
       }

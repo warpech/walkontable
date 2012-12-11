@@ -1,7 +1,7 @@
 /**
  * walkontable 0.1
  * 
- * Date: Tue Dec 11 2012 19:32:16 GMT+0100 (Central European Standard Time)
+ * Date: Tue Dec 11 2012 23:17:55 GMT+0100 (Central European Standard Time)
 */
 
 function WalkontableBorder(instance, settings) {
@@ -481,7 +481,7 @@ function WalkontableEvent(instance) {
         coords = that.instance.selections.current.selected[0];
         TD = that.instance.wtTable.getCell(coords);
       }
-      if(TD) {
+      if (TD && TD.nodeName === 'TD') {
         that.instance.getSetting('onCellMouseDown', event, coords, TD);
       }
     }
@@ -493,7 +493,9 @@ function WalkontableEvent(instance) {
       var TD = that.wtDom.closest(event.target, ['TD', 'TH']);
       if (TD !== lastMouseOver) {
         lastMouseOver = TD;
-        that.instance.getSetting('onCellMouseOver', event, that.instance.wtTable.getCoords(TD), TD);
+        if (TD.nodeName === 'TD') {
+          that.instance.getSetting('onCellMouseOver', event, that.instance.wtTable.getCoords(TD), TD);
+        }
       }
     }
   };
@@ -512,7 +514,7 @@ function WalkontableEvent(instance) {
         TD = that.instance.wtTable.getCell(coords);
       }
 
-      if (TD && dblClickOrigin === TD) {
+      if (TD && dblClickOrigin === TD && TD.nodeName === 'TD') {
         that.instance.getSetting('onCellDblClick', event, coords, TD);
         dblClickOrigin = null;
       }
