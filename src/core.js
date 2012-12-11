@@ -130,6 +130,9 @@ Walkontable.prototype.getSetting = function (key, param1, param2, param3) {
   if (typeof this.settings[key] === 'function') {
     return this.settings[key](param1, param2, param3);
   }
+  else if (param1 !== void 0 && typeof this.settings[key] === 'object' && this.settings[key][param1] !== void 0) {
+    return this.settings[key][param1];
+  }
   else {
     return this.settings[key];
   }

@@ -446,6 +446,26 @@ describe('WalkontableTable', function () {
     expect($.inArray($table.find('tbody tr:first td:eq(3)').width(), [198, 200]) > -1).toBe(true); //IE7 reports 198, other browsers report 200
   });
 
+  it("should use column width array to get column width", function () {
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      displayRows: 10,
+      offsetRow: 0,
+      offsetColumn: 0,
+      frozenColumns: ['Row'],
+      columnHeaders: "Col",
+      columnWidth: [50, 100, 150, 200]
+    });
+    wt.draw();
+    expect($.inArray($table.find('tbody tr:first td:eq(0)').width(), [48, 50]) > -1).toBe(true); //IE7 reports 48, other browsers report 50
+    expect($.inArray($table.find('tbody tr:first td:eq(1)').width(), [98, 100]) > -1).toBe(true); //IE7 reports 98, other browsers report 100
+    expect($.inArray($table.find('tbody tr:first td:eq(2)').width(), [148, 150]) > -1).toBe(true); //IE7 reports 148, other browsers report 150
+    expect($.inArray($table.find('tbody tr:first td:eq(3)').width(), [198, 200]) > -1).toBe(true); //IE7 reports 198, other browsers report 200
+  });
+
   it("should use column width integer to get column width", function () {
     var wt = new Walkontable({
       table: $table[0],
@@ -460,10 +480,10 @@ describe('WalkontableTable', function () {
       columnWidth: 100
     });
     wt.draw();
-    expect($.inArray($table.find('tbody tr:first td:eq(0)').width(), [98, 100]) > -1).toBe(true); //IE7 reports 48, other browsers report 50
+    expect($.inArray($table.find('tbody tr:first td:eq(0)').width(), [98, 100]) > -1).toBe(true); //IE7 reports 98, other browsers report 100
     expect($.inArray($table.find('tbody tr:first td:eq(1)').width(), [98, 100]) > -1).toBe(true); //IE7 reports 98, other browsers report 100
-    expect($.inArray($table.find('tbody tr:first td:eq(2)').width(), [98, 100]) > -1).toBe(true); //IE7 reports 148, other browsers report 150
-    expect($.inArray($table.find('tbody tr:first td:eq(3)').width(), [98, 100]) > -1).toBe(true); //IE7 reports 198, other browsers report 200
+    expect($.inArray($table.find('tbody tr:first td:eq(2)').width(), [98, 100]) > -1).toBe(true); //IE7 reports 98, other browsers report 100
+    expect($.inArray($table.find('tbody tr:first td:eq(3)').width(), [98, 100]) > -1).toBe(true); //IE7 reports 98, other browsers report 100
   });
 
   it("should render as much frozen columns as defined", function () {
