@@ -118,14 +118,15 @@ WalkontableDom.prototype.removeTextNodes = function (elem, parent) {
 /**
  * seems getBounding is usually faster: http://jsperf.com/offset-vs-getboundingclientrect/4
  * but maybe offset + cache would work?
+ * edit: after more tests turns out offsetLeft/Top is faster
  */
-WalkontableDom.prototype.offset = function (elem) {
-  var rect = elem.getBoundingClientRect();
-  return {
-    top: rect.top + document.documentElement.scrollTop,
-    left: rect.left + document.documentElement.scrollLeft
-  };
-};
+/*WalkontableDom.prototype.offset = function (elem) {
+ var rect = elem.getBoundingClientRect();
+ return {
+ top: rect.top + document.documentElement.scrollTop,
+ left: rect.left + document.documentElement.scrollLeft
+ };
+ };*/
 
 /*
  WalkontableDom.prototype.offsetLeft = function (elem) {
@@ -142,18 +143,17 @@ WalkontableDom.prototype.offset = function (elem) {
  offset += elem.offsetTop;
  }
  return offset;
- };
+ };*/
 
- WalkontableDom.prototype.offset = function (elem) {
- var offsetLeft = elem.offsetLeft
- , offsetTop = elem.offsetTop;
- while (elem = elem.offsetParent) {
- offsetLeft += elem.offsetLeft;
- offsetTop += elem.offsetTop;
- }
- return {
- left: offsetLeft,
- top: offsetTop
- };
- };
- */
+WalkontableDom.prototype.offset = function (elem) {
+  var offsetLeft = elem.offsetLeft
+    , offsetTop = elem.offsetTop;
+  while (elem = elem.offsetParent) {
+    offsetLeft += elem.offsetLeft;
+    offsetTop += elem.offsetTop;
+  }
+  return {
+    left: offsetLeft,
+    top: offsetTop
+  };
+};
