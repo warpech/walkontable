@@ -27,8 +27,8 @@ describe('WalkontableScrollbar', function () {
     });
     wt.draw();
 
-    expect($table.parents('div.wtHolder').length).toEqual(1);
-    expect($table.parents('div.wtHolder:eq(0)').children('div.dragdealer').length).toEqual(2);
+    expect($table.parents('.wtHolder').length).toEqual(1);
+    expect($table.parents('.wtHolder:eq(0)').children('.dragdealer').length).toEqual(2);
   });
 
   it("handle should have the size of scrollbar if totalRows is smaller or equal displayRows", function () {
@@ -46,7 +46,7 @@ describe('WalkontableScrollbar', function () {
     });
     wt.draw();
 
-    var slider = $table.parent().find('.dragdealer.vertical');
+    var slider = $table.parents('.wtHolder').find('.dragdealer.vertical');
     var handle = slider.find('.handle');
     expect(slider.height()).toBeGreaterThan(0);
     expect(slider.height()).toEqual(handle.height());
@@ -98,7 +98,7 @@ describe('WalkontableScrollbar', function () {
     });
     wt.draw();
 
-    var bar = $table.parent().find('.dragdealer.vertical .handle');
+    var bar = $table.parents('.wtHolder').find('.dragdealer.vertical .handle');
     var originalPosition = bar.css('top');
 
     wt.scrollVertical(10).draw();
@@ -120,7 +120,7 @@ describe('WalkontableScrollbar', function () {
     });
     wt.draw();
 
-    var bar = $table.parent().find('.dragdealer.horizontal .handle');
+    var bar = $table.parents('.wtHolder').find('.dragdealer.horizontal .handle');
     var originalPosition = bar.css('left');
 
     wt.scrollHorizontal(10).draw();
