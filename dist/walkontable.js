@@ -1,7 +1,7 @@
 /**
  * walkontable 0.1
  * 
- * Date: Tue Dec 11 2012 23:56:50 GMT+0100 (Central European Standard Time)
+ * Date: Wed Dec 12 2012 01:41:47 GMT+0100 (Central European Standard Time)
 */
 
 function WalkontableBorder(instance, settings) {
@@ -167,6 +167,7 @@ function Walkontable(settings) {
   //default settings. void 0 means it is required, null means it can be empty
   var defaults = {
     table: void 0,
+    async: window.jasmine ? false : true,
     data: void 0,
     offsetRow: 0,
     offsetColumn: 0,
@@ -244,8 +245,6 @@ function Walkontable(settings) {
 
 Walkontable.prototype.draw = function () {
   this.wtTable.draw();
-  this.wtScroll.refreshScrollbars();
-  this.drawn = true;
   return this;
 };
 
@@ -561,6 +560,22 @@ if (!Array.prototype.indexOf) {
     }
     return -1;
   };
+}
+
+/**
+ * Provides requestAnimationFrame in a cross browser way.
+ * http://paulirish.com/2011/requestanimationframe-for-smart-animating/
+ */
+if (!window.requestAnimationFrame) {
+  window.requestAnimationFrame = (function () {
+    return window.webkitRequestAnimationFrame ||
+      window.mozRequestAnimationFrame ||
+      window.oRequestAnimationFrame ||
+      window.msRequestAnimationFrame ||
+      function (/* function FrameRequestCallback */ callback, /* DOMElement Element */ element) {
+        window.setTimeout(callback, 1000 / 60);
+      };
+  })();
 }
 function WalkontableScroll(instance) {
   this.instance = instance;
@@ -1083,6 +1098,21 @@ WalkontableTable.prototype.adjustAvailableNodes = function () {
 };
 
 WalkontableTable.prototype.draw = function () {
+  this.adjustAvailableNodes();
+  this.tableOffset = this.wtDom.offset(this.TABLE);
+  if (this.instance.hasSetting('async')) {
+    var that = this;
+    window.requestAnimationFrame(function () {
+      that._doDraw();
+    });
+  }
+  else {
+    this._doDraw();
+  }
+  return this;
+};
+
+WalkontableTable.prototype._doDraw = function () {
   var r
     , c
     , offsetRow = this.instance.getSetting('offsetRow')
@@ -1098,8 +1128,6 @@ WalkontableTable.prototype.draw = function () {
     , TH
     , TD
     , cellData;
-  this.adjustAvailableNodes();
-  this.tableOffset = this.wtDom.offset(this.TABLE);
 
   displayRows = Math.min(displayRows, totalRows);
   displayTds = Math.min(displayColumns, totalColumns);
@@ -1172,7 +1200,8 @@ WalkontableTable.prototype.draw = function () {
     }
   }
 
-  return this;
+  this.instance.wtScroll.refreshScrollbars();
+  this.instance.drawn = true;
 };
 
 WalkontableTable.prototype.getCell = function (coords) {

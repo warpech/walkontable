@@ -116,6 +116,21 @@ WalkontableTable.prototype.adjustAvailableNodes = function () {
 };
 
 WalkontableTable.prototype.draw = function () {
+  this.adjustAvailableNodes();
+  this.tableOffset = this.wtDom.offset(this.TABLE);
+  if (this.instance.hasSetting('async')) {
+    var that = this;
+    window.requestAnimationFrame(function () {
+      that._doDraw();
+    });
+  }
+  else {
+    this._doDraw();
+  }
+  return this;
+};
+
+WalkontableTable.prototype._doDraw = function () {
   var r
     , c
     , offsetRow = this.instance.getSetting('offsetRow')
@@ -131,8 +146,6 @@ WalkontableTable.prototype.draw = function () {
     , TH
     , TD
     , cellData;
-  this.adjustAvailableNodes();
-  this.tableOffset = this.wtDom.offset(this.TABLE);
 
   displayRows = Math.min(displayRows, totalRows);
   displayTds = Math.min(displayColumns, totalColumns);
@@ -205,7 +218,8 @@ WalkontableTable.prototype.draw = function () {
     }
   }
 
-  return this;
+  this.instance.wtScroll.refreshScrollbars();
+  this.instance.drawn = true;
 };
 
 WalkontableTable.prototype.getCell = function (coords) {

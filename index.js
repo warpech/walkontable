@@ -72,6 +72,7 @@ function init() {
 
   var wt = new Walkontable({
     table: document.getElementsByTagName('TABLE')[0],
+    async: false,
     data: function (row, col) {
       return arr[row][col];
     },

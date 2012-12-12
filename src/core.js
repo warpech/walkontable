@@ -5,6 +5,7 @@ function Walkontable(settings) {
   //default settings. void 0 means it is required, null means it can be empty
   var defaults = {
     table: void 0,
+    async: false,
     data: void 0,
     offsetRow: 0,
     offsetColumn: 0,
@@ -82,8 +83,6 @@ function Walkontable(settings) {
 
 Walkontable.prototype.draw = function () {
   this.wtTable.draw();
-  this.wtScroll.refreshScrollbars();
-  this.drawn = true;
   return this;
 };
 
