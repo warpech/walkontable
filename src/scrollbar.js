@@ -4,12 +4,8 @@ function WalkontableScrollbar(instance, type) {
   //reference to instance
   this.instance = instance;
   this.type = type;
-  if(this.instance.hasSetting('width') || this.instance.hasSetting('height')) {
-    this.$table = $(this.instance.wtTable.hider);
-  }
-  else {
-    this.$table = $(this.instance.wtTable.TABLE);
-  }
+  this.$hider = $(this.instance.wtTable.hider);
+  this.$table = $(this.instance.wtTable.TABLE);
 
   //create elements
   this.slider = document.createElement('DIV');
@@ -58,8 +54,8 @@ WalkontableScrollbar.prototype.refresh = function () {
     , offsetColumn = this.instance.getSetting('offsetColumn')
     , totalRows = this.instance.getSetting('totalRows')
     , totalColumns = this.instance.getSetting('totalColumns')
-    , tableWidth = this.$table.outerWidth()
-    , tableHeight = this.$table.outerHeight()
+    , tableWidth = this.instance.hasSetting('width') ? this.instance.getSetting('width') - this.instance.getSetting('scrollbarWidth') : this.$table.outerWidth()
+    , tableHeight = this.instance.hasSetting('height') ? this.instance.getSetting('height') - this.instance.getSetting('scrollbarHeight') : this.$table.outerHeight()
     , displayRows = Math.min(this.instance.getSetting('displayRows'), totalRows)
     , displayColumns = Math.min(this.instance.getSetting('displayColumns'), totalColumns);
 

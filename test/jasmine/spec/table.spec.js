@@ -507,4 +507,44 @@ describe('WalkontableTable', function () {
     expect($table.find('tbody tr:first th:eq(0)').html()).toBe("Some");
     expect($table.find('tbody tr:first th:eq(1)').html()).toBe("thing");
   });
+
+  it("should not render a cell that is outside of the viewport horizontally", function () {
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      width: 200,
+      height: 100,
+      offsetRow: 0,
+      offsetColumn: 0,
+      columnWidth: 100
+    });
+    wt.draw();
+    $table.find('tbody td').html('');
+    wt.draw();
+    expect($table.find('tbody tr:first td').length).toBeGreaterThan(3); //there are more columns though there won't be rendered
+    expect($table.find('tbody tr:first td:eq(1)').html()).not.toBe('');
+    expect($table.find('tbody tr:first td:eq(2)').html()).toBe('');
+  });
+
+  it("should not render a cell that is outside of the viewport vertically", function () {
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      width: 200,
+      height: 100,
+      offsetRow: 0,
+      offsetColumn: 0,
+      columnWidth: 100
+    });
+    wt.draw();
+    $table.find('tbody td').html('');
+    wt.draw();
+    expect($table.find('tbody tr').length).toBeGreaterThan(4); //there are more columns though there won't be rendered
+    expect($table.find('tbody tr:eq(3) td:eq(0)').html()).not.toBe('');
+    expect($table.find('tbody tr:eq(4) td:eq(0)').html()).toBe('');
+  });
 });

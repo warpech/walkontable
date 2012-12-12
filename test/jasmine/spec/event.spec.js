@@ -251,7 +251,7 @@ describe('WalkontableEvent', function () {
     wt.draw();
 
     var $td = $table.find('tbody tr:first td:first');
-    var $border = $table.parent().find('.wtBorder:first');
+    var $border = $table.parents('.wtHolder').find('.wtBorder:first');
     $border.trigger('mousedown');
 
     expect(myCoords).toEqual([10, 2]);
@@ -289,7 +289,7 @@ describe('WalkontableEvent', function () {
     wt.draw();
 
     var $td = $table.find('tbody tr:first td:first');
-    var $border = $table.parent().find('.wtBorder:first');
+    var $border = $table.parents('.wtHolder').find('.wtBorder:first');
     $border.trigger('mousedown');
     $border.trigger('mouseup');
     $border.trigger('mousedown');

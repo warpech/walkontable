@@ -30,7 +30,9 @@ function Walkontable(settings) {
     selections: null,
     onCellMouseDown: null,
     onCellMouseOver: null,
-    onCellDblClick: null
+    onCellDblClick: null,
+    scrollbarWidth: 9,
+    scrollbarHeight: 9
   };
 
   //reference to settings
