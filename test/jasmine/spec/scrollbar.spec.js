@@ -1,6 +1,6 @@
 describe('WalkontableScrollbar', function () {
   var $table
-    , debug = 1;
+    , debug = false;
 
   beforeEach(function () {
     $table = $('<table></table>'); //create a table that is not attached to document
