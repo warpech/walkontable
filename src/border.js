@@ -24,7 +24,7 @@ function WalkontableBorder(instance, settings) {
   this.right = this.main.childNodes[3];
 
   this.disappear();
-  instance.wtTable.parent.appendChild(this.main);
+  instance.wtTable.hider.appendChild(this.main);
 }
 
 /**

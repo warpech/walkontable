@@ -5,18 +5,42 @@ function WalkontableTable(instance) {
   this.wtDom = new WalkontableDom();
   this.wtDom.removeTextNodes(this.TABLE);
 
+  var scrollbarDimensions = {
+    width: 9,
+    height: 9
+  };
+
   //wtHolder
   var parent = this.TABLE.parentNode;
+  if (!parent || parent.nodeType !== 1 || !this.wtDom.hasClass(parent, 'wtHolder')) {
+    var hider = document.createElement('DIV');
+    hider.style.position = 'relative';
+    hider.style.overflow = 'hidden';
+    if (this.instance.hasSetting('width')) {
+      hider.style.width = this.instance.getSetting('width') - scrollbarDimensions.width + 'px';
+    }
+    if (this.instance.hasSetting('height')) {
+      hider.style.height = this.instance.getSetting('height') - scrollbarDimensions.height + 'px';
+    }
+    hider.className = 'wtHider';
+    if (parent) {
+      parent.insertBefore(hider, this.TABLE); //if TABLE is detached (e.g. in Jasmine test), it has no parentNode so we cannot attach holder to it
+    }
+    hider.appendChild(this.TABLE);
+  }
+  this.hider = this.TABLE.parentNode;
+
+  parent = this.hider.parentNode;
   if (!parent || parent.nodeType !== 1 || !this.wtDom.hasClass(parent, 'wtHolder')) {
     var holder = document.createElement('DIV');
     holder.style.position = 'relative';
     holder.className = 'wtHolder';
     if (parent) {
-      parent.insertBefore(holder, this.TABLE); //if TABLE is detached (e.g. in Jasmine test), it has no parentNode so we cannot attach holder to it
+      parent.insertBefore(holder, this.hider); //if TABLE is detached (e.g. in Jasmine test), it has no parentNode so we cannot attach holder to it
     }
-    holder.appendChild(this.TABLE);
-    this.parent = holder;
+    holder.appendChild(this.hider);
   }
+  this.parent = this.hider.parentNode;
 
   //bootstrap from settings
   this.TBODY = this.TABLE.getElementsByTagName('TBODY')[0];

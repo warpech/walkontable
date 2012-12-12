@@ -1,7 +1,7 @@
 /**
  * walkontable 0.1
  * 
- * Date: Wed Dec 12 2012 02:29:07 GMT+0100 (Central European Standard Time)
+ * Date: Wed Dec 12 2012 11:24:40 GMT+0100 (Central European Standard Time)
 */
 
 function WalkontableBorder(instance, settings) {
@@ -30,7 +30,7 @@ function WalkontableBorder(instance, settings) {
   this.right = this.main.childNodes[3];
 
   this.disappear();
-  instance.wtTable.parent.appendChild(this.main);
+  instance.wtTable.hider.appendChild(this.main);
 }
 
 /**
@@ -688,7 +688,12 @@ function WalkontableScrollbar(instance, type) {
   //reference to instance
   this.instance = instance;
   this.type = type;
-  this.$table = $(this.instance.wtTable.TABLE);
+  if(this.instance.hasSetting('width') || this.instance.hasSetting('height')) {
+    this.$table = $(this.instance.wtTable.hider);
+  }
+  else {
+    this.$table = $(this.instance.wtTable.TABLE);
+  }
 
   //create elements
   this.slider = document.createElement('DIV');
@@ -1006,18 +1011,42 @@ function WalkontableTable(instance) {
   this.wtDom = new WalkontableDom();
   this.wtDom.removeTextNodes(this.TABLE);
 
+  var scrollbarDimensions = {
+    width: 9,
+    height: 9
+  };
+
   //wtHolder
   var parent = this.TABLE.parentNode;
+  if (!parent || parent.nodeType !== 1 || !this.wtDom.hasClass(parent, 'wtHolder')) {
+    var hider = document.createElement('DIV');
+    hider.style.position = 'relative';
+    hider.style.overflow = 'hidden';
+    if (this.instance.hasSetting('width')) {
+      hider.style.width = this.instance.getSetting('width') - scrollbarDimensions.width + 'px';
+    }
+    if (this.instance.hasSetting('height')) {
+      hider.style.height = this.instance.getSetting('height') - scrollbarDimensions.height + 'px';
+    }
+    hider.className = 'wtHider';
+    if (parent) {
+      parent.insertBefore(hider, this.TABLE); //if TABLE is detached (e.g. in Jasmine test), it has no parentNode so we cannot attach holder to it
+    }
+    hider.appendChild(this.TABLE);
+  }
+  this.hider = this.TABLE.parentNode;
+
+  parent = this.hider.parentNode;
   if (!parent || parent.nodeType !== 1 || !this.wtDom.hasClass(parent, 'wtHolder')) {
     var holder = document.createElement('DIV');
     holder.style.position = 'relative';
     holder.className = 'wtHolder';
     if (parent) {
-      parent.insertBefore(holder, this.TABLE); //if TABLE is detached (e.g. in Jasmine test), it has no parentNode so we cannot attach holder to it
+      parent.insertBefore(holder, this.hider); //if TABLE is detached (e.g. in Jasmine test), it has no parentNode so we cannot attach holder to it
     }
-    holder.appendChild(this.TABLE);
-    this.parent = holder;
+    holder.appendChild(this.hider);
   }
+  this.parent = this.hider.parentNode;
 
   //bootstrap from settings
   this.TBODY = this.TABLE.getElementsByTagName('TBODY')[0];

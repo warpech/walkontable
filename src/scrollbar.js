@@ -4,7 +4,12 @@ function WalkontableScrollbar(instance, type) {
   //reference to instance
   this.instance = instance;
   this.type = type;
-  this.$table = $(this.instance.wtTable.TABLE);
+  if(this.instance.hasSetting('width') || this.instance.hasSetting('height')) {
+    this.$table = $(this.instance.wtTable.hider);
+  }
+  else {
+    this.$table = $(this.instance.wtTable.TABLE);
+  }
 
   //create elements
   this.slider = document.createElement('DIV');
