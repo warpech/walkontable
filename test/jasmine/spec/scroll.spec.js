@@ -1,6 +1,6 @@
 describe('WalkontableScroll', function () {
   var $table
-    , debug = 1;
+    , debug = false;
 
   beforeEach(function () {
     $table = $('<table></table>'); //create a table that is not attached to document
@@ -295,5 +295,24 @@ describe('WalkontableScroll', function () {
     }
 
     expect(err).toEqual(1);
+  });
+
+  it("remove row from the last scroll page should scroll viewport a row up if needed", function () {
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      offsetRow: 0,
+      offsetColumn: 0,
+      height: 200,
+      displayColumns: 2
+    });
+    wt.scrollViewport([getTotalRows() - 1, 0]).draw();
+    var originalOffsetRow = wt.settings.offsetRow;
+    this.data.splice(getTotalRows() - 4, 1); //remove row at index 96
+    wt.draw();
+
+    expect(originalOffsetRow).toEqual(wt.settings.offsetRow + 1);
   });
 });

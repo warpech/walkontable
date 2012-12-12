@@ -82,6 +82,7 @@ function Walkontable(settings) {
 }
 
 Walkontable.prototype.draw = function () {
+  this.scrollViewport([this.settings.offsetRow, this.settings.offsetColumn]);
   this.wtTable.draw();
   return this;
 };

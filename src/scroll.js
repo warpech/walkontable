@@ -11,18 +11,21 @@ WalkontableScroll.prototype.refreshScrollbars = function () {
 
 WalkontableScroll.prototype.scrollVertical = function (delta) {
   var offsetRow = this.instance.getSetting('offsetRow')
+    , newOffsetRow
     , max = this.instance.getSetting('totalRows') - this.instance.getSetting('displayRows');
   if (max < 0) {
     max = 0;
   }
-  offsetRow = offsetRow + delta;
-  if (offsetRow < 0) {
-    offsetRow = 0;
+  newOffsetRow = offsetRow + delta;
+  if (newOffsetRow < 0) {
+    newOffsetRow = 0;
   }
-  else if (offsetRow >= max) {
-    offsetRow = max;
+  else if (newOffsetRow >= max) {
+    newOffsetRow = max;
   }
-  this.instance.update('offsetRow', offsetRow);
+  if (newOffsetRow !== offsetRow) {
+    this.instance.update('offsetRow', newOffsetRow);
+  }
   return this.instance;
 };
 
@@ -30,18 +33,21 @@ WalkontableScroll.prototype.scrollHorizontal = function (delta) {
   var displayColumns = this.instance.getSetting('displayColumns');
   if (displayColumns !== null) {
     var offsetColumn = this.instance.getSetting('offsetColumn')
+      , newOffsetColumn
       , max = this.instance.getSetting('totalColumns') - displayColumns;
     if (max < 0) {
       max = 0;
     }
-    offsetColumn = offsetColumn + delta;
-    if (offsetColumn < 0) {
-      offsetColumn = 0;
+    newOffsetColumn = offsetColumn + delta;
+    if (newOffsetColumn < 0) {
+      newOffsetColumn = 0;
     }
-    else if (offsetColumn >= max) {
-      offsetColumn = max;
+    else if (newOffsetColumn >= max) {
+      newOffsetColumn = max;
     }
-    this.instance.update('offsetColumn', offsetColumn);
+    if (newOffsetColumn !== offsetColumn) {
+      this.instance.update('offsetColumn', newOffsetColumn);
+    }
   }
   return this.instance;
 };
@@ -71,6 +77,12 @@ WalkontableScroll.prototype.scrollViewport = function (coords) {
     else if (coords[0] < offsetRow) {
       this.scrollVertical(coords[0] - offsetRow);
     }
+    else {
+      this.scrollVertical(0); //Craig's issue: remove row from the last scroll page should scroll viewport a row up if needed
+    }
+  }
+  else {
+    this.scrollVertical(0); //Craig's issue
   }
 
   if (displayColumns < totalColumns) {
@@ -80,6 +92,12 @@ WalkontableScroll.prototype.scrollViewport = function (coords) {
     else if (coords[1] < offsetColumn) {
       this.scrollHorizontal(coords[1] - offsetColumn);
     }
+    else {
+      this.scrollHorizontal(0); //Craig's issue
+    }
+  }
+  else {
+    this.scrollHorizontal(0); //Craig's issue
   }
 
   return this.instance;
