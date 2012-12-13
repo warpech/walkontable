@@ -1,7 +1,7 @@
 /**
  * walkontable 0.1
  * 
- * Date: Wed Dec 12 2012 17:27:45 GMT+0100 (Central European Standard Time)
+ * Date: Thu Dec 13 2012 11:40:45 GMT+0100 (Central European Standard Time)
 */
 
 function WalkontableBorder(instance, settings) {
@@ -294,7 +294,7 @@ Walkontable.prototype.getSetting = function (key, param1, param2, param3) {
   if (typeof this.settings[key] === 'function') {
     return this.settings[key](param1, param2, param3);
   }
-  else if (param1 !== void 0 && typeof this.settings[key] === 'object' && this.settings[key][param1] !== void 0) {
+  else if (param1 !== void 0 && Object.prototype.toString.call(this.settings[key]) === '[object Array]' && param1 !== void 0) {
     return this.settings[key][param1];
   }
   else {
