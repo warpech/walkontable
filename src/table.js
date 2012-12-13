@@ -5,7 +5,7 @@ function WalkontableTable(instance) {
   this.wtDom = new WalkontableDom();
   this.wtDom.removeTextNodes(this.TABLE);
 
-  window.invisibilityRow = window.invisibilityColumn = null;
+  this.visibilityEdgeRow = this.visibilityEdgeColumn = null;
 
   //wtSpreader
   var parent = this.TABLE.parentNode;
@@ -230,8 +230,7 @@ WalkontableTable.prototype._doDraw = function () {
   }
 
   //draw TBODY
-  window.invisibilityRow = null;
-  window.invisibilityColumn = null;
+  this.visibilityEdgeRow = this.visibilityEdgeColumn = null;
   rows : for (r = 0; r < displayRows; r++) {
     TR = this.TBODY.childNodes[r];
     for (c = 0; c < frozenColumnsCount; c++) { //in future use nextSibling; http://jsperf.com/nextsibling-vs-indexed-childnodes
@@ -250,11 +249,11 @@ WalkontableTable.prototype._doDraw = function () {
       TD = TR.childNodes[c + frozenColumnsCount];
 
       var visibility = this.isCellVisible(TD);
-      if (window.invisibilityRow === null && window.invisibilityColumn === null && visibility === 1 && c !== 0) {
-        window.invisibilityColumn = offsetColumn + c;
+      if (this.visibilityEdgeRow === null && this.visibilityEdgeColumn === null && visibility === 1 && c !== 0) {
+        this.visibilityEdgeColumn = offsetColumn + c;
       }
-      if (window.invisibilityRow === null && visibility === 1 && c === 0) {
-        window.invisibilityRow = offsetRow + r;
+      if (this.visibilityEdgeRow === null && visibility === 1 && c === 0) {
+        this.visibilityEdgeRow = offsetRow + r;
       }
 
       if (!this.instance.drawn || visibility) {

@@ -71,12 +71,12 @@ WalkontableScroll.prototype.scrollViewport = function (coords) {
     throw new Error('column ' + coords[1] + ' does not exist');
   }
 
-  if (window.invisibilityRow !== null) {
-    displayRows = window.invisibilityRow - offsetRow;
+  if (this.instance.wtTable.visibilityEdgeRow) {
+    displayRows = this.instance.wtTable.visibilityEdgeRow - offsetRow;
   }
 
-  if (window.invisibilityColumn !== null) {
-    displayColumns = window.invisibilityColumn - offsetColumn;
+  if (this.instance.wtTable.visibilityEdgeColumn) {
+    displayColumns = this.instance.wtTable.visibilityEdgeColumn - offsetColumn;
   }
 
   if (displayRows < totalRows) {
@@ -96,7 +96,7 @@ WalkontableScroll.prototype.scrollViewport = function (coords) {
 
   if (displayColumns > 0 && displayColumns < totalColumns) {
     if (coords[1] > offsetColumn + displayColumns - 1) {
-      this.scrollHorizontal(coords[1] - (offsetColumn + displayColumns - 1), !!window.invisibilityColumn);
+      this.scrollHorizontal(coords[1] - (offsetColumn + displayColumns - 1), !!this.instance.wtTable.visibilityEdgeColumn);
     }
     else if (coords[1] < offsetColumn) {
       this.scrollHorizontal(coords[1] - offsetColumn);

@@ -1,7 +1,7 @@
 /**
  * walkontable 0.1
  * 
- * Date: Thu Dec 13 2012 12:14:27 GMT+0100 (Central European Standard Time)
+ * Date: Thu Dec 13 2012 12:19:07 GMT+0100 (Central European Standard Time)
 */
 
 function WalkontableBorder(instance, settings) {
@@ -670,12 +670,12 @@ WalkontableScroll.prototype.scrollViewport = function (coords) {
     throw new Error('column ' + coords[1] + ' does not exist');
   }
 
-  if (window.invisibilityRow !== null) {
-    displayRows = window.invisibilityRow - offsetRow;
+  if (this.instance.wtTable.visibilityEdgeRow) {
+    displayRows = this.instance.wtTable.visibilityEdgeRow - offsetRow;
   }
 
-  if (window.invisibilityColumn !== null) {
-    displayColumns = window.invisibilityColumn - offsetColumn;
+  if (this.instance.wtTable.visibilityEdgeColumn) {
+    displayColumns = this.instance.wtTable.visibilityEdgeColumn - offsetColumn;
   }
 
   if (displayRows < totalRows) {
@@ -695,7 +695,7 @@ WalkontableScroll.prototype.scrollViewport = function (coords) {
 
   if (displayColumns > 0 && displayColumns < totalColumns) {
     if (coords[1] > offsetColumn + displayColumns - 1) {
-      this.scrollHorizontal(coords[1] - (offsetColumn + displayColumns - 1), !!window.invisibilityColumn);
+      this.scrollHorizontal(coords[1] - (offsetColumn + displayColumns - 1), !!this.instance.wtTable.visibilityEdgeColumn);
     }
     else if (coords[1] < offsetColumn) {
       this.scrollHorizontal(coords[1] - offsetColumn);
@@ -1035,7 +1035,7 @@ function WalkontableTable(instance) {
   this.wtDom = new WalkontableDom();
   this.wtDom.removeTextNodes(this.TABLE);
 
-  window.invisibilityRow = window.invisibilityColumn = null;
+  this.visibilityEdgeRow = this.visibilityEdgeColumn = null;
 
   //wtSpreader
   var parent = this.TABLE.parentNode;
@@ -1260,8 +1260,7 @@ WalkontableTable.prototype._doDraw = function () {
   }
 
   //draw TBODY
-  window.invisibilityRow = null;
-  window.invisibilityColumn = null;
+  this.visibilityEdgeRow = this.visibilityEdgeColumn = null;
   rows : for (r = 0; r < displayRows; r++) {
     TR = this.TBODY.childNodes[r];
     for (c = 0; c < frozenColumnsCount; c++) { //in future use nextSibling; http://jsperf.com/nextsibling-vs-indexed-childnodes
@@ -1280,11 +1279,11 @@ WalkontableTable.prototype._doDraw = function () {
       TD = TR.childNodes[c + frozenColumnsCount];
 
       var visibility = this.isCellVisible(TD);
-      if (window.invisibilityRow === null && window.invisibilityColumn === null && visibility === 1 && c !== 0) {
-        window.invisibilityColumn = offsetColumn + c;
+      if (this.visibilityEdgeRow === null && this.visibilityEdgeColumn === null && visibility === 1 && c !== 0) {
+        this.visibilityEdgeColumn = offsetColumn + c;
       }
-      if (window.invisibilityRow === null && visibility === 1 && c === 0) {
-        window.invisibilityRow = offsetRow + r;
+      if (this.visibilityEdgeRow === null && visibility === 1 && c === 0) {
+        this.visibilityEdgeRow = offsetRow + r;
       }
 
       if (!this.instance.drawn || visibility) {
