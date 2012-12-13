@@ -204,9 +204,16 @@ WalkontableTable.prototype._doDraw = function () {
     }
   }
 
+  var width;
   if (this.instance.hasSetting('columnWidth')) {
     for (c = 0; c < displayTds; c++) {
-      this.COLGROUP.childNodes[c + frozenColumnsCount].style.width = this.instance.getSetting('columnWidth', offsetColumn + c) + 'px';
+      width = this.instance.getSetting('columnWidth', offsetColumn + c);
+      if (width) {
+        this.COLGROUP.childNodes[c + frozenColumnsCount].style.width = this.instance.getSetting('columnWidth', offsetColumn + c) + 'px';
+      }
+      else {
+        this.COLGROUP.childNodes[c + frozenColumnsCount].style.width = '';
+      }
     }
   }
 
