@@ -27,7 +27,7 @@ function WalkontableEvent(instance) {
   var onMouseOver = function (event) {
     if (that.instance.settings.onCellMouseOver) {
       var TD = that.wtDom.closest(event.target, ['TD', 'TH']);
-      if (TD !== lastMouseOver) {
+      if (TD && TD !== lastMouseOver) {
         lastMouseOver = TD;
         if (TD.nodeName === 'TD') {
           that.instance.getSetting('onCellMouseOver', event, that.instance.wtTable.getCoords(TD), TD);

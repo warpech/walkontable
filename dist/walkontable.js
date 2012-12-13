@@ -1,7 +1,7 @@
 /**
  * walkontable 0.1
  * 
- * Date: Thu Dec 13 2012 11:45:54 GMT+0100 (Central European Standard Time)
+ * Date: Thu Dec 13 2012 12:08:42 GMT+0100 (Central European Standard Time)
 */
 
 function WalkontableBorder(instance, settings) {
@@ -493,7 +493,7 @@ function WalkontableEvent(instance) {
   var onMouseOver = function (event) {
     if (that.instance.settings.onCellMouseOver) {
       var TD = that.wtDom.closest(event.target, ['TD', 'TH']);
-      if (TD !== lastMouseOver) {
+      if (TD && TD !== lastMouseOver) {
         lastMouseOver = TD;
         if (TD.nodeName === 'TD') {
           that.instance.getSetting('onCellMouseOver', event, that.instance.wtTable.getCoords(TD), TD);
