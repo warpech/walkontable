@@ -1,7 +1,7 @@
 /**
  * walkontable 0.1
  * 
- * Date: Thu Dec 13 2012 11:40:45 GMT+0100 (Central European Standard Time)
+ * Date: Thu Dec 13 2012 11:44:55 GMT+0100 (Central European Standard Time)
 */
 
 function WalkontableBorder(instance, settings) {
@@ -1013,11 +1013,13 @@ function WalkontableTable(instance) {
   var parent = this.TABLE.parentNode;
   if (!parent || parent.nodeType !== 1 || !this.wtDom.hasClass(parent, 'wtHolder')) {
     var spreader = document.createElement('DIV');
-    spreader.style.position = 'absolute';
-    spreader.style.top = '0';
-    spreader.style.left = '0';
-    spreader.style.width = '4000px';
-    spreader.style.height = '4000px';
+    if (this.instance.hasSetting('width') && this.instance.hasSetting('height')) {
+      spreader.style.position = 'absolute';
+      spreader.style.top = '0';
+      spreader.style.left = '0';
+      spreader.style.width = '4000px';
+      spreader.style.height = '4000px';
+    }
     spreader.className = 'wtSpreader';
     if (parent) {
       parent.insertBefore(spreader, this.TABLE); //if TABLE is detached (e.g. in Jasmine test), it has no parentNode so we cannot attach holder to it
@@ -1027,7 +1029,7 @@ function WalkontableTable(instance) {
   this.spreader = this.TABLE.parentNode;
 
   //wtHider
-  var parent = this.spreader.parentNode;
+  parent = this.spreader.parentNode;
   if (!parent || parent.nodeType !== 1 || !this.wtDom.hasClass(parent, 'wtHolder')) {
     var hider = document.createElement('DIV');
     hider.style.position = 'relative';
@@ -1245,7 +1247,7 @@ WalkontableTable.prototype._doDraw = function () {
        TH.innerHTML = '';
        }*/
     }
-    cols : for (c = 0; c < displayTds; c++) { //in future use nextSibling; http://jsperf.com/nextsibling-vs-indexed-childnodes
+    for (c = 0; c < displayTds; c++) { //in future use nextSibling; http://jsperf.com/nextsibling-vs-indexed-childnodes
       TD = TR.childNodes[c + frozenColumnsCount];
       if (!this.instance.drawn || this.isCellVisible(TD)) {
         TD.className = '';
@@ -1256,7 +1258,7 @@ WalkontableTable.prototype._doDraw = function () {
           break rows;
         }
         else {
-          break cols;
+          break; //cols
         }
       }
     }
@@ -1283,8 +1285,7 @@ WalkontableTable.prototype.isCellVisible = function (TD) {
     , offsetColumn = this.instance.getSetting('offsetColumn')
     , displayRows = this.instance.getSetting('displayRows')
     , displayColumns = this.instance.getSetting('displayColumns')
-    , frozenColumns = this.instance.getSetting('frozenColumns')
-    , frozenColumnsCount = frozenColumns ? frozenColumns.length : 0;
+    , frozenColumns = this.instance.getSetting('frozenColumns');
 
   var out;
 
@@ -1297,7 +1298,7 @@ WalkontableTable.prototype.isCellVisible = function (TD) {
     var height = $(TD).outerHeight();
 
     var tableWidth = this.instance.hasSetting('width') ? this.instance.getSetting('width') - this.instance.getSetting('scrollbarWidth') : $(this.TABLE).outerWidth()
-      , tableHeight = this.instance.hasSetting('height') ? this.instance.getSetting('height') - this.instance.getSetting('scrollbarHeight') : $(this.TABLE).outerHeight()
+      , tableHeight = this.instance.hasSetting('height') ? this.instance.getSetting('height') - this.instance.getSetting('scrollbarHeight') : $(this.TABLE).outerHeight();
 
     if (innerOffsetTop > tableHeight) {
       out = 0;
