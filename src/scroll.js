@@ -9,7 +9,7 @@ WalkontableScroll.prototype.refreshScrollbars = function () {
   this.wtScrollbarH.refresh();
 };
 
-WalkontableScroll.prototype.scrollVertical = function (delta) {
+WalkontableScroll.prototype.scrollVertical = function (delta, force) {
   var offsetRow = this.instance.getSetting('offsetRow')
     , newOffsetRow
     , max = this.instance.getSetting('totalRows') - this.instance.getSetting('displayRows');
@@ -20,10 +20,9 @@ WalkontableScroll.prototype.scrollVertical = function (delta) {
   if (newOffsetRow < 0) {
     newOffsetRow = 0;
   }
-  else if (newOffsetRow >= max) {
+  else if (newOffsetRow >= max && !force) {
     newOffsetRow = max;
   }
-
   if (newOffsetRow !== offsetRow) {
     this.instance.update('offsetRow', newOffsetRow);
   }

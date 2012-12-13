@@ -84,10 +84,11 @@ function Walkontable(settings) {
 }
 
 Walkontable.prototype.draw = function () {
-  //this.scrollViewport([this.settings.offsetRow, this.settings.offsetColumn]); //needed by WalkontableScroll -> remove row from the last scroll page should scroll viewport a row up if needed
+  //this.instance.scrollViewport([this.instance.getSetting('offsetRow'), this.instance.getSetting('offsetColumn')]); //needed by WalkontableScroll -> remove row from the last scroll page should scroll viewport a row up if needed
   if (this.hasSetting('async')) {
     var that = this;
-    window.requestAnimationFrame(function () {
+    window.cancelRequestAnimFrame(that.drawFrame);
+    that.drawFrame = window.requestAnimFrame(function () {
       that.wtTable.draw();
     });
   }
@@ -122,7 +123,8 @@ Walkontable.prototype.scrollHorizontal = function (delta) {
 Walkontable.prototype.scrollViewport = function (coords) {
   if (this.hasSetting('async')) {
     var that = this;
-    window.requestAnimationFrame(function () {
+    window.cancelRequestAnimFrame(that.scrollFrame);
+    that.scrollFrame = window.requestAnimFrame(function () {
       that.wtScroll.scrollViewport(coords);
     });
   }

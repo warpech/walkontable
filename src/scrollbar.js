@@ -19,15 +19,40 @@ function WalkontableScrollbar(instance, type) {
   this.slider.appendChild(this.handle);
   this.instance.wtTable.parent.appendChild(this.slider);
 
+  that.waitTimeout = null;
+  that.queuedAnimationCallback = null;
   this.dragdealer = new Dragdealer(this.slider, {
     vertical: (type === 'vertical'),
     horizontal: (type === 'horizontal'),
     speed: 100,
     yPrecision: 100,
     animationCallback: function (x, y) {
+      that.skipRefresh = true;
+      var nextRender = function () {
+        if (that.skipRefresh) { //mouse button still not released
+          that.onScroll(type === 'vertical' ? y : x);
+        }
+        that.waitTimeout = setTimeout(function () {
+          that.waitTimeout = null;
+          if (that.queuedAnimationCallback) {
+            that.queuedAnimationCallback();
+            that.queuedAnimationCallback = null;
+          }
+        }, 100);
+      };
+      if (that.waitTimeout === null) {
+        nextRender();
+      }
+      else {
+        that.queuedAnimationCallback = nextRender;
+      }
+    },
+    callback: function (x, y) {
+      that.skipRefresh = false;
       that.onScroll(type === 'vertical' ? y : x);
     }
   });
+  that.skipRefresh = false;
 }
 
 WalkontableScrollbar.prototype.onScroll = function (delta) {
@@ -46,6 +71,9 @@ WalkontableScrollbar.prototype.onScroll = function (delta) {
 };
 
 WalkontableScrollbar.prototype.refresh = function () {
+  if (this.skipRefresh) {
+    return;
+  }
   var ratio = 1
     , handleSize
     , handlePosition
@@ -79,7 +107,7 @@ WalkontableScrollbar.prototype.refresh = function () {
     }
     this.handle.style.height = handleSize + 'px';
 
-    handlePosition = tableHeight * (offsetRow / totalRows);
+    handlePosition = (tableHeight - handleSize) * (offsetRow / totalRows);
     if (handlePosition > tableHeight - handleSize) {
       handlePosition = tableHeight - handleSize;
     }
@@ -99,13 +127,14 @@ WalkontableScrollbar.prototype.refresh = function () {
     }
     this.handle.style.width = handleSize + 'px';
 
-    handlePosition = tableWidth * (offsetColumn / totalColumns);
+    handlePosition = (tableWidth - handleSize) * (offsetColumn / totalColumns);
     if (handlePosition > tableWidth - handleSize) {
       handlePosition = tableWidth - handleSize;
     }
-    else if (handlePosition < 0) {
-      handlePosition = 0;
-    }
+    /* it should be needed here if it was not needed above
+     else if (handlePosition < 0) {
+     handlePosition = 0;
+     }*/
     this.handle.style.left = handlePosition + 'px';
   }
 
