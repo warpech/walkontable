@@ -1,7 +1,7 @@
 /**
  * walkontable 0.1
  * 
- * Date: Thu Dec 13 2012 18:19:03 GMT+0100 (Central European Standard Time)
+ * Date: Thu Dec 13 2012 18:35:04 GMT+0100 (Central European Standard Time)
 */
 
 function WalkontableBorder(instance, settings) {
@@ -246,7 +246,7 @@ function Walkontable(settings) {
 }
 
 Walkontable.prototype.draw = function () {
-  this.scrollViewport([this.settings.offsetRow, this.settings.offsetColumn]); //needed by WalkontableScroll -> remove row from the last scroll page should scroll viewport a row up if needed
+  //this.scrollViewport([this.settings.offsetRow, this.settings.offsetColumn]); //needed by WalkontableScroll -> remove row from the last scroll page should scroll viewport a row up if needed
   if (this.hasSetting('async')) {
     var that = this;
     window.requestAnimationFrame(function () {
@@ -1195,6 +1195,7 @@ WalkontableTable.prototype.draw = function () {
   this.tableOffset = this.wtDom.offset(this.TABLE);
   this.adjustAvailableNodes();
   this._doDraw();
+  //this.instance.scrollViewport([this.instance.settings.offsetRow, this.instance.settings.offsetColumn]); //needed by WalkontableScroll -> remove row from the last scroll page should scroll viewport a row up if needed
   return this;
 };
 

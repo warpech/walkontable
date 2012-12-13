@@ -162,6 +162,7 @@ WalkontableTable.prototype.draw = function () {
   this.tableOffset = this.wtDom.offset(this.TABLE);
   this.adjustAvailableNodes();
   this._doDraw();
+  //this.instance.scrollViewport([this.instance.settings.offsetRow, this.instance.settings.offsetColumn]); //needed by WalkontableScroll -> remove row from the last scroll page should scroll viewport a row up if needed
   return this;
 };
 

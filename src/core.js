@@ -84,7 +84,7 @@ function Walkontable(settings) {
 }
 
 Walkontable.prototype.draw = function () {
-  this.scrollViewport([this.settings.offsetRow, this.settings.offsetColumn]); //needed by WalkontableScroll -> remove row from the last scroll page should scroll viewport a row up if needed
+  //this.scrollViewport([this.settings.offsetRow, this.settings.offsetColumn]); //needed by WalkontableScroll -> remove row from the last scroll page should scroll viewport a row up if needed
   if (this.hasSetting('async')) {
     var that = this;
     window.requestAnimationFrame(function () {
