@@ -55,8 +55,8 @@ WalkontableScrollbar.prototype.refresh = function () {
     , totalColumns = this.instance.getSetting('totalColumns')
     , tableWidth = this.instance.hasSetting('width') ? this.instance.getSetting('width') - this.instance.getSetting('scrollbarWidth') : this.$table.outerWidth()
     , tableHeight = this.instance.hasSetting('height') ? this.instance.getSetting('height') - this.instance.getSetting('scrollbarHeight') : this.$table.outerHeight()
-    , displayRows = Math.min(this.instance.getSetting('viewportRows'), totalRows)
-    , displayColumns = Math.min(this.instance.getSetting('viewportColumns'), totalColumns);
+    , viewportRows = Math.min(this.instance.getSetting('viewportRows'), totalRows)
+    , viewportColumns = Math.min(this.instance.getSetting('viewportColumns'), totalColumns);
 
   if (!tableWidth) {
     throw new Error("I could not compute table width. Is the <table> element attached to the DOM?");
@@ -71,7 +71,7 @@ WalkontableScrollbar.prototype.refresh = function () {
     this.slider.style.height = tableHeight - 2 + 'px'; //2 is sliders border-width
 
     if (totalRows) {
-      ratio = displayRows / totalRows;
+      ratio = viewportRows / totalRows;
     }
     handleSize = Math.round($(this.slider).height() * ratio);
     if (handleSize < 10) {
@@ -91,7 +91,7 @@ WalkontableScrollbar.prototype.refresh = function () {
     this.slider.style.width = tableWidth - 2 + 'px'; //2 is sliders border-width
 
     if (totalColumns) {
-      ratio = displayColumns / totalColumns;
+      ratio = viewportColumns / totalColumns;
     }
     handleSize = Math.round($(this.slider).width() * ratio);
     if (handleSize < 10) {

@@ -134,7 +134,7 @@ Walkontable.prototype.scrollViewport = function (coords) {
 
 Walkontable.prototype.getSetting = function (key, param1, param2, param3) {
   if (key === 'displayRows' && this.settings['height']) {
-    return this.settings['height'] / 20; //silly assumption but should be fine for now
+    return Math.min(this.settings['height'] / 20, this.getSetting('totalRows') - this.getSetting('offsetRow')); //silly assumption but should be fine for now
   }
   else if (key === 'displayColumns' && this.settings['width']) {
     return Math.min(this.settings['width'] / 50, this.getSetting('totalColumns') - this.getSetting('offsetColumn')); //silly assumption but should be fine for now

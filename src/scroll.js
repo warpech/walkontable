@@ -73,7 +73,7 @@ WalkontableScroll.prototype.scrollViewport = function (coords) {
 
   if (viewportRows < totalRows) {
     if (coords[0] > offsetRow + viewportRows - 1) {
-      this.scrollVertical(coords[0] - (offsetRow + viewportRows - 1));
+      this.scrollVertical(coords[0] - (offsetRow + viewportRows - 1), !!this.instance.wtTable.visibilityEdgeRow);
     }
     else if (coords[0] < offsetRow) {
       this.scrollVertical(coords[0] - offsetRow);

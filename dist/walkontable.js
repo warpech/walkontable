@@ -1,7 +1,7 @@
 /**
  * walkontable 0.1
  * 
- * Date: Thu Dec 13 2012 13:30:31 GMT+0100 (Central European Standard Time)
+ * Date: Thu Dec 13 2012 18:19:03 GMT+0100 (Central European Standard Time)
 */
 
 function WalkontableBorder(instance, settings) {
@@ -296,7 +296,7 @@ Walkontable.prototype.scrollViewport = function (coords) {
 
 Walkontable.prototype.getSetting = function (key, param1, param2, param3) {
   if (key === 'displayRows' && this.settings['height']) {
-    return this.settings['height'] / 20; //silly assumption but should be fine for now
+    return Math.min(this.settings['height'] / 20, this.getSetting('totalRows') - this.getSetting('offsetRow')); //silly assumption but should be fine for now
   }
   else if (key === 'displayColumns' && this.settings['width']) {
     return Math.min(this.settings['width'] / 50, this.getSetting('totalColumns') - this.getSetting('offsetColumn')); //silly assumption but should be fine for now
@@ -684,7 +684,7 @@ WalkontableScroll.prototype.scrollViewport = function (coords) {
 
   if (viewportRows < totalRows) {
     if (coords[0] > offsetRow + viewportRows - 1) {
-      this.scrollVertical(coords[0] - (offsetRow + viewportRows - 1));
+      this.scrollVertical(coords[0] - (offsetRow + viewportRows - 1), !!this.instance.wtTable.visibilityEdgeRow);
     }
     else if (coords[0] < offsetRow) {
       this.scrollVertical(coords[0] - offsetRow);
@@ -771,8 +771,8 @@ WalkontableScrollbar.prototype.refresh = function () {
     , totalColumns = this.instance.getSetting('totalColumns')
     , tableWidth = this.instance.hasSetting('width') ? this.instance.getSetting('width') - this.instance.getSetting('scrollbarWidth') : this.$table.outerWidth()
     , tableHeight = this.instance.hasSetting('height') ? this.instance.getSetting('height') - this.instance.getSetting('scrollbarHeight') : this.$table.outerHeight()
-    , displayRows = Math.min(this.instance.getSetting('viewportRows'), totalRows)
-    , displayColumns = Math.min(this.instance.getSetting('viewportColumns'), totalColumns);
+    , viewportRows = Math.min(this.instance.getSetting('viewportRows'), totalRows)
+    , viewportColumns = Math.min(this.instance.getSetting('viewportColumns'), totalColumns);
 
   if (!tableWidth) {
     throw new Error("I could not compute table width. Is the <table> element attached to the DOM?");
@@ -787,7 +787,7 @@ WalkontableScrollbar.prototype.refresh = function () {
     this.slider.style.height = tableHeight - 2 + 'px'; //2 is sliders border-width
 
     if (totalRows) {
-      ratio = displayRows / totalRows;
+      ratio = viewportRows / totalRows;
     }
     handleSize = Math.round($(this.slider).height() * ratio);
     if (handleSize < 10) {
@@ -807,7 +807,7 @@ WalkontableScrollbar.prototype.refresh = function () {
     this.slider.style.width = tableWidth - 2 + 'px'; //2 is sliders border-width
 
     if (totalColumns) {
-      ratio = displayColumns / totalColumns;
+      ratio = viewportColumns / totalColumns;
     }
     handleSize = Math.round($(this.slider).width() * ratio);
     if (handleSize < 10) {

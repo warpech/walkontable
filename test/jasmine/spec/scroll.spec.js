@@ -313,6 +313,6 @@ describe('WalkontableScroll', function () {
     this.data.splice(getTotalRows() - 4, 1); //remove row at index 96
     wt.draw();
 
-    expect(originalOffsetRow).toEqual(wt.settings.offsetRow + 1);
+    expect(originalOffsetRow).toEqual(wt.settings.offsetRow);
   });
 });
