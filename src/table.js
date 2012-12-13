@@ -5,6 +5,8 @@ function WalkontableTable(instance) {
   this.wtDom = new WalkontableDom();
   this.wtDom.removeTextNodes(this.TABLE);
 
+  window.invisibilityRow = window.invisibilityColumn = null;
+
   //wtSpreader
   var parent = this.TABLE.parentNode;
   if (!parent || parent.nodeType !== 1 || !this.wtDom.hasClass(parent, 'wtHolder')) {
@@ -157,17 +159,9 @@ WalkontableTable.prototype.adjustAvailableNodes = function () {
 };
 
 WalkontableTable.prototype.draw = function () {
-  this.adjustAvailableNodes();
   this.tableOffset = this.wtDom.offset(this.TABLE);
-  if (this.instance.hasSetting('async')) {
-    var that = this;
-    window.requestAnimationFrame(function () {
-      that._doDraw();
-    });
-  }
-  else {
-    this._doDraw();
-  }
+  this.adjustAvailableNodes();
+  this._doDraw();
   return this;
 };
 
@@ -236,6 +230,8 @@ WalkontableTable.prototype._doDraw = function () {
   }
 
   //draw TBODY
+  window.invisibilityRow = null;
+  window.invisibilityColumn = null;
   rows : for (r = 0; r < displayRows; r++) {
     TR = this.TBODY.childNodes[r];
     for (c = 0; c < frozenColumnsCount; c++) { //in future use nextSibling; http://jsperf.com/nextsibling-vs-indexed-childnodes
@@ -252,7 +248,16 @@ WalkontableTable.prototype._doDraw = function () {
     }
     for (c = 0; c < displayTds; c++) { //in future use nextSibling; http://jsperf.com/nextsibling-vs-indexed-childnodes
       TD = TR.childNodes[c + frozenColumnsCount];
-      if (!this.instance.drawn || this.isCellVisible(TD)) {
+
+      var visibility = this.isCellVisible(TD);
+      if (window.invisibilityRow === null && window.invisibilityColumn === null && visibility === 1 && c !== 0) {
+        window.invisibilityColumn = offsetColumn + c;
+      }
+      if (window.invisibilityRow === null && visibility === 1 && c === 0) {
+        window.invisibilityRow = offsetRow + r;
+      }
+
+      if (!this.instance.drawn || visibility) {
         TD.className = '';
         this.instance.getSetting('cellRenderer', offsetRow + r, offsetColumn + c, TD);
       }

@@ -84,8 +84,16 @@ function Walkontable(settings) {
 }
 
 Walkontable.prototype.draw = function () {
-  this.scrollViewport([this.settings.offsetRow, this.settings.offsetColumn]);
-  this.wtTable.draw();
+  this.scrollViewport([this.settings.offsetRow, this.settings.offsetColumn]); //needed by WalkontableScroll -> remove row from the last scroll page should scroll viewport a row up if needed
+  if (this.hasSetting('async')) {
+    var that = this;
+    window.requestAnimationFrame(function () {
+      that.wtTable.draw();
+    });
+  }
+  else {
+    this.wtTable.draw();
+  }
   return this;
 };
 
@@ -112,7 +120,16 @@ Walkontable.prototype.scrollHorizontal = function (delta) {
 };
 
 Walkontable.prototype.scrollViewport = function (coords) {
-  return this.wtScroll.scrollViewport(coords);
+  if (this.hasSetting('async')) {
+    var that = this;
+    window.requestAnimationFrame(function () {
+      that.wtScroll.scrollViewport(coords);
+    });
+  }
+  else {
+    this.wtScroll.scrollViewport(coords);
+  }
+  return this;
 };
 
 Walkontable.prototype.getSetting = function (key, param1, param2, param3) {
@@ -120,7 +137,7 @@ Walkontable.prototype.getSetting = function (key, param1, param2, param3) {
     return this.settings['height'] / 20; //silly assumption but should be fine for now
   }
   else if (key === 'displayColumns' && this.settings['width']) {
-    return this.settings['width'] / 50; //silly assumption but should be fine for now
+    return Math.min(this.settings['width'] / 50, this.getSetting('totalColumns') - this.getSetting('offsetColumn')); //silly assumption but should be fine for now
   }
   else if (key === 'displayRows' && this.settings['displayRows'] === null) {
     return this.getSetting('totalRows');

@@ -23,13 +23,14 @@ WalkontableScroll.prototype.scrollVertical = function (delta) {
   else if (newOffsetRow >= max) {
     newOffsetRow = max;
   }
+
   if (newOffsetRow !== offsetRow) {
     this.instance.update('offsetRow', newOffsetRow);
   }
   return this.instance;
 };
 
-WalkontableScroll.prototype.scrollHorizontal = function (delta) {
+WalkontableScroll.prototype.scrollHorizontal = function (delta, force) {
   var displayColumns = this.instance.getSetting('displayColumns');
   if (displayColumns !== null) {
     var offsetColumn = this.instance.getSetting('offsetColumn')
@@ -42,7 +43,7 @@ WalkontableScroll.prototype.scrollHorizontal = function (delta) {
     if (newOffsetColumn < 0) {
       newOffsetColumn = 0;
     }
-    else if (newOffsetColumn >= max) {
+    else if (newOffsetColumn >= max && !force) {
       newOffsetColumn = max;
     }
     if (newOffsetColumn !== offsetColumn) {
@@ -70,6 +71,14 @@ WalkontableScroll.prototype.scrollViewport = function (coords) {
     throw new Error('column ' + coords[1] + ' does not exist');
   }
 
+  if (window.invisibilityRow !== null) {
+    displayRows = window.invisibilityRow - offsetRow;
+  }
+
+  if (window.invisibilityColumn !== null) {
+    displayColumns = window.invisibilityColumn - offsetColumn;
+  }
+
   if (displayRows < totalRows) {
     if (coords[0] > offsetRow + displayRows - 1) {
       this.scrollVertical(coords[0] - (offsetRow + displayRows - 1));
@@ -85,9 +94,9 @@ WalkontableScroll.prototype.scrollViewport = function (coords) {
     this.scrollVertical(0); //Craig's issue
   }
 
-  if (displayColumns < totalColumns) {
+  if (displayColumns > 0 && displayColumns < totalColumns) {
     if (coords[1] > offsetColumn + displayColumns - 1) {
-      this.scrollHorizontal(coords[1] - (offsetColumn + displayColumns - 1));
+      this.scrollHorizontal(coords[1] - (offsetColumn + displayColumns - 1), !!window.invisibilityColumn);
     }
     else if (coords[1] < offsetColumn) {
       this.scrollHorizontal(coords[1] - offsetColumn);
