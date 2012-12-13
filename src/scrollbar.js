@@ -4,7 +4,6 @@ function WalkontableScrollbar(instance, type) {
   //reference to instance
   this.instance = instance;
   this.type = type;
-  this.$hider = $(this.instance.wtTable.hider);
   this.$table = $(this.instance.wtTable.TABLE);
 
   //create elements
@@ -33,7 +32,7 @@ function WalkontableScrollbar(instance, type) {
 
 WalkontableScrollbar.prototype.onScroll = function (delta) {
   if (this.instance.drawn) {
-    var keys = this.type === 'vertical' ? ['offsetRow', 'totalRows', 'displayRows'] : ['offsetColumn', 'totalColumns', 'displayColumns'];
+    var keys = this.type === 'vertical' ? ['offsetRow', 'totalRows', 'viewportRows'] : ['offsetColumn', 'totalColumns', 'viewportColumns'];
     var total = this.instance.getSetting(keys[1]);
     var display = this.instance.getSetting(keys[2]);
     if (total > display) {
@@ -56,8 +55,8 @@ WalkontableScrollbar.prototype.refresh = function () {
     , totalColumns = this.instance.getSetting('totalColumns')
     , tableWidth = this.instance.hasSetting('width') ? this.instance.getSetting('width') - this.instance.getSetting('scrollbarWidth') : this.$table.outerWidth()
     , tableHeight = this.instance.hasSetting('height') ? this.instance.getSetting('height') - this.instance.getSetting('scrollbarHeight') : this.$table.outerHeight()
-    , displayRows = Math.min(this.instance.getSetting('displayRows'), totalRows)
-    , displayColumns = Math.min(this.instance.getSetting('displayColumns'), totalColumns);
+    , displayRows = Math.min(this.instance.getSetting('viewportRows'), totalRows)
+    , displayColumns = Math.min(this.instance.getSetting('viewportColumns'), totalColumns);
 
   if (!tableWidth) {
     throw new Error("I could not compute table width. Is the <table> element attached to the DOM?");

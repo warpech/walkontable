@@ -59,8 +59,8 @@ WalkontableScroll.prototype.scrollHorizontal = function (delta, force) {
 WalkontableScroll.prototype.scrollViewport = function (coords) {
   var offsetRow = this.instance.getSetting('offsetRow')
     , offsetColumn = this.instance.getSetting('offsetColumn')
-    , displayRows = this.instance.getSetting('displayRows')
-    , displayColumns = this.instance.getSetting('displayColumns')
+    , viewportRows = this.instance.getSetting('viewportRows')
+    , viewportColumns = this.instance.getSetting('viewportColumns')
     , totalRows = this.instance.getSetting('totalRows')
     , totalColumns = this.instance.getSetting('totalColumns');
 
@@ -71,17 +71,9 @@ WalkontableScroll.prototype.scrollViewport = function (coords) {
     throw new Error('column ' + coords[1] + ' does not exist');
   }
 
-  if (this.instance.wtTable.visibilityEdgeRow) {
-    displayRows = this.instance.wtTable.visibilityEdgeRow - offsetRow;
-  }
-
-  if (this.instance.wtTable.visibilityEdgeColumn) {
-    displayColumns = this.instance.wtTable.visibilityEdgeColumn - offsetColumn;
-  }
-
-  if (displayRows < totalRows) {
-    if (coords[0] > offsetRow + displayRows - 1) {
-      this.scrollVertical(coords[0] - (offsetRow + displayRows - 1));
+  if (viewportRows < totalRows) {
+    if (coords[0] > offsetRow + viewportRows - 1) {
+      this.scrollVertical(coords[0] - (offsetRow + viewportRows - 1));
     }
     else if (coords[0] < offsetRow) {
       this.scrollVertical(coords[0] - offsetRow);
@@ -94,9 +86,9 @@ WalkontableScroll.prototype.scrollViewport = function (coords) {
     this.scrollVertical(0); //Craig's issue
   }
 
-  if (displayColumns > 0 && displayColumns < totalColumns) {
-    if (coords[1] > offsetColumn + displayColumns - 1) {
-      this.scrollHorizontal(coords[1] - (offsetColumn + displayColumns - 1), !!this.instance.wtTable.visibilityEdgeColumn);
+  if (viewportColumns > 0 && viewportColumns < totalColumns) {
+    if (coords[1] > offsetColumn + viewportColumns - 1) {
+      this.scrollHorizontal(coords[1] - (offsetColumn + viewportColumns - 1), !!this.instance.wtTable.visibilityEdgeColumn);
     }
     else if (coords[1] < offsetColumn) {
       this.scrollHorizontal(coords[1] - offsetColumn);

@@ -296,46 +296,31 @@ WalkontableTable.prototype.isCellVisible = function (TD) {
 
   var out;
 
-  if (this.instance.drawn) {
-    var cellOffset = this.wtDom.offset(TD);
-    var tableOffset = this.tableOffset;
-    var innerOffsetTop = cellOffset.top - tableOffset.top;
-    var innerOffsetLeft = cellOffset.left - tableOffset.left;
-    var width = $(TD).outerWidth();
-    var height = $(TD).outerHeight();
+  var cellOffset = this.wtDom.offset(TD);
+  var tableOffset = this.tableOffset;
+  var innerOffsetTop = cellOffset.top - tableOffset.top;
+  var innerOffsetLeft = cellOffset.left - tableOffset.left;
+  var width = $(TD).outerWidth();
+  var height = $(TD).outerHeight();
 
-    var tableWidth = this.instance.hasSetting('width') ? this.instance.getSetting('width') - this.instance.getSetting('scrollbarWidth') : $(this.TABLE).outerWidth()
-      , tableHeight = this.instance.hasSetting('height') ? this.instance.getSetting('height') - this.instance.getSetting('scrollbarHeight') : $(this.TABLE).outerHeight();
+  var tableWidth = this.instance.hasSetting('width') ? this.instance.getSetting('width') - this.instance.getSetting('scrollbarWidth') : $(this.TABLE).outerWidth()
+    , tableHeight = this.instance.hasSetting('height') ? this.instance.getSetting('height') - this.instance.getSetting('scrollbarHeight') : $(this.TABLE).outerHeight();
 
-    if (innerOffsetTop > tableHeight) {
-      out = 0;
-    }
-    else if (innerOffsetLeft > tableWidth) {
-      out = 0;
-    }
-    else if (innerOffsetTop + height > tableHeight) {
-      out = 1;
-    }
-    else if (innerOffsetLeft + width > tableWidth) {
-      out = 1;
-    }
-    else {
-      out = 2;
-    }
-  }
-  else {
+  if (innerOffsetTop > tableHeight) {
     out = 0;
   }
-
-  /*if (out === 2) {
-   TD.style.backgroundColor = 'green';
-   }
-   else if (out === 1) {
-   TD.style.backgroundColor = 'orange';
-   }
-   else {
-   TD.style.backgroundColor = 'red';
-   }*/
+  else if (innerOffsetLeft > tableWidth) {
+    out = 0;
+  }
+  else if (innerOffsetTop + height > tableHeight) {
+    out = 1;
+  }
+  else if (innerOffsetLeft + width > tableWidth) {
+    out = 1;
+  }
+  else {
+    out = 2;
+  }
 
   return out;
 };

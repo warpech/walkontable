@@ -145,6 +145,18 @@ Walkontable.prototype.getSetting = function (key, param1, param2, param3) {
   else if (key === 'displayColumns' && this.settings['displayColumns'] === null) {
     return this.settings['rowHeaders'] ? this.getSetting('totalColumns') + 1 : this.getSetting('totalColumns');
   }
+  else if (key === 'viewportRows') {
+    if (this.wtTable.visibilityEdgeRow) {
+      return this.wtTable.visibilityEdgeRow - this.getSetting('offsetRow');
+    }
+    return this.getSetting('displayRows');
+  }
+  else if (key === 'viewportColumns') {
+    if (this.wtTable.visibilityEdgeColumn) {
+      return this.wtTable.visibilityEdgeColumn - this.getSetting('offsetColumn');
+    }
+    return this.getSetting('displayColumns');
+  }
 
   if (typeof this.settings[key] === 'function') {
     return this.settings[key](param1, param2, param3);

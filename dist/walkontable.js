@@ -1,7 +1,7 @@
 /**
  * walkontable 0.1
  * 
- * Date: Thu Dec 13 2012 12:19:07 GMT+0100 (Central European Standard Time)
+ * Date: Thu Dec 13 2012 13:30:31 GMT+0100 (Central European Standard Time)
 */
 
 function WalkontableBorder(instance, settings) {
@@ -306,6 +306,18 @@ Walkontable.prototype.getSetting = function (key, param1, param2, param3) {
   }
   else if (key === 'displayColumns' && this.settings['displayColumns'] === null) {
     return this.settings['rowHeaders'] ? this.getSetting('totalColumns') + 1 : this.getSetting('totalColumns');
+  }
+  else if (key === 'viewportRows') {
+    if (this.wtTable.visibilityEdgeRow) {
+      return this.wtTable.visibilityEdgeRow - this.getSetting('offsetRow');
+    }
+    return this.getSetting('displayRows');
+  }
+  else if (key === 'viewportColumns') {
+    if (this.wtTable.visibilityEdgeColumn) {
+      return this.wtTable.visibilityEdgeColumn - this.getSetting('offsetColumn');
+    }
+    return this.getSetting('displayColumns');
   }
 
   if (typeof this.settings[key] === 'function') {
@@ -658,8 +670,8 @@ WalkontableScroll.prototype.scrollHorizontal = function (delta, force) {
 WalkontableScroll.prototype.scrollViewport = function (coords) {
   var offsetRow = this.instance.getSetting('offsetRow')
     , offsetColumn = this.instance.getSetting('offsetColumn')
-    , displayRows = this.instance.getSetting('displayRows')
-    , displayColumns = this.instance.getSetting('displayColumns')
+    , viewportRows = this.instance.getSetting('viewportRows')
+    , viewportColumns = this.instance.getSetting('viewportColumns')
     , totalRows = this.instance.getSetting('totalRows')
     , totalColumns = this.instance.getSetting('totalColumns');
 
@@ -670,17 +682,9 @@ WalkontableScroll.prototype.scrollViewport = function (coords) {
     throw new Error('column ' + coords[1] + ' does not exist');
   }
 
-  if (this.instance.wtTable.visibilityEdgeRow) {
-    displayRows = this.instance.wtTable.visibilityEdgeRow - offsetRow;
-  }
-
-  if (this.instance.wtTable.visibilityEdgeColumn) {
-    displayColumns = this.instance.wtTable.visibilityEdgeColumn - offsetColumn;
-  }
-
-  if (displayRows < totalRows) {
-    if (coords[0] > offsetRow + displayRows - 1) {
-      this.scrollVertical(coords[0] - (offsetRow + displayRows - 1));
+  if (viewportRows < totalRows) {
+    if (coords[0] > offsetRow + viewportRows - 1) {
+      this.scrollVertical(coords[0] - (offsetRow + viewportRows - 1));
     }
     else if (coords[0] < offsetRow) {
       this.scrollVertical(coords[0] - offsetRow);
@@ -693,9 +697,9 @@ WalkontableScroll.prototype.scrollViewport = function (coords) {
     this.scrollVertical(0); //Craig's issue
   }
 
-  if (displayColumns > 0 && displayColumns < totalColumns) {
-    if (coords[1] > offsetColumn + displayColumns - 1) {
-      this.scrollHorizontal(coords[1] - (offsetColumn + displayColumns - 1), !!this.instance.wtTable.visibilityEdgeColumn);
+  if (viewportColumns > 0 && viewportColumns < totalColumns) {
+    if (coords[1] > offsetColumn + viewportColumns - 1) {
+      this.scrollHorizontal(coords[1] - (offsetColumn + viewportColumns - 1), !!this.instance.wtTable.visibilityEdgeColumn);
     }
     else if (coords[1] < offsetColumn) {
       this.scrollHorizontal(coords[1] - offsetColumn);
@@ -716,7 +720,6 @@ function WalkontableScrollbar(instance, type) {
   //reference to instance
   this.instance = instance;
   this.type = type;
-  this.$hider = $(this.instance.wtTable.hider);
   this.$table = $(this.instance.wtTable.TABLE);
 
   //create elements
@@ -745,7 +748,7 @@ function WalkontableScrollbar(instance, type) {
 
 WalkontableScrollbar.prototype.onScroll = function (delta) {
   if (this.instance.drawn) {
-    var keys = this.type === 'vertical' ? ['offsetRow', 'totalRows', 'displayRows'] : ['offsetColumn', 'totalColumns', 'displayColumns'];
+    var keys = this.type === 'vertical' ? ['offsetRow', 'totalRows', 'viewportRows'] : ['offsetColumn', 'totalColumns', 'viewportColumns'];
     var total = this.instance.getSetting(keys[1]);
     var display = this.instance.getSetting(keys[2]);
     if (total > display) {
@@ -768,8 +771,8 @@ WalkontableScrollbar.prototype.refresh = function () {
     , totalColumns = this.instance.getSetting('totalColumns')
     , tableWidth = this.instance.hasSetting('width') ? this.instance.getSetting('width') - this.instance.getSetting('scrollbarWidth') : this.$table.outerWidth()
     , tableHeight = this.instance.hasSetting('height') ? this.instance.getSetting('height') - this.instance.getSetting('scrollbarHeight') : this.$table.outerHeight()
-    , displayRows = Math.min(this.instance.getSetting('displayRows'), totalRows)
-    , displayColumns = Math.min(this.instance.getSetting('displayColumns'), totalColumns);
+    , displayRows = Math.min(this.instance.getSetting('viewportRows'), totalRows)
+    , displayColumns = Math.min(this.instance.getSetting('viewportColumns'), totalColumns);
 
   if (!tableWidth) {
     throw new Error("I could not compute table width. Is the <table> element attached to the DOM?");
@@ -1326,46 +1329,31 @@ WalkontableTable.prototype.isCellVisible = function (TD) {
 
   var out;
 
-  if (this.instance.drawn) {
-    var cellOffset = this.wtDom.offset(TD);
-    var tableOffset = this.tableOffset;
-    var innerOffsetTop = cellOffset.top - tableOffset.top;
-    var innerOffsetLeft = cellOffset.left - tableOffset.left;
-    var width = $(TD).outerWidth();
-    var height = $(TD).outerHeight();
+  var cellOffset = this.wtDom.offset(TD);
+  var tableOffset = this.tableOffset;
+  var innerOffsetTop = cellOffset.top - tableOffset.top;
+  var innerOffsetLeft = cellOffset.left - tableOffset.left;
+  var width = $(TD).outerWidth();
+  var height = $(TD).outerHeight();
 
-    var tableWidth = this.instance.hasSetting('width') ? this.instance.getSetting('width') - this.instance.getSetting('scrollbarWidth') : $(this.TABLE).outerWidth()
-      , tableHeight = this.instance.hasSetting('height') ? this.instance.getSetting('height') - this.instance.getSetting('scrollbarHeight') : $(this.TABLE).outerHeight();
+  var tableWidth = this.instance.hasSetting('width') ? this.instance.getSetting('width') - this.instance.getSetting('scrollbarWidth') : $(this.TABLE).outerWidth()
+    , tableHeight = this.instance.hasSetting('height') ? this.instance.getSetting('height') - this.instance.getSetting('scrollbarHeight') : $(this.TABLE).outerHeight();
 
-    if (innerOffsetTop > tableHeight) {
-      out = 0;
-    }
-    else if (innerOffsetLeft > tableWidth) {
-      out = 0;
-    }
-    else if (innerOffsetTop + height > tableHeight) {
-      out = 1;
-    }
-    else if (innerOffsetLeft + width > tableWidth) {
-      out = 1;
-    }
-    else {
-      out = 2;
-    }
-  }
-  else {
+  if (innerOffsetTop > tableHeight) {
     out = 0;
   }
-
-  /*if (out === 2) {
-   TD.style.backgroundColor = 'green';
-   }
-   else if (out === 1) {
-   TD.style.backgroundColor = 'orange';
-   }
-   else {
-   TD.style.backgroundColor = 'red';
-   }*/
+  else if (innerOffsetLeft > tableWidth) {
+    out = 0;
+  }
+  else if (innerOffsetTop + height > tableHeight) {
+    out = 1;
+  }
+  else if (innerOffsetLeft + width > tableWidth) {
+    out = 1;
+  }
+  else {
+    out = 2;
+  }
 
   return out;
 };
