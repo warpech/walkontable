@@ -273,8 +273,23 @@ WalkontableTable.prototype._doDraw = function () {
   }
 
   //redraw selections
+  if (this.instance.hasSetting('async')) {
+    var that = this;
+    window.cancelRequestAnimFrame(this.selectionsFrame);
+    that.selectionsFrame = window.requestAnimFrame(function () {
+      that.refreshSelections();
+    });
+  }
+  else {
+    this.refreshSelections();
+  }
+
+  this.instance.drawn = true;
+};
+
+WalkontableTable.prototype.refreshSelections = function () {
   if (this.instance.selections) {
-    for (r in this.instance.selections) {
+    for (var r in this.instance.selections) {
       if (this.instance.selections.hasOwnProperty(r)) {
         this.instance.selections[r].draw();
       }
@@ -282,8 +297,7 @@ WalkontableTable.prototype._doDraw = function () {
   }
 
   this.instance.wtScroll.refreshScrollbars();
-  this.instance.drawn = true;
-};
+}
 
 //0 if no
 //1 if partially
