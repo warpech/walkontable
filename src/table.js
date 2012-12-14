@@ -5,6 +5,13 @@ function WalkontableTable(instance) {
   this.wtDom = new WalkontableDom();
   this.wtDom.removeTextNodes(this.TABLE);
 
+  this.hasEmptyCellProblem = ($.browser.msie && (parseInt($.browser.version, 10) <= 7));
+  this.hasCellSpacingProblem = ($.browser.msie && (parseInt($.browser.version, 10) <= 7));
+
+  if (this.hasCellSpacingProblem) { //IE7
+    this.TABLE.cellSpacing = 0;
+  }
+
   this.visibilityEdgeRow = this.visibilityEdgeColumn = null;
 
   //wtSpreader
@@ -215,11 +222,15 @@ WalkontableTable.prototype._doDraw = function () {
   //draw THEAD
   if (frozenColumnsCount && this.instance.hasSetting('columnHeaders')) {
     for (c = 0; c < frozenColumnsCount; c++) {
+      TH = this.THEAD.childNodes[0].childNodes[c];
       if (typeof frozenColumns[c] === "function") {
-        frozenColumns[c](null, this.THEAD.childNodes[0].childNodes[c])
+        frozenColumns[c](null, TH);
       }
       else {
-        this.THEAD.childNodes[0].childNodes[c].innerHTML = '';
+        TH.innerHTML = '';
+      }
+      if (this.hasEmptyCellProblem && TH.innerHTML === '') { //IE7
+        TH.innerHTML = '&nbsp;';
       }
     }
   }
@@ -260,6 +271,9 @@ WalkontableTable.prototype._doDraw = function () {
       if (!this.instance.drawn || visibility) {
         TD.className = '';
         this.instance.getSetting('cellRenderer', offsetRow + r, offsetColumn + c, TD);
+        if (this.hasEmptyCellProblem && TD.innerHTML === '') { //IE7
+          TD.innerHTML = '&nbsp;';
+        }
       }
       else {
         if (c === 0) {
@@ -297,7 +311,7 @@ WalkontableTable.prototype.refreshSelections = function () {
   }
 
   this.instance.wtScroll.refreshScrollbars();
-}
+};
 
 //0 if no
 //1 if partially

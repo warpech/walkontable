@@ -112,7 +112,7 @@ describe('WalkontableTable', function () {
     });
     wt.draw();
     expect($table.find('thead tr:first th').length).toBe(3); //2 columns in THEAD
-    expect($table.find('thead tr:first th:eq(0)')[0].innerHTML).toBe(''); //corner row is empty
+    expect($table.find('thead tr:first th:eq(0)')[0].innerHTML.replace(/&nbsp;/, '')).toBe(''); //corner row is empty (or contains only &nbsp;)
     expect($table.find('thead tr:first th:eq(1)')[0].innerHTML).toBe('Column');
     expect($table.find('tbody tr:first th:eq(0)')[0].innerHTML).toBe('Row');
   });
