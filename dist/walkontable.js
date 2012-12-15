@@ -1,7 +1,7 @@
 /**
  * walkontable 0.1
  * 
- * Date: Fri Dec 14 2012 19:35:12 GMT+0100 (Central European Standard Time)
+ * Date: Sat Dec 15 2012 14:20:07 GMT+0100 (Central European Standard Time)
 */
 
 function WalkontableBorder(instance, settings) {
@@ -1456,10 +1456,12 @@ function WalkontableWheel(instance) {
     clearTimeout(wheelTimeout);
     wheelTimeout = setTimeout(function () { //timeout is needed because with fast-wheel scrolling mousewheel event comes dozen times per second
       if (deltaY) {
-        that.instance.scrollVertical(-deltaY).draw();
+        //ceil is needed because jquery-mousewheel reports fractional mousewheel deltas on touchpad scroll
+        //see http://stackoverflow.com/questions/5527601/normalizing-mousewheel-speed-across-browsers
+        that.instance.scrollVertical(-Math.ceil(deltaY)).draw();
       }
       else if (deltaX) {
-        that.instance.scrollHorizontal(deltaX).draw();
+        that.instance.scrollHorizontal(Math.ceil(deltaX)).draw();
       }
     }, 0);
     event.preventDefault();
