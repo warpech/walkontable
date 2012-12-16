@@ -9,7 +9,7 @@ function WalkontableBorder(instance, settings) {
   this.main.style.top = 0;
   this.main.style.left = 0;
 
-  for (var i = 0; i < 4; i++) {
+  for (var i = 0; i < 5; i++) {
     var DIV = document.createElement('DIV');
     DIV.className = 'wtBorder ' + settings.className;
     DIV.style.backgroundColor = settings.border.color;
@@ -22,6 +22,12 @@ function WalkontableBorder(instance, settings) {
   this.left = this.main.childNodes[1];
   this.bottom = this.main.childNodes[2];
   this.right = this.main.childNodes[3];
+
+  this.corner = this.main.childNodes[4];
+  this.corner.className += ' corner';
+  this.corner.style.width = '5px';
+  this.corner.style.height = '5px';
+  this.corner.style.border = '2px solid #FFF';
 
   this.disappear();
   instance.wtTable.hider.appendChild(this.main);
@@ -143,6 +149,15 @@ WalkontableBorder.prototype.appear = function (corners) {
     this.right.style.height = height + 1 + 'px';
     this.right.style.display = 'block';
   }
+
+  if (hideBottom && hideRight || !this.hasSetting(this.settings.border.cornerVisible)) {
+    this.corner.style.display = 'none';
+  }
+  else {
+    this.corner.style.top = top + height - 4 + 'px';
+    this.corner.style.left = left + width - 4 + 'px';
+    this.corner.style.display = 'block';
+  }
 };
 
 /**
@@ -153,4 +168,12 @@ WalkontableBorder.prototype.disappear = function () {
   this.left.style.display = 'none';
   this.bottom.style.display = 'none';
   this.right.style.display = 'none';
+  this.corner.style.display = 'none';
+};
+
+WalkontableBorder.prototype.hasSetting = function (setting) {
+  if (typeof setting === 'function') {
+    return setting();
+  }
+  return !!setting;
 };

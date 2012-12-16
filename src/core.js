@@ -31,6 +31,8 @@ function Walkontable(settings) {
     onCellMouseDown: null,
     onCellMouseOver: null,
     onCellDblClick: null,
+    onCellCornerMouseDown: null,
+    onCellCornerDblClick: null,
     scrollbarWidth: 9,
     scrollbarHeight: 9
   };

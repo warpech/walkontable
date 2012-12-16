@@ -325,4 +325,75 @@ describe('WalkontableEvent', function () {
     expect(myCoords).toEqual([10, 2]);
     expect(myTD).toEqual($td[0]);
   });
+
+  //corner
+
+  it("should call `onCellCornerMouseDown` callback", function () {
+    var clicked = false
+      , wt = new Walkontable({
+        table: $table[0],
+        data: getData,
+        totalRows: getTotalRows,
+        totalColumns: getTotalColumns,
+        offsetRow: 10,
+        offsetColumn: 2,
+        displayRows: 10,
+        displayColumns: 2,
+        selections: {
+          current: {
+            className: 'current',
+            border: {
+              width: 1,
+              color: 'red',
+              style: 'solid'
+            }
+          }
+        },
+        onCellCornerMouseDown: function (event) {
+          clicked = true;
+        }
+      });
+    wt.selections.current.add([10, 2]);
+    wt.draw();
+
+    var $td = $table.parents('.wtHolder').find('.current.corner');
+    $td.trigger('mousedown');
+    expect(clicked).toEqual(true);
+  });
+
+  it("should call `onCellCornerDblClick` callback, even when it is set only after first click", function () {
+    var clicked = false
+      , wt = new Walkontable({
+        table: $table[0],
+        data: getData,
+        totalRows: getTotalRows,
+        totalColumns: getTotalColumns,
+        offsetRow: 10,
+        offsetColumn: 2,
+        displayRows: 10,
+        displayColumns: 2,
+        selections: {
+          current: {
+            className: 'current',
+            border: {
+              width: 1,
+              color: 'red',
+              style: 'solid'
+            }
+          }
+        }
+      });
+    wt.selections.current.add([10, 2]);
+    wt.draw();
+
+    var $td = $table.parents('.wtHolder').find('.current.corner');
+    $td.trigger('mousedown');
+    $td.trigger('mouseup');
+    $td.trigger('mousedown');
+    wt.update('onCellCornerDblClick', function (event) {
+      clicked = true;
+    });
+    $td.trigger('mouseup');
+    expect(clicked).toEqual(true);
+  });
 });
