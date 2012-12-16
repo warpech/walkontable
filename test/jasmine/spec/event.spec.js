@@ -94,6 +94,34 @@ describe('WalkontableEvent', function () {
     expect(myTD).toEqual($td[0]);
   });
 
+  it("should call `onCellDblClick` callback, even when it is set only after first click", function () {
+    var myCoords = null
+      , myTD = null
+      , wt = new Walkontable({
+        table: $table[0],
+        data: getData,
+        totalRows: getTotalRows,
+        totalColumns: getTotalColumns,
+        offsetRow: 10,
+        offsetColumn: 2,
+        displayRows: 10,
+        displayColumns: 2
+      });
+    wt.draw();
+
+    var $td = $table.find('tbody tr:first td:first');
+    $td.trigger('mousedown');
+    $td.trigger('mouseup');
+    $td.trigger('mousedown');
+    wt.update('onCellDblClick', function (event, coords, TD) {
+      myCoords = coords;
+      myTD = TD;
+    });
+    $td.trigger('mouseup');
+    expect(myCoords).toEqual([10, 2]);
+    expect(myTD).toEqual($td[0]);
+  });
+
   it("should not call `onCellMouseDown` callback when clicked on TH", function () {
     var called = false
       , wt = new Walkontable({
