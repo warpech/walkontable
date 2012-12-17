@@ -165,10 +165,29 @@ WalkontableTable.prototype.adjustAvailableNodes = function () {
   }
 };
 
-WalkontableTable.prototype.draw = function () {
-  this.tableOffset = this.wtDom.offset(this.TABLE);
-  this.adjustAvailableNodes();
-  this._doDraw();
+WalkontableTable.prototype.draw = function (selectionsOnly) {
+  if (!selectionsOnly) {
+    this.tableOffset = this.wtDom.offset(this.TABLE);
+    this.adjustAvailableNodes();
+    this._doDraw(selectionsOnly);
+  }
+  else {
+  }
+
+  //redraw selections
+  if (this.instance.hasSetting('async')) {
+    var that = this;
+    window.cancelRequestAnimFrame(this.selectionsFrame);
+    that.selectionsFrame = window.requestAnimFrame(function () {
+      that.refreshSelections(selectionsOnly);
+    });
+  }
+  else {
+    this.refreshSelections(selectionsOnly);
+  }
+
+  this.instance.drawn = true;
+
   //this.instance.scrollViewport([this.instance.getSetting('offsetRow'), this.instance.getSetting('offsetColumn')]); //needed by WalkontableScroll -> remove row from the last scroll page should scroll viewport a row up if needed
   return this;
 };
@@ -285,27 +304,13 @@ WalkontableTable.prototype._doDraw = function () {
       }
     }
   }
-
-  //redraw selections
-  if (this.instance.hasSetting('async')) {
-    var that = this;
-    window.cancelRequestAnimFrame(this.selectionsFrame);
-    that.selectionsFrame = window.requestAnimFrame(function () {
-      that.refreshSelections();
-    });
-  }
-  else {
-    this.refreshSelections();
-  }
-
-  this.instance.drawn = true;
 };
 
-WalkontableTable.prototype.refreshSelections = function () {
+WalkontableTable.prototype.refreshSelections = function (selectionsOnly) {
   if (this.instance.selections) {
     for (var r in this.instance.selections) {
       if (this.instance.selections.hasOwnProperty(r)) {
-        this.instance.selections[r].draw();
+        this.instance.selections[r].draw(selectionsOnly);
       }
     }
   }

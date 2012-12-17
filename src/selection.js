@@ -1,5 +1,6 @@
 function WalkontableSelection(instance, settings) {
   this.instance = instance;
+  this.settings = settings;
   this.selected = [];
   if (settings.border) {
     this.border = new WalkontableBorder(instance, settings);
@@ -88,9 +89,17 @@ WalkontableSelection.prototype.getCorners = function () {
   return [minRow, minColumn, maxRow, maxColumn];
 };
 
-WalkontableSelection.prototype.draw = function () {
-  var TD;
-  for (var i = 0, ilen = this.selected.length; i < ilen; i++) {
+WalkontableSelection.prototype.draw = function (selectionsOnly) {
+  var TDs, TD, i, ilen;
+
+  if (selectionsOnly && this.settings.className) {
+    TDs = this.instance.wtTable.TABLE.getElementsByTagName('TD');
+    for (i = 0, ilen = TDs.length; i < ilen; i++) {
+      this.instance.wtDom.removeClass(TDs[i], this.settings.className);
+    }
+  }
+
+  for (i = 0, ilen = this.selected.length; i < ilen; i++) {
     TD = this.instance.wtTable.getCell(this.selected[i]);
     if (TD) {
       this.onAdd(this.selected[i], TD);

@@ -85,16 +85,16 @@ function Walkontable(settings) {
   this.drawn = false;
 }
 
-Walkontable.prototype.draw = function () {
+Walkontable.prototype.draw = function (selectionsOnly) {
   //this.instance.scrollViewport([this.instance.getSetting('offsetRow'), this.instance.getSetting('offsetColumn')]); //needed by WalkontableScroll -> remove row from the last scroll page should scroll viewport a row up if needed
   if (this.hasSetting('async')) {
     var that = this;
     that.drawFrame = setTimeout(function () {
-      that.wtTable.draw();
+      that.wtTable.draw(selectionsOnly);
     }, 0);
   }
   else {
-    this.wtTable.draw();
+    this.wtTable.draw(selectionsOnly);
   }
   return this;
 };
