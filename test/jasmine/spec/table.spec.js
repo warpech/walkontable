@@ -547,4 +547,51 @@ describe('WalkontableTable', function () {
     expect($table.find('tbody tr:eq(3) td:eq(0)').html()).not.toBe('');
     expect($table.find('tbody tr:eq(4) td:eq(0)').html()).toBe('');
   });
+
+  it("should not render a cell when selectionsOnly == true", function () {
+    var count = 0
+      , wt = new Walkontable({
+        table: $table[0],
+        data: getData,
+        totalRows: getTotalRows,
+        totalColumns: getTotalColumns,
+        width: 200,
+        height: 100,
+        offsetRow: 0,
+        offsetColumn: 0,
+        columnWidth: 100,
+        cellRenderer: function (row, column, TD) {
+          count++;
+          return wt.defaults.cellRenderer(row, column, TD);
+        }
+      });
+    wt.draw();
+    var oldCount = count;
+    wt.draw(true);
+    expect(count).toBe(oldCount);
+  });
+
+  it("should ignore selectionsOnly == true when grid was scrolled", function () {
+    var count = 0
+      , wt = new Walkontable({
+        table: $table[0],
+        data: getData,
+        totalRows: getTotalRows,
+        totalColumns: getTotalColumns,
+        width: 200,
+        height: 100,
+        offsetRow: 0,
+        offsetColumn: 0,
+        columnWidth: 100,
+        cellRenderer: function (row, column, TD) {
+          count++;
+          return wt.defaults.cellRenderer(row, column, TD);
+        }
+      });
+    wt.draw();
+    var oldCount = count;
+    wt.scrollVertical(1);
+    wt.draw(true);
+    expect(count).toBeGreaterThan(oldCount);
+  });
 });
