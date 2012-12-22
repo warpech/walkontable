@@ -48,7 +48,7 @@ WalkontableBorder.prototype.appear = function (corners) {
     , displayRows = this.instance.getSetting('displayRows')
     , displayColumns = this.instance.getSetting('displayColumns');
 
-  var hideTop, hideLeft, hideBottom, hideRight;
+  var hideTop = false, hideLeft = false, hideBottom = false, hideRight = false;
 
   if (displayRows !== null) {
     if (corners[0] > offsetRow + displayRows - 1 || corners[2] < offsetRow) {
@@ -82,7 +82,7 @@ WalkontableBorder.prototype.appear = function (corners) {
     }
   }
 
-  if (!(hideTop == hideLeft == hideBottom == hideRight == true)) {
+  if (hideTop + hideLeft + hideBottom + hideRight < 4) { //at least one border is not hidden
     isMultiple = (corners[0] !== corners[2] || corners[1] !== corners[3]);
     $from = $(this.instance.wtTable.getCell([corners[0], corners[1]]));
     $to = isMultiple ? $(this.instance.wtTable.getCell([corners[2], corners[3]])) : $from;
