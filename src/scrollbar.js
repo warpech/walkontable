@@ -107,7 +107,7 @@ WalkontableScrollbar.prototype.refresh = function () {
     }
     this.handle.style.height = handleSize + 'px';
 
-    handlePosition = (tableHeight - handleSize) * (offsetRow / totalRows);
+    handlePosition = Math.round((tableHeight - handleSize) * (offsetRow / totalRows));
     if (handlePosition > tableHeight - handleSize) {
       handlePosition = tableHeight - handleSize;
     }
@@ -127,7 +127,7 @@ WalkontableScrollbar.prototype.refresh = function () {
     }
     this.handle.style.width = handleSize + 'px';
 
-    handlePosition = (tableWidth - handleSize) * (offsetColumn / totalColumns);
+    handlePosition = Math.round((tableWidth - handleSize) * (offsetColumn / totalColumns));
     if (handlePosition > tableWidth - handleSize) {
       handlePosition = tableWidth - handleSize;
     }

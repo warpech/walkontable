@@ -72,7 +72,7 @@ function init() {
 
   var wt = new Walkontable({
     table: document.getElementsByTagName('TABLE')[0],
-    async: false,
+    async: true,
     data: function (row, col) {
       return arr[row][col];
     },
@@ -84,8 +84,8 @@ function init() {
     },
     offsetRow: 0,
     offsetColumn: 0,
-    displayRows: displayRows,
-    displayColumns: 5,
+    //displayRows: displayRows, displayColumns: 5,
+    height: 200, width: 200,
     frozenColumns: [function (row) {
       return row + 1
     }],
@@ -107,6 +107,13 @@ function init() {
         }
       }
     },
+    onCellMouseOver: function (event, coords, TD) {
+      wt.wtTable.isCellVisible(TD);
+    },
+
+
+
+
     onCellMouseDown: function (event, coords, TD) {
       if (wt.selections.area.isSelected(coords, TD) > -1) {
         wt.selections.area.remove(coords, TD);
