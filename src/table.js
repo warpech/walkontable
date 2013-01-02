@@ -38,7 +38,7 @@ function WalkontableTable(instance) {
   if (!parent || parent.nodeType !== 1 || !this.wtDom.hasClass(parent, 'wtHolder')) {
     var hider = document.createElement('DIV');
     hider.style.position = 'relative';
-    if (this.instance.hasSetting('width') && this.instance.hasSetting('height')) {
+    if (this.instance.hasSetting('width') || this.instance.hasSetting('height')) {
       hider.style.overflow = 'hidden';
     }
     if (this.instance.hasSetting('width')) {

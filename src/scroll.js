@@ -1,12 +1,16 @@
 function WalkontableScroll(instance) {
   this.instance = instance;
-  this.wtScrollbarV = new WalkontableScrollbar(instance, 'vertical');
-  this.wtScrollbarH = new WalkontableScrollbar(instance, 'horizontal');
+  if (instance.hasSetting('height') || instance.hasSetting('displayRows')) {
+    this.wtScrollbarV = new WalkontableScrollbar(instance, 'vertical');
+  }
+  if (instance.hasSetting('width') || instance.hasSetting('displayColumns')) {
+    this.wtScrollbarH = new WalkontableScrollbar(instance, 'horizontal');
+  }
 }
 
 WalkontableScroll.prototype.refreshScrollbars = function () {
-  this.wtScrollbarV.refresh();
-  this.wtScrollbarH.refresh();
+  this.wtScrollbarV && this.wtScrollbarV.refresh();
+  this.wtScrollbarH && this.wtScrollbarH.refresh();
 };
 
 WalkontableScroll.prototype.scrollVertical = function (delta) {
