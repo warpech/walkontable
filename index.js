@@ -16,16 +16,62 @@ function init() {
   }
 
   /**
+   * Data source
+   */
+
+  function randomString(length, chars) {
+    var result = '';
+    for (var i = length; i > 0; --i) result += chars.charAt(Math.round(Math.random() * (chars.length - 1)));
+    return result;
+  }
+
+  function createData(rows) {
+    var arr = [];
+    var arrPart = [];
+    var str = 'abcdefghijklmnopqrstuvwxyz';
+    var i;
+
+    for (i = 0; i < 100; i++) {
+      arrPart.push([
+        i,
+        randomString(3 * (1 + Math.sin(i)), str),
+        randomString(3 * (1 + Math.sin(i + 2)), str),
+        randomString(3 * (1 + Math.sin(i + 4)), str),
+        randomString(3 * (1 + Math.sin(i + 6)), str),
+        randomString(3 * (1 + Math.sin(i + 8)), str),
+        randomString(3 * (1 + Math.sin(i + 10)), str)
+      ]);
+    }
+
+    for (i = 0; i < rows; i++) {
+      arr.push(arrPart[i % 100]); //clone 100 row chunks until array has size of 100000
+    }
+
+    return arr;
+  }
+
+  createButton('100k rows', function () {
+    arr = createData(100000);
+    wt.draw();
+  });
+
+  createButton('1k rows', function () {
+    arr = createData(1000);
+    wt.draw();
+  });
+
+  /**
    * Page up/down
    */
 
   createButton('Page down', function () {
     wt.scrollVertical(displayRows).draw();
-  });
+  }, true);
 
   createButton('Page up', function () {
     wt.scrollVertical(-displayRows).draw();
   });
+
 
   /**
    * Scroll left/right
@@ -42,33 +88,7 @@ function init() {
   /**
    * Init Walkontable
    */
-
-  function randomString(length, chars) {
-    var result = '';
-    for (var i = length; i > 0; --i) result += chars.charAt(Math.round(Math.random() * (chars.length - 1)));
-    return result;
-  }
-
-  var arr = [];
-  var arrPart = [];
-  var str = 'abcdefghijklmnopqrstuvwxyz';
-  var i;
-
-  for (i = 0; i < 100; i++) {
-    arrPart.push([
-      i,
-      randomString(3 * (1 + Math.sin(i)), str),
-      randomString(3 * (1 + Math.sin(i + 2)), str),
-      randomString(3 * (1 + Math.sin(i + 4)), str),
-      randomString(3 * (1 + Math.sin(i + 6)), str),
-      randomString(3 * (1 + Math.sin(i + 8)), str),
-      randomString(3 * (1 + Math.sin(i + 10)), str)
-    ]);
-  }
-
-  for (i = 0; i < 100000; i++) {
-    arr.push(arrPart[i % 100]); //clone 100 row chunks until array has size of 100000
-  }
+  var arr = createData(100000);
 
   var wt = new Walkontable({
     table: document.getElementsByTagName('TABLE')[0],
@@ -110,10 +130,6 @@ function init() {
     onCellMouseOver: function (event, coords, TD) {
       wt.wtTable.isCellVisible(TD);
     },
-
-
-
-
     onCellMouseDown: function (event, coords, TD) {
       if (wt.selections.area.isSelected(coords, TD) > -1) {
         wt.selections.area.remove(coords, TD);

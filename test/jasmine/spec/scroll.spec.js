@@ -315,4 +315,38 @@ describe('WalkontableScroll', function () {
 
     expect(originalOffsetRow).toEqual(wt.settings.offsetRow);
   });
+
+  it("should scroll to last row if smaller data source is loaded that does not have currently displayed row", function () {
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      offsetRow: 0,
+      offsetColumn: 0,
+      height: 260
+    });
+    wt.scrollVertical(50).draw();
+    this.data.splice(30, this.data.length - 30);
+    wt.draw();
+    expect($table.find('tbody tr').length).toBeGreaterThan(9);
+  });
+
+  it("should scroll to last column if smaller data source is loaded that does not have currently displayed column", function () {
+    createDataArray(20, 100);
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      offsetRow: 0,
+      offsetColumn: 0,
+      width: 260,
+      height: 200
+    });
+    wt.scrollHorizontal(50).draw();
+    createDataArray(100, 30);
+    wt.draw();
+    expect($table.find('tbody tr:first td').length).toBeGreaterThan(3);
+  });
 });

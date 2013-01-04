@@ -2,10 +2,16 @@ var spec = function () {
   return jasmine.getEnv().currentSpec;
 };
 
-var createDataArray = function () {
+var createDataArray = function (rows, cols) {
   spec().data = [];
-  for (var i = 0; i < 100; i++) {
-    spec().data.push([i, "a", "b", "c"]);
+  rows = rows || 100;
+  cols = cols || 4;
+  for (var i = 0; i < rows; i++) {
+    var row = [i];
+    for (var j = 0; j < cols - 1; j++) {
+      row.push(String.fromCharCode(65 + j % 20).toLowerCase() + (j / 20 | 0 || ''));  // | 0 is parseInt - see http://jsperf.com/math-floor-vs-math-round-vs-parseint/18
+    }
+    spec().data.push(row);
   }
 };
 
