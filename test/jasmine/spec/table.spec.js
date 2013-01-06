@@ -154,10 +154,10 @@ describe('WalkontableTable', function () {
 
     var $td1 = $table.find('tbody tr:first td:first');
     var $td2 = $table.find('tbody tr:last td:first');
-    expect(wt.wtTable.getCell([9, 0])).toBe(null);
+    expect(wt.wtTable.getCell([9, 0])).toBe(-1); //exit code
     expect(wt.wtTable.getCell([10, 0])).toBe($td1[0]);
     expect(wt.wtTable.getCell([19, 0])).toBe($td2[0]);
-    expect(wt.wtTable.getCell([20, 0])).toBe(null);
+    expect(wt.wtTable.getCell([20, 0])).toBe(-2); //exit code
   });
 
   it("getCell should only return cells from visible columns", function () {
@@ -177,10 +177,10 @@ describe('WalkontableTable', function () {
 
     var $td1 = $table.find('tbody tr:eq(0) td:eq(0)');
     var $td2 = $table.find('tbody tr:eq(0) td:eq(1)');
-    expect(wt.wtTable.getCell([0, 0])).toBe(null);
+    expect(wt.wtTable.getCell([0, 0])).toBe(-3); //exit code
     expect(wt.wtTable.getCell([0, 1])).toBe($td1[0]);
     expect(wt.wtTable.getCell([0, 2])).toBe($td2[0]);
-    expect(wt.wtTable.getCell([0, 3])).toBe(null);
+    expect(wt.wtTable.getCell([0, 3])).toBe(-4); //exit code
   });
 
   it("getCell should only return cells from visible columns (with row header)", function () {
@@ -205,10 +205,10 @@ describe('WalkontableTable', function () {
 
     var $td1 = $table.find('tbody tr:first td:eq(0)');
     var $td2 = $table.find('tbody tr:first td:eq(1)');
-    expect(wt.wtTable.getCell([0, 0])).toBe(null);
+    expect(wt.wtTable.getCell([0, 0])).toBe(-3); //exit code
     expect(wt.wtTable.getCell([0, 1])).toBe($td1[0]);
     expect(wt.wtTable.getCell([0, 2])).toBe($td2[0]);
-    expect(wt.wtTable.getCell([0, 3])).toBe(null);
+    expect(wt.wtTable.getCell([0, 3])).toBe(-4); //exit code
   });
 
   it("getCoords should return coords of TD", function () {

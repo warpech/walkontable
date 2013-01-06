@@ -366,17 +366,38 @@ WalkontableTable.prototype.isCellVisible = function (TD) {
   return out;
 };
 
+/**
+ * getCell
+ * @param {Array} coords
+ * @return {Object} HTMLElement on success or {Number} one of the exit codes on error:
+ *  -1 row before viewport
+ *  -2 row after viewport
+ *  -3 column before viewport
+ *  -4 column after viewport
+ *
+ */
 WalkontableTable.prototype.getCell = function (coords) {
   var offsetRow = this.instance.getSetting('offsetRow');
-  if (coords[0] >= offsetRow && coords[0] <= offsetRow + this.instance.getSetting('displayRows') - 1) {
+  if (coords[0] < offsetRow) {
+    return -1; //row before viewport
+  }
+  else if (coords[0] > offsetRow + this.instance.getSetting('displayRows') - 1) {
+    return -2; //row after viewport
+  }
+  else {
     var offsetColumn = this.instance.getSetting('offsetColumn');
-    if (coords[1] >= offsetColumn && coords[1] < offsetColumn + this.instance.getSetting('displayColumns')) {
+    if (coords[1] < offsetColumn) {
+      return -3; //column before viewport
+    }
+    else if (coords[1] > offsetColumn + this.instance.getSetting('displayColumns') - 1) {
+      return -4; //column after viewport
+    }
+    else {
       var frozenColumns = this.instance.getSetting('frozenColumns')
         , frozenColumnsCount = frozenColumns ? frozenColumns.length : 0;
       return this.TBODY.childNodes[coords[0] - offsetRow].childNodes[coords[1] - offsetColumn + frozenColumnsCount];
     }
   }
-  return null;
 };
 
 WalkontableTable.prototype.getCoords = function (TD) {

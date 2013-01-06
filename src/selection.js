@@ -7,7 +7,7 @@ function WalkontableSelection(instance, settings) {
   }
   this.onAdd = function (coords) {
     var TD = instance.wtTable.getCell(coords);
-    if (TD) {
+    if (typeof TD === 'object') {
       if (settings.className) {
         instance.wtDom.addClass(TD, settings.className);
       }
@@ -15,7 +15,7 @@ function WalkontableSelection(instance, settings) {
   };
   /*this.onRemove = function (coords) {
    var TD = instance.wtTable.getCell(coords);
-   if (TD) {
+   if (typeof TD === 'object') {
    if (settings.className) {
    instance.wtDom.removeClass(TD, settings.className);
    }
@@ -103,11 +103,17 @@ WalkontableSelection.prototype.draw = function (selectionsOnly) {
   if (ilen) {
     corners = this.getCorners();
     r = corners[0];
-    while (r <= corners[2]) {
+    rows : while (r <= corners[2]) {
       c = corners[1];
       while (c <= corners[3]) {
         TD = this.instance.wtTable.getCell([r, c]);
-        if (TD) {
+        if (TD === -2) {
+          break rows;
+        }
+        else if (TD === -4) {
+          break;
+        }
+        else if (TD !== -1 && TD !== -3) {
           this.onAdd([r, c], TD);
         }
         c++;
