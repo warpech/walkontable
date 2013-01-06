@@ -131,6 +131,7 @@ Walkontable.prototype.scrollHorizontal = function (delta) {
 Walkontable.prototype.scrollViewport = function (coords) {
   if (this.hasSetting('async')) {
     var that = this;
+    clearTimeout(that.scrollFrame);
     that.scrollFrame = setTimeout(function () {
       that.wtScroll.scrollViewport(coords);
     }, 0);
