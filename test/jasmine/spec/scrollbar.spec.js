@@ -10,7 +10,7 @@ describe('WalkontableScrollbar', function () {
 
   afterEach(function () {
     if (!debug) {
-      $('.wtHolder').remove();
+      //$('.wtHolder').remove();
     }
   });
 
@@ -125,5 +125,217 @@ describe('WalkontableScrollbar', function () {
 
     wt.scrollHorizontal(10).draw();
     expect(bar.css('left')).toBeGreaterThan(originalPosition);
+  });
+
+  /**
+   * scrollH
+   */
+
+  it("should show horizontal scrollbar when scrollH is 'scroll' and table fits horizontally", function () {
+    createDataArray(2, 2);
+
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      width: 400,
+      scrollH: 'scroll'
+    });
+    wt.draw();
+
+    var bar = $table.parents('.wtHolder').find('.dragdealer.horizontal');
+    expect(bar.css('display')).toBe('block');
+  });
+
+  it("should show horizontal scrollbar when scrollH is 'scroll' and table DOES NOT fit horizontally", function () {
+    createDataArray(2, 10);
+
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      width: 400,
+      scrollH: 'scroll'
+    });
+    wt.draw();
+
+    var bar = $table.parents('.wtHolder').find('.dragdealer.horizontal');
+    expect(bar.css('display')).toBe('block');
+  });
+
+  it("should NOT show horizontal scrollbar when scrollH is 'auto' and table fits horizontally", function () {
+    createDataArray(2, 2);
+
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      width: 400,
+      scrollH: 'auto'
+    });
+    wt.draw();
+
+    var bar = $table.parents('.wtHolder').find('.dragdealer.horizontal');
+    expect(bar.css('display')).toBe('none');
+  });
+
+  it("should show horizontal scrollbar when scrollH is 'auto' and table DOES NOT fit horizontally", function () {
+    createDataArray(2, 10);
+
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      width: 400,
+      scrollH: 'auto'
+    });
+    wt.draw();
+
+    var bar = $table.parents('.wtHolder').find('.dragdealer.horizontal');
+    expect(bar.css('display')).toBe('block');
+  });
+
+  it("should NOT show horizontal scrollbar when scrollH is 'none' and table fits horizontally", function () {
+    createDataArray(2, 2);
+
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      width: 400,
+      scrollH: 'none'
+    });
+    wt.draw();
+
+    var bar = $table.parents('.wtHolder').find('.dragdealer.horizontal');
+    expect(bar.css('display')).toBe('none');
+  });
+
+  it("should NOT show horizontal scrollbar when scrollH is 'none' and table DOES NOT fit horizontally", function () {
+    createDataArray(2, 10);
+
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      width: 400,
+      scrollH: 'none'
+    });
+    wt.draw();
+
+    var bar = $table.parents('.wtHolder').find('.dragdealer.horizontal');
+    expect(bar.css('display')).toBe('none');
+  });
+
+  /**
+   * scrollV
+   */
+
+  it("should show vertical scrollbar when scrollH is 'scroll' and table fits vertically", function () {
+    createDataArray(2, 2);
+
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      height: 400,
+      scrollV: 'scroll'
+    });
+    wt.draw();
+
+    var bar = $table.parents('.wtHolder').find('.dragdealer.vertical');
+    expect(bar.css('display')).toBe('block');
+  });
+
+  it("should show vertical scrollbar when scrollH is 'scroll' and table DOES NOT fit vertically", function () {
+    createDataArray(20, 2);
+
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      height: 400,
+      scrollV: 'scroll'
+    });
+    wt.draw();
+
+    var bar = $table.parents('.wtHolder').find('.dragdealer.vertical');
+    expect(bar.css('display')).toBe('block');
+  });
+
+  it("should NOT show vertical scrollbar when scrollH is 'auto' and table fits vertically", function () {
+    createDataArray(2, 2);
+
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      height: 400,
+      scrollV: 'auto'
+    });
+    wt.draw();
+
+    var bar = $table.parents('.wtHolder').find('.dragdealer.vertical');
+    expect(bar.css('display')).toBe('none');
+  });
+
+  it("should show vertical scrollbar when scrollH is 'auto' and table DOES NOT fit vertically", function () {
+    createDataArray(20, 2);
+
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      height: 400,
+      scrollV: 'auto'
+    });
+    wt.draw();
+
+    var bar = $table.parents('.wtHolder').find('.dragdealer.vertical');
+    expect(bar.css('display')).toBe('block');
+  });
+
+  it("should NOT show vertical scrollbar when scrollH is 'none' and table fits vertically", function () {
+    createDataArray(2, 2);
+
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      height: 400,
+      scrollV: 'none'
+    });
+    wt.draw();
+
+    var bar = $table.parents('.wtHolder').find('.dragdealer.vertical');
+    expect(bar.css('display')).toBe('none');
+  });
+
+  it("should NOT show vertical scrollbar when scrollH is 'none' and table DOES NOT fit vertically", function () {
+    createDataArray(20, 2);
+
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      height: 200,
+      scrollV: 'none'
+    });
+    wt.draw();
+
+    var bar = $table.parents('.wtHolder').find('.dragdealer.vertical');
+    expect(bar.css('display')).toBe('none');
   });
 });

@@ -1,11 +1,7 @@
 function WalkontableScroll(instance) {
   this.instance = instance;
-  if (instance.hasSetting('height') || instance.hasSetting('displayRows')) {
-    this.wtScrollbarV = new WalkontableScrollbar(instance, 'vertical');
-  }
-  if (instance.hasSetting('width') || instance.hasSetting('displayColumns')) {
-    this.wtScrollbarH = new WalkontableScrollbar(instance, 'horizontal');
-  }
+  this.wtScrollbarV = new WalkontableScrollbar(instance, 'vertical');
+  this.wtScrollbarH = new WalkontableScrollbar(instance, 'horizontal');
 }
 
 WalkontableScroll.prototype.refreshScrollbars = function () {

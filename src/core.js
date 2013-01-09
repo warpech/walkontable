@@ -5,7 +5,13 @@ function Walkontable(settings) {
   //default settings. void 0 means it is required, null means it can be empty
   this.defaults = {
     table: void 0,
+
+    //presentation mode
     async: false,
+    scrollH: 'auto', //values: scroll (always show scrollbar), auto (show scrollbar if table does not fit in the container), none (never show scrollbar)
+    scrollV: 'auto', //values: see above
+
+    //data source
     data: void 0,
     offsetRow: 0,
     offsetColumn: 0,
@@ -28,11 +34,15 @@ function Walkontable(settings) {
     },
     columnWidth: null,
     selections: null,
+
+    //callbacks
     onCellMouseDown: null,
     onCellMouseOver: null,
     onCellDblClick: null,
     onCellCornerMouseDown: null,
     onCellCornerDblClick: null,
+
+    //constants
     scrollbarWidth: 9,
     scrollbarHeight: 9
   };

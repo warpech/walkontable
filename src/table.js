@@ -168,8 +168,10 @@ WalkontableTable.prototype.adjustAvailableNodes = function () {
 WalkontableTable.prototype.draw = function (selectionsOnly) {
   if (!selectionsOnly) {
     this.tableOffset = this.wtDom.offset(this.TABLE);
+    //this.TABLE.removeChild(this.TBODY); //possible future optimization - http://jsperf.com/table-scrolling/9
     this.adjustAvailableNodes();
     this._doDraw(selectionsOnly);
+    //this.TABLE.appendChild(this.TBODY);
   }
 
   //redraw selections and scrollbars
@@ -260,7 +262,7 @@ WalkontableTable.prototype._doDraw = function () {
 
   //draw TBODY
   this.visibilityEdgeRow = this.visibilityEdgeColumn = null;
-  rows : for (r = 0; r < displayRows; r++) {
+  for (r = 0; r < displayRows; r++) {
     TR = this.TBODY.childNodes[r];
     for (c = 0; c < frozenColumnsCount; c++) { //in future use nextSibling; http://jsperf.com/nextsibling-vs-indexed-childnodes
       TH = TR.childNodes[c];
@@ -275,31 +277,28 @@ WalkontableTable.prototype._doDraw = function () {
        }*/
     }
     for (c = 0; c < displayTds; c++) { //in future use nextSibling; http://jsperf.com/nextsibling-vs-indexed-childnodes
-      TD = TR.childNodes[c + frozenColumnsCount];
-
-      var visibility = this.isCellVisible(TD);
-      if (this.visibilityEdgeRow === null && this.visibilityEdgeColumn === null && visibility === 1 && c !== 0) {
-        this.visibilityEdgeColumn = offsetColumn + c;
+      if (this.visibilityEdgeColumn !== null && offsetColumn + c > this.visibilityEdgeColumn) {
+        break;
       }
-      if (this.visibilityEdgeRow === null && visibility === 1 && c === 0) {
-        this.visibilityEdgeRow = offsetRow + r;
-      }
-
-      if (!this.instance.drawn || visibility) {
+      else {
+        TD = TR.childNodes[c + frozenColumnsCount];
         TD.className = '';
         this.instance.getSetting('cellRenderer', offsetRow + r, offsetColumn + c, TD);
         if (this.hasEmptyCellProblem && TD.innerHTML === '') { //IE7
           TD.innerHTML = '&nbsp;';
         }
-      }
-      else {
-        if (c === 0) {
-          break rows;
+
+        var visibility = this.isCellVisible(TD);
+        if (this.visibilityEdgeRow === null && this.visibilityEdgeColumn === null && visibility === 1 && c !== 0) {
+          this.visibilityEdgeColumn = offsetColumn + c;
         }
-        else {
-          break; //cols
+        if (this.visibilityEdgeRow === null && visibility === 1 && c === 0) {
+          this.visibilityEdgeRow = offsetRow + r;
         }
       }
+    }
+    if (this.visibilityEdgeRow !== null && offsetRow + r > this.visibilityEdgeRow) {
+      break;
     }
   }
 

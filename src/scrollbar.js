@@ -94,48 +94,62 @@ WalkontableScrollbar.prototype.refresh = function () {
   }
 
   if (this.type === 'vertical') {
-    this.slider.style.top = this.$table.position().top + 'px';
-    this.slider.style.left = tableWidth - 1 + 'px'; //1 is sliders border-width
-    this.slider.style.height = tableHeight - 2 + 'px'; //2 is sliders border-width
-
     if (totalRows) {
       ratio = viewportRows / totalRows;
     }
-    handleSize = Math.round($(this.slider).height() * ratio);
-    if (handleSize < 10) {
-      handleSize = 30;
-    }
-    this.handle.style.height = handleSize + 'px';
 
-    handlePosition = Math.round((tableHeight - handleSize) * (offsetRow / totalRows));
-    if (handlePosition > tableHeight - handleSize) {
-      handlePosition = tableHeight - handleSize;
+    var scrollV = this.instance.getSetting('scrollV');
+    if ((ratio === 1 && scrollV === 'auto') || scrollV === 'none') {
+      this.slider.style.display = 'none';
     }
-    this.handle.style.top = handlePosition + 'px';
+    else {
+      handleSize = Math.round($(this.slider).height() * ratio);
+      if (handleSize < 10) {
+        handleSize = 30;
+      }
+      handlePosition = Math.round((tableHeight - handleSize) * (offsetRow / totalRows));
+      if (handlePosition > tableHeight - handleSize) {
+        handlePosition = tableHeight - handleSize;
+      }
+
+      this.slider.style.display = 'block';
+      this.slider.style.top = this.$table.position().top + 'px';
+      this.slider.style.left = tableWidth - 1 + 'px'; //1 is sliders border-width
+      this.slider.style.height = tableHeight - 2 + 'px'; //2 is sliders border-width
+      this.handle.style.height = handleSize + 'px';
+      this.handle.style.top = handlePosition + 'px';
+    }
   }
   else if (this.type === 'horizontal') {
-    this.slider.style.left = this.$table.position().left + 'px';
-    this.slider.style.top = tableHeight - 1 + 'px'; //1 is sliders border-width
-    this.slider.style.width = tableWidth - 2 + 'px'; //2 is sliders border-width
-
     if (totalColumns) {
       ratio = viewportColumns / totalColumns;
     }
-    handleSize = Math.round($(this.slider).width() * ratio);
-    if (handleSize < 10) {
-      handleSize = 30;
-    }
-    this.handle.style.width = handleSize + 'px';
 
-    handlePosition = Math.round((tableWidth - handleSize) * (offsetColumn / totalColumns));
-    if (handlePosition > tableWidth - handleSize) {
-      handlePosition = tableWidth - handleSize;
+    var scrollH = this.instance.getSetting('scrollH');
+    if ((ratio === 1 && scrollH === 'auto') || scrollH === 'none') {
+      this.slider.style.display = 'none';
+      //this.instance.wtTable.TABLE.style.tableLayout = 'fixed';
+      //this.instance.wtTable.TABLE.style.width = tableWidth + 'px';
     }
-    /* it should be needed here if it was not needed above
-     else if (handlePosition < 0) {
-     handlePosition = 0;
-     }*/
-    this.handle.style.left = handlePosition + 'px';
+    else {
+      handleSize = Math.round($(this.slider).width() * ratio);
+      if (handleSize < 10) {
+        handleSize = 30;
+      }
+      handlePosition = Math.round((tableWidth - handleSize) * (offsetColumn / totalColumns));
+      if (handlePosition > tableWidth - handleSize) {
+        handlePosition = tableWidth - handleSize;
+      }
+
+      //this.instance.wtTable.TABLE.style.tableLayout = 'auto';
+      //this.instance.wtTable.TABLE.style.width = '';
+      this.slider.style.display = 'block';
+      this.slider.style.left = this.$table.position().left + 'px';
+      this.slider.style.top = tableHeight - 1 + 'px'; //1 is sliders border-width
+      this.slider.style.width = tableWidth - 2 + 'px'; //2 is sliders border-width
+      this.handle.style.width = handleSize + 'px';
+      this.handle.style.left = handlePosition + 'px';
+    }
   }
 
   this.dragdealer.setWrapperOffset();
