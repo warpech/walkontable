@@ -229,16 +229,20 @@ describe('WalkontableScrollbar', function () {
       totalRows: getTotalRows,
       totalColumns: getTotalColumns,
       width: 400,
+      height: 100,
       scrollH: 'auto'
     });
     wt.draw();
 
     var bar = $table.parents('.wtHolder').find('.dragdealer.horizontal');
+    var wtHider = $table.parents('.wtHider');
     expect(bar.css('display')).toBe('block');
+    expect(wtHider.height()).toBe(100 - wt.getSetting('scrollbarHeight'));
 
     createDataArray(2, 2);
     wt.draw();
     expect(bar.css('display')).toBe('none');
+    expect(wtHider.height()).toBe(100);
   });
 
   it("should NOT show horizontal scrollbar when scrollH is 'none' and table fits horizontally", function () {
@@ -376,17 +380,21 @@ describe('WalkontableScrollbar', function () {
       data: getData,
       totalRows: getTotalRows,
       totalColumns: getTotalColumns,
-      height: 400,
+      width: 100,
+      height: 300,
       scrollV: 'auto'
     });
     wt.draw();
 
     var bar = $table.parents('.wtHolder').find('.dragdealer.vertical');
+    var wtHider = $table.parents('.wtHider');
     expect(bar.css('display')).toBe('block');
+    expect(wtHider.width()).toBe(100 - wt.getSetting('scrollbarWidth'));
 
     createDataArray(2, 2);
     wt.draw();
     expect(bar.css('display')).toBe('none');
+    expect(wtHider.width()).toBe(100);
   });
 
   it("should NOT show vertical scrollbar when scrollV is 'none' and table fits vertically", function () {

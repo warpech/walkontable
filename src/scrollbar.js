@@ -81,8 +81,8 @@ WalkontableScrollbar.prototype.refresh = function () {
     , offsetColumn = this.instance.getSetting('offsetColumn')
     , totalRows = this.instance.getSetting('totalRows')
     , totalColumns = this.instance.getSetting('totalColumns')
-    , tableWidth = this.instance.hasSetting('width') ? this.instance.getSetting('width') - this.instance.getSetting('scrollbarWidth') : this.$table.outerWidth()
-    , tableHeight = this.instance.hasSetting('height') ? this.instance.getSetting('height') - this.instance.getSetting('scrollbarHeight') : this.$table.outerHeight()
+    , tableWidth = this.instance.hasSetting('width') ? this.instance.getSetting('width') : this.$table.outerWidth()
+    , tableHeight = this.instance.hasSetting('height') ? this.instance.getSetting('height') : this.$table.outerHeight()
     , viewportRows = Math.min(this.instance.getSetting('viewportRows'), totalRows)
     , viewportColumns = Math.min(this.instance.getSetting('viewportColumns'), totalColumns);
 
@@ -93,6 +93,9 @@ WalkontableScrollbar.prototype.refresh = function () {
     throw new Error("I could not compute table height. Is the <table> element attached to the DOM?");
   }
 
+  tableWidth -= this.instance.getSetting('scrollbarWidth');
+  tableHeight -= this.instance.getSetting('scrollbarHeight');
+
   if (this.type === 'vertical') {
     if (totalRows) {
       ratio = viewportRows / totalRows;
@@ -101,6 +104,7 @@ WalkontableScrollbar.prototype.refresh = function () {
     var scrollV = this.instance.getSetting('scrollV');
     if ((ratio === 1 && scrollV === 'auto') || scrollV === 'none') {
       this.slider.style.display = 'none';
+      this.visible = false;
     }
     else {
       handleSize = Math.round($(this.slider).height() * ratio);
@@ -113,6 +117,7 @@ WalkontableScrollbar.prototype.refresh = function () {
       }
 
       this.slider.style.display = 'block';
+      this.visible = true;
       this.slider.style.top = this.$table.position().top + 'px';
       this.slider.style.left = tableWidth - 1 + 'px'; //1 is sliders border-width
       this.slider.style.height = tableHeight - 2 + 'px'; //2 is sliders border-width
@@ -128,6 +133,7 @@ WalkontableScrollbar.prototype.refresh = function () {
     var scrollH = this.instance.getSetting('scrollH');
     if ((ratio === 1 && scrollH === 'auto') || scrollH === 'none') {
       this.slider.style.display = 'none';
+      this.visible = false;
       //this.instance.wtTable.TABLE.style.tableLayout = 'fixed';
       //this.instance.wtTable.TABLE.style.width = tableWidth + 'px';
     }
@@ -144,6 +150,7 @@ WalkontableScrollbar.prototype.refresh = function () {
       //this.instance.wtTable.TABLE.style.tableLayout = 'auto';
       //this.instance.wtTable.TABLE.style.width = '';
       this.slider.style.display = 'block';
+      this.visible = true;
       this.slider.style.left = this.$table.position().left + 'px';
       this.slider.style.top = tableHeight - 1 + 'px'; //1 is sliders border-width
       this.slider.style.width = tableWidth - 2 + 'px'; //2 is sliders border-width

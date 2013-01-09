@@ -38,15 +38,6 @@ function WalkontableTable(instance) {
   if (!parent || parent.nodeType !== 1 || !this.wtDom.hasClass(parent, 'wtHolder')) {
     var hider = document.createElement('DIV');
     hider.style.position = 'relative';
-    if (this.instance.hasSetting('width') || this.instance.hasSetting('height')) {
-      hider.style.overflow = 'hidden';
-    }
-    if (this.instance.hasSetting('width')) {
-      hider.style.width = this.instance.getSetting('width') - this.instance.getSetting('scrollbarWidth') + 'px';
-    }
-    if (this.instance.hasSetting('height')) {
-      hider.style.height = this.instance.getSetting('height') - this.instance.getSetting('scrollbarHeight') + 'px';
-    }
     hider.className = 'wtHider';
     if (parent) {
       parent.insertBefore(hider, this.spreader); //if TABLE is detached (e.g. in Jasmine test), it has no parentNode so we cannot attach holder to it
@@ -96,6 +87,24 @@ function WalkontableTable(instance) {
   this.theadChildrenLength = this.THEAD.firstChild ? this.THEAD.firstChild.childNodes.length : 0;
   this.tbodyChildrenLength = this.TBODY.childNodes.length;
 }
+
+WalkontableTable.prototype.refreshHiderDimensions = function () {
+  if (this.instance.hasSetting('width') || this.instance.hasSetting('height')) {
+    this.hider.style.overflow = 'hidden';
+  }
+  if (this.instance.wtScroll.wtScrollbarH.visible) {
+    this.hider.style.height = this.instance.getSetting('height') - this.instance.getSetting('scrollbarHeight') + 'px';
+  }
+  else {
+    this.hider.style.height = this.instance.getSetting('height') + 'px';
+  }
+  if (this.instance.wtScroll.wtScrollbarV.visible) {
+    this.hider.style.width = this.instance.getSetting('width') - this.instance.getSetting('scrollbarWidth') + 'px';
+  }
+  else {
+    this.hider.style.width = this.instance.getSetting('width') + 'px';
+  }
+};
 
 WalkontableTable.prototype.adjustAvailableNodes = function () {
   var totalRows = this.instance.getSetting('totalRows')
@@ -343,8 +352,15 @@ WalkontableTable.prototype.isCellVisible = function (TD) {
   var width = $(TD).outerWidth();
   var height = $(TD).outerHeight();
 
-  var tableWidth = this.instance.hasSetting('width') ? this.instance.getSetting('width') - this.instance.getSetting('scrollbarWidth') : $(this.TABLE).outerWidth()
-    , tableHeight = this.instance.hasSetting('height') ? this.instance.getSetting('height') - this.instance.getSetting('scrollbarHeight') : $(this.TABLE).outerHeight();
+  var tableWidth = this.instance.hasSetting('width') ? this.instance.getSetting('width') : $(this.TABLE).outerWidth()
+    , tableHeight = this.instance.hasSetting('height') ? this.instance.getSetting('height') : $(this.TABLE).outerHeight();
+
+  if (this.instance.wtScroll.wtScrollbarV.visible) {
+    tableHeight -= this.instance.getSetting('scrollbarHeight');
+  }
+  if (this.instance.wtScroll.wtScrollbarH.visible) {
+    tableWidth -= this.instance.getSetting('scrollbarWidth');
+  }
 
   if (innerOffsetTop > tableHeight) {
     out = 0;
