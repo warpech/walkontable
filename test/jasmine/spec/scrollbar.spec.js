@@ -10,7 +10,7 @@ describe('WalkontableScrollbar', function () {
 
   afterEach(function () {
     if (!debug) {
-      //$('.wtHolder').remove();
+      $('.wtHolder').remove();
     }
   });
 
@@ -199,6 +199,48 @@ describe('WalkontableScrollbar', function () {
     expect(bar.css('display')).toBe('block');
   });
 
+  it("should hide/show horizontal scrollbar when scrollH is 'auto' column count changes", function () {
+    createDataArray(2, 2);
+
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      width: 400,
+      scrollH: 'auto'
+    });
+    wt.draw();
+
+    var bar = $table.parents('.wtHolder').find('.dragdealer.horizontal');
+    expect(bar.css('display')).toBe('none');
+
+    createDataArray(2, 10);
+    wt.draw();
+    expect(bar.css('display')).toBe('block');
+  });
+
+  it("should show/hide horizontal scrollbar when scrollH is 'auto' column count changes", function () {
+    createDataArray(2, 10);
+
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      width: 400,
+      scrollH: 'auto'
+    });
+    wt.draw();
+
+    var bar = $table.parents('.wtHolder').find('.dragdealer.horizontal');
+    expect(bar.css('display')).toBe('block');
+
+    createDataArray(2, 2);
+    wt.draw();
+    expect(bar.css('display')).toBe('none');
+  });
+
   it("should NOT show horizontal scrollbar when scrollH is 'none' and table fits horizontally", function () {
     createDataArray(2, 2);
 
@@ -254,7 +296,7 @@ describe('WalkontableScrollbar', function () {
     expect(bar.css('display')).toBe('block');
   });
 
-  it("should show vertical scrollbar when scrollH is 'scroll' and table DOES NOT fit vertically", function () {
+  it("should show vertical scrollbar when scrollV is 'scroll' and table DOES NOT fit vertically", function () {
     createDataArray(20, 2);
 
     var wt = new Walkontable({
@@ -271,7 +313,7 @@ describe('WalkontableScrollbar', function () {
     expect(bar.css('display')).toBe('block');
   });
 
-  it("should NOT show vertical scrollbar when scrollH is 'auto' and table fits vertically", function () {
+  it("should NOT show vertical scrollbar when scrollV is 'auto' and table fits vertically", function () {
     createDataArray(2, 2);
 
     var wt = new Walkontable({
@@ -288,7 +330,7 @@ describe('WalkontableScrollbar', function () {
     expect(bar.css('display')).toBe('none');
   });
 
-  it("should show vertical scrollbar when scrollH is 'auto' and table DOES NOT fit vertically", function () {
+  it("should show vertical scrollbar when scrollV is 'auto' and table DOES NOT fit vertically", function () {
     createDataArray(20, 2);
 
     var wt = new Walkontable({
@@ -305,7 +347,49 @@ describe('WalkontableScrollbar', function () {
     expect(bar.css('display')).toBe('block');
   });
 
-  it("should NOT show vertical scrollbar when scrollH is 'none' and table fits vertically", function () {
+  it("should hide/show vertical scrollbar when scrollV is 'auto' column count changes", function () {
+    createDataArray(2, 2);
+
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      height: 400,
+      scrollV: 'auto'
+    });
+    wt.draw();
+
+    var bar = $table.parents('.wtHolder').find('.dragdealer.vertical');
+    expect(bar.css('display')).toBe('none');
+
+    createDataArray(20, 2);
+    wt.draw();
+    expect(bar.css('display')).toBe('block');
+  });
+
+  it("should show/hide vertical scrollbar when scrollV is 'auto' column count changes", function () {
+    createDataArray(20, 2);
+
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      height: 400,
+      scrollV: 'auto'
+    });
+    wt.draw();
+
+    var bar = $table.parents('.wtHolder').find('.dragdealer.vertical');
+    expect(bar.css('display')).toBe('block');
+
+    createDataArray(2, 2);
+    wt.draw();
+    expect(bar.css('display')).toBe('none');
+  });
+
+  it("should NOT show vertical scrollbar when scrollV is 'none' and table fits vertically", function () {
     createDataArray(2, 2);
 
     var wt = new Walkontable({
@@ -322,7 +406,7 @@ describe('WalkontableScrollbar', function () {
     expect(bar.css('display')).toBe('none');
   });
 
-  it("should NOT show vertical scrollbar when scrollH is 'none' and table DOES NOT fit vertically", function () {
+  it("should NOT show vertical scrollbar when scrollV is 'none' and table DOES NOT fit vertically", function () {
     createDataArray(20, 2);
 
     var wt = new Walkontable({
