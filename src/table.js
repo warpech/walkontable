@@ -126,7 +126,7 @@ WalkontableTable.prototype.refreshStretching = function () {
   if (stretchH === 'all' || stretchH === 'last') {
     var containerWidth = this.instance.getSetting('width') - 9;
 
-    var domWidth = $(this.instance.wtTable.TABLE).width();
+    var domWidth = $(this.instance.wtTable.TABLE).outerWidth();
     var diff = containerWidth - domWidth;
     if (diff > 0) {
       var widths = [];
@@ -142,12 +142,26 @@ WalkontableTable.prototype.refreshStretching = function () {
 
         if (widthSum) {
           if (stretchH === 'all') {
+            var newWidth;
+            var remainingDiff = diff;
             var ratio = diff / widthSum;
 
             for (c = 0; c < displayTds; c++) {
               if (widths[c]) {
-                this.instance.wtTable.COLGROUP.childNodes[c + frozenColumnsCount].style.width = widths[c] + Math.round(ratio * widths[c]) + 'px';
+                if (c === displayTds - 1) {
+                  newWidth = widths[c] + remainingDiff;
+                }
+                else {
+                  newWidth = widths[c] + Math.round(ratio * widths[c]);
+                  remainingDiff -= Math.round(ratio * widths[c]);
+                }
               }
+              this.instance.wtTable.COLGROUP.childNodes[c + frozenColumnsCount].style.width = newWidth + 'px';
+            }
+          }
+          else {
+            if (widths[widths.length - 1]) {
+              this.instance.wtTable.COLGROUP.lastChild.style.width = widths[widths.length - 1] + diff + 'px';
             }
           }
         }

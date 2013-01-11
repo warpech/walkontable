@@ -638,8 +638,8 @@ describe('WalkontableTable', function () {
     wt.draw();
 
     var wtHider = $table.parents('.wtHider');
-    expect(wtHider.width()).toBe($table.width() - 1);
-    expect(wtHider.find('col:eq(1)').width()).toBe(wtHider.find('col:eq(2)').width());
+    expect(wtHider.outerWidth()).toBe($table.outerWidth());
+    expect(wtHider.find('col:eq(1)').width()).toBe(wtHider.find('col:eq(2)').width() - 1); //first is 106, last is 107 due to remaining part
   });
 
   it("should strech last visible column when stretchH equals 'last'", function () {
@@ -662,7 +662,7 @@ describe('WalkontableTable', function () {
     wt.draw();
 
     var wtHider = $table.parents('.wtHider');
-    expect(wtHider.width()).toBe($table.width());
+    expect(wtHider.outerWidth()).toBe($table.outerWidth());
     expect(wtHider.find('col:eq(1)').width()).toBeLessThan(wtHider.find('col:eq(2)').width());
   });
 
