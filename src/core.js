@@ -10,6 +10,7 @@ function Walkontable(settings) {
     async: false,
     scrollH: 'auto', //values: scroll (always show scrollbar), auto (show scrollbar if table does not fit in the container), none (never show scrollbar)
     scrollV: 'auto', //values: see above
+    stretchH: 'last', //values: all, last, none
 
     //data source
     data: void 0,
@@ -32,7 +33,7 @@ function Walkontable(settings) {
         TD.innerHTML = '';
       }
     },
-    columnWidth: null,
+    columnWidth: 50,
     selections: null,
 
     //callbacks

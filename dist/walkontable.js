@@ -1,7 +1,7 @@
 /**
  * walkontable 0.1
  * 
- * Date: Thu Jan 10 2013 00:13:47 GMT+0100 (Central European Standard Time)
+ * Date: Fri Jan 11 2013 10:29:17 GMT+0100 (Central European Standard Time)
 */
 
 function WalkontableBorder(instance, settings) {
@@ -195,6 +195,7 @@ function Walkontable(settings) {
     async: false,
     scrollH: 'auto', //values: scroll (always show scrollbar), auto (show scrollbar if table does not fit in the container), none (never show scrollbar)
     scrollV: 'auto', //values: see above
+    stretchH: 'last', //values: all, last, none
 
     //data source
     data: void 0,
@@ -217,7 +218,7 @@ function Walkontable(settings) {
         TD.innerHTML = '';
       }
     },
-    columnWidth: null,
+    columnWidth: 50,
     selections: null,
 
     //callbacks
@@ -708,6 +709,7 @@ WalkontableScroll.prototype.refreshScrollbars = function () {
   this.wtScrollbarV.refresh();
   this.wtScrollbarH.refresh();
   this.instance.wtTable.refreshHiderDimensions();
+  this.instance.wtTable.refreshStretching();
 };
 
 WalkontableScroll.prototype.scrollVertical = function (delta) {
@@ -1301,6 +1303,48 @@ WalkontableTable.prototype.refreshHiderDimensions = function () {
   }
   else {
     this.hider.style.width = this.instance.getSetting('width') + 'px';
+  }
+};
+
+WalkontableTable.prototype.refreshStretching = function () {
+  var stretchH = this.instance.getSetting('stretchH')
+    , totalColumns = this.instance.getSetting('totalColumns')
+    , displayColumns = this.instance.getSetting('displayColumns')
+    , displayTds = Math.min(displayColumns, totalColumns)
+    , offsetColumn = this.instance.getSetting('offsetColumn')
+    , frozenColumns = this.instance.getSetting('frozenColumns')
+    , frozenColumnsCount = frozenColumns ? frozenColumns.length : 0;
+
+  if (stretchH === 'all' || stretchH === 'last') {
+    var containerWidth = this.instance.getSetting('width') - 9;
+
+    var domWidth = $(this.instance.wtTable.TABLE).width();
+    var diff = containerWidth - domWidth;
+    if (diff > 0) {
+      var widths = [];
+      var widthSum = 0;
+      if (this.instance.hasSetting('columnWidth')) {
+        for (var c = 0; c < displayTds; c++) {
+          if (this.instance.wtTable.TBODY.firstChild) {
+            widths.push($(this.instance.wtTable.TBODY.firstChild.childNodes[c + frozenColumnsCount]).outerWidth()); //this is needed until td contents are clipped to be exactly the width of "columnWidth"
+          }
+          //widths.push(this.instance.getSetting('columnWidth', offsetColumn + c));
+          widthSum += widths[c];
+        }
+
+        if (widthSum) {
+          if (stretchH === 'all') {
+            var ratio = diff / widthSum;
+
+            for (c = 0; c < displayTds; c++) {
+              if (widths[c]) {
+                this.instance.wtTable.COLGROUP.childNodes[c + frozenColumnsCount].style.width = widths[c] + Math.round(ratio * widths[c]) + 'px';
+              }
+            }
+          }
+        }
+      }
+    }
   }
 };
 

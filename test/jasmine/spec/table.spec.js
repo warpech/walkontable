@@ -614,4 +614,79 @@ describe('WalkontableTable', function () {
     wt.draw(true);
     expect(count).toBeGreaterThan(oldCount);
   });
+
+  /**
+   * stretchH
+   */
+  it("should strech all visible columns when stretchH equals 'all'", function () {
+    createDataArray(20, 2);
+
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      width: 300,
+      height: 200,
+      scrollH: 'scroll',
+      scrollV: 'scroll',
+      stretchH: 'all',
+      frozenColumns: [
+        "Col"
+      ]
+    });
+    wt.draw();
+
+    var wtHider = $table.parents('.wtHider');
+    expect(wtHider.width()).toBe($table.width() - 1);
+    expect(wtHider.find('col:eq(1)').width()).toBe(wtHider.find('col:eq(2)').width());
+  });
+
+  it("should strech last visible column when stretchH equals 'last'", function () {
+    createDataArray(20, 2);
+
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      width: 300,
+      height: 200,
+      scrollH: 'scroll',
+      scrollV: 'scroll',
+      stretchH: 'last',
+      frozenColumns: [
+        "Col"
+      ]
+    });
+    wt.draw();
+
+    var wtHider = $table.parents('.wtHider');
+    expect(wtHider.width()).toBe($table.width());
+    expect(wtHider.find('col:eq(1)').width()).toBeLessThan(wtHider.find('col:eq(2)').width());
+  });
+
+  it("should not strech when stretchH equals 'none'", function () {
+    createDataArray(20, 2);
+
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      width: 300,
+      height: 200,
+      scrollH: 'scroll',
+      scrollV: 'scroll',
+      stretchH: 'none',
+      frozenColumns: [
+        "Col"
+      ]
+    });
+    wt.draw();
+
+    var wtHider = $table.parents('.wtHider');
+    expect(wtHider.width()).toBeGreaterThan($table.width());
+    expect(wtHider.find('col:eq(1)').width()).toBe(wtHider.find('col:eq(2)').width());
+  });
 });
