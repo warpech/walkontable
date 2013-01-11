@@ -89,20 +89,28 @@ function WalkontableTable(instance) {
 }
 
 WalkontableTable.prototype.refreshHiderDimensions = function () {
-  if (this.instance.hasSetting('width') || this.instance.hasSetting('height')) {
+  var height = this.instance.getSetting('height');
+  var width = this.instance.getSetting('width');
+
+  if (height || width) {
     this.hider.style.overflow = 'hidden';
   }
-  if (this.instance.wtScroll.wtScrollbarH.visible) {
-    this.hider.style.height = this.instance.getSetting('height') - this.instance.getSetting('scrollbarHeight') + 'px';
+
+  if (height) {
+    if (this.instance.wtScroll.wtScrollbarH.visible) {
+      this.hider.style.height = height - this.instance.getSetting('scrollbarHeight') + 'px';
+    }
+    else {
+      this.hider.style.height = height + 'px';
+    }
   }
-  else {
-    this.hider.style.height = this.instance.getSetting('height') + 'px';
-  }
-  if (this.instance.wtScroll.wtScrollbarV.visible) {
-    this.hider.style.width = this.instance.getSetting('width') - this.instance.getSetting('scrollbarWidth') + 'px';
-  }
-  else {
-    this.hider.style.width = this.instance.getSetting('width') + 'px';
+  if (width) {
+    if (this.instance.wtScroll.wtScrollbarV.visible) {
+      this.hider.style.width = width - this.instance.getSetting('scrollbarWidth') + 'px';
+    }
+    else {
+      this.hider.style.width = width + 'px';
+    }
   }
 };
 
