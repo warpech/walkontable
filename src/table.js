@@ -124,7 +124,10 @@ WalkontableTable.prototype.refreshStretching = function () {
     , frozenColumnsCount = frozenColumns ? frozenColumns.length : 0;
 
   if (stretchH === 'all' || stretchH === 'last') {
-    var containerWidth = this.instance.getSetting('width') - 9;
+    var containerWidth = this.instance.getSetting('width');
+    if (this.instance.wtScroll.wtScrollbarV.visible) {
+      containerWidth -= this.instance.getSetting('scrollbarWidth');
+    }
 
     var domWidth = $(this.instance.wtTable.TABLE).outerWidth();
     var diff = containerWidth - domWidth;

@@ -666,6 +666,30 @@ describe('WalkontableTable', function () {
     expect(wtHider.find('col:eq(1)').width()).toBeLessThan(wtHider.find('col:eq(2)').width());
   });
 
+  it("should strech last visible column when stretchH equals 'last' (and no vertical scroll)", function () {
+    createDataArray(2, 2);
+
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      width: 300,
+      height: 200,
+      scrollH: 'auto',
+      scrollV: 'auto',
+      stretchH: 'last',
+      frozenColumns: [
+        "Col"
+      ]
+    });
+    wt.draw();
+
+    var wtHider = $table.parents('.wtHider');
+    expect(wtHider.outerWidth()).toBe($table.outerWidth());
+    expect(wtHider.find('col:eq(1)').width()).toBeLessThan(wtHider.find('col:eq(2)').width());
+  });
+
   it("should not strech when stretchH equals 'none'", function () {
     createDataArray(20, 2);
 

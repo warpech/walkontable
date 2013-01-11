@@ -1,7 +1,7 @@
 /**
  * walkontable 0.1
  * 
- * Date: Fri Jan 11 2013 11:01:02 GMT+0100 (Central European Standard Time)
+ * Date: Fri Jan 11 2013 11:44:27 GMT+0100 (Central European Standard Time)
 */
 
 function WalkontableBorder(instance, settings) {
@@ -1324,7 +1324,10 @@ WalkontableTable.prototype.refreshStretching = function () {
     , frozenColumnsCount = frozenColumns ? frozenColumns.length : 0;
 
   if (stretchH === 'all' || stretchH === 'last') {
-    var containerWidth = this.instance.getSetting('width') - 9;
+    var containerWidth = this.instance.getSetting('width');
+    if (this.instance.wtScroll.wtScrollbarV.visible) {
+      containerWidth -= this.instance.getSetting('scrollbarWidth');
+    }
 
     var domWidth = $(this.instance.wtTable.TABLE).outerWidth();
     var diff = containerWidth - domWidth;
