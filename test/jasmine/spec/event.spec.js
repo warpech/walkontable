@@ -133,7 +133,9 @@ describe('WalkontableEvent', function () {
         offsetColumn: 2,
         displayRows: 10,
         displayColumns: 2,
-        columnHeaders: 'Col',
+        columnHeaders: function (col, TH) {
+          TH.innerHTML = col + 1;
+        },
         onCellMouseDown: function (event, coords, TD) {
           called = true
         }
@@ -156,7 +158,9 @@ describe('WalkontableEvent', function () {
         offsetColumn: 2,
         displayRows: 10,
         displayColumns: 2,
-        columnHeaders: 'Col',
+        columnHeaders: function (col, TH) {
+          TH.innerHTML = col + 1;
+        },
         onCellMouseOver: function (event, coords, TD) {
           called = true
         }
@@ -179,7 +183,9 @@ describe('WalkontableEvent', function () {
         offsetColumn: 2,
         displayRows: 10,
         displayColumns: 2,
-        columnHeaders: 'Col',
+        columnHeaders: function (col, TH) {
+          TH.innerHTML = col + 1;
+        },
         onCellDblClick: function (event, coords, TD) {
           called = true
         }

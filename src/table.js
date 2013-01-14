@@ -332,7 +332,7 @@ WalkontableTable.prototype._doDraw = function () {
 
   if (this.instance.hasSetting('columnHeaders')) {
     for (c = 0; c < displayTds; c++) {
-      this.THEAD.childNodes[0].childNodes[frozenColumnsCount + c].innerHTML = this.instance.getSetting('columnHeaders', offsetColumn + c);
+      this.instance.getSetting('columnHeaders', offsetColumn + c, this.THEAD.childNodes[0].childNodes[frozenColumnsCount + c]);
     }
   }
 

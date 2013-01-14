@@ -43,7 +43,9 @@ describe('WalkontableScroll', function () {
       offsetColumn: 0,
       displayRows: 10,
       displayColumns: 2,
-      columnHeaders: plusOne,
+      columnHeaders: function (col, TH) {
+        TH.innerHTML = plusOne(col);
+      },
       frozenColumns: [plusOne]
     });
     wt.scrollHorizontal(999).draw();

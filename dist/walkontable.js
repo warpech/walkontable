@@ -1,7 +1,7 @@
 /**
  * walkontable 0.1
  * 
- * Date: Tue Jan 15 2013 00:13:23 GMT+0100 (Central European Standard Time)
+ * Date: Tue Jan 15 2013 00:22:31 GMT+0100 (Central European Standard Time)
 */
 
 function WalkontableBorder(instance, settings) {
@@ -204,7 +204,7 @@ function Walkontable(settings) {
     offsetRow: 0,
     offsetColumn: 0,
     frozenColumns: null,
-    columnHeaders: false,
+    columnHeaders: null, //this must be a function in format: function (col, TH) {}
     totalRows: void 0,
     totalColumns: void 0,
     width: null,
@@ -264,8 +264,8 @@ function Walkontable(settings) {
       originalHeaders.push(this.wtTable.THEAD.childNodes[0].childNodes[c].innerHTML);
     }
     if (!this.hasSetting('columnHeaders')) {
-      this.settings.columnHeaders = function (column) {
-        return originalHeaders[column];
+      this.settings.columnHeaders = function (column, TH) {
+        TH.innerHTML = originalHeaders[column];
       }
     }
   }
@@ -1548,7 +1548,7 @@ WalkontableTable.prototype._doDraw = function () {
 
   if (this.instance.hasSetting('columnHeaders')) {
     for (c = 0; c < displayTds; c++) {
-      this.THEAD.childNodes[0].childNodes[frozenColumnsCount + c].innerHTML = this.instance.getSetting('columnHeaders', offsetColumn + c);
+      this.instance.getSetting('columnHeaders', offsetColumn + c, this.THEAD.childNodes[0].childNodes[frozenColumnsCount + c]);
     }
   }
 

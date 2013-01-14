@@ -19,7 +19,7 @@ function Walkontable(settings) {
     offsetRow: 0,
     offsetColumn: 0,
     frozenColumns: null,
-    columnHeaders: false,
+    columnHeaders: null, //this must be a function in format: function (col, TH) {}
     totalRows: void 0,
     totalColumns: void 0,
     width: null,
@@ -79,8 +79,8 @@ function Walkontable(settings) {
       originalHeaders.push(this.wtTable.THEAD.childNodes[0].childNodes[c].innerHTML);
     }
     if (!this.hasSetting('columnHeaders')) {
-      this.settings.columnHeaders = function (column) {
-        return originalHeaders[column];
+      this.settings.columnHeaders = function (column, TH) {
+        TH.innerHTML = originalHeaders[column];
       }
     }
   }
