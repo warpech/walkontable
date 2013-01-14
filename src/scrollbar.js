@@ -88,10 +88,12 @@ WalkontableScrollbar.prototype.refresh = function () {
     , viewportColumns = Math.min(this.instance.getSetting('viewportColumns'), totalColumns);
 
   if (!tableWidth) {
-    throw new Error("I could not compute table width. Is the <table> element attached to the DOM?");
+    //throw new Error("I could not compute table width. Is the <table> element attached to the DOM?");
+    return;
   }
   if (!tableHeight) {
-    throw new Error("I could not compute table height. Is the <table> element attached to the DOM?");
+    //throw new Error("I could not compute table height. Is the <table> element attached to the DOM?");
+    return;
   }
 
   tableWidth -= this.instance.getSetting('scrollbarWidth');
