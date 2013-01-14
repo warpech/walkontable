@@ -1,7 +1,7 @@
 /**
  * walkontable 0.1
  * 
- * Date: Mon Jan 14 2013 21:24:19 GMT+0100 (Central European Standard Time)
+ * Date: Mon Jan 14 2013 21:27:27 GMT+0100 (Central European Standard Time)
 */
 
 function WalkontableBorder(instance, settings) {
@@ -1632,11 +1632,13 @@ WalkontableTable.prototype.isCellVisible = function (TD) {
   var tableOffset = this.tableOffset;
   var innerOffsetTop = cellOffset.top - tableOffset.top;
   var innerOffsetLeft = cellOffset.left - tableOffset.left;
-  var width = $(TD).outerWidth();
-  var height = $(TD).outerHeight();
+  var $td = $(TD);
+  var width = $td.outerWidth();
+  var height = $td.outerHeight();
 
-  var tableWidth = this.instance.hasSetting('width') ? this.instance.getSetting('width') : $(this.TABLE).outerWidth()
-    , tableHeight = this.instance.hasSetting('height') ? this.instance.getSetting('height') : $(this.TABLE).outerHeight();
+  var $table = $(this.TABLE);
+  var tableWidth = this.instance.hasSetting('width') ? this.instance.getSetting('width') : $table.outerWidth()
+    , tableHeight = this.instance.hasSetting('height') ? this.instance.getSetting('height') : $table.outerHeight();
 
   if (this.instance.wtScroll.wtScrollbarV.visible) {
     tableHeight -= this.instance.getSetting('scrollbarHeight');
