@@ -11,6 +11,7 @@ function WalkontableScrollbar(instance, type) {
   this.slider.style.position = 'absolute';
   this.slider.style.top = '0';
   this.slider.style.left = '0';
+  this.slider.style.display = 'none';
   this.slider.className = 'dragdealer ' + type;
 
   this.handle = document.createElement('DIV');
