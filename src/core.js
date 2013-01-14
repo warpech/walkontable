@@ -11,6 +11,8 @@ function Walkontable(settings) {
     scrollH: 'auto', //values: scroll (always show scrollbar), auto (show scrollbar if table does not fit in the container), none (never show scrollbar)
     scrollV: 'auto', //values: see above
     stretchH: 'last', //values: all, last, none
+    currentRowClassName: null,
+    currentColumnClassName: null,
 
     //data source
     data: void 0,
