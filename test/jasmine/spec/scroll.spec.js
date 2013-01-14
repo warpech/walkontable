@@ -44,7 +44,7 @@ describe('WalkontableScroll', function () {
       displayRows: 10,
       displayColumns: 2,
       columnHeaders: plusOne,
-      rowHeaders: plusOne
+      frozenColumns: [plusOne]
     });
     wt.scrollHorizontal(999).draw();
     expect($table.find('tbody tr:eq(0) td:last')[0].innerHTML).toBe('c');
@@ -199,7 +199,9 @@ describe('WalkontableScroll', function () {
       offsetColumn: 2,
       displayRows: 10,
       displayColumns: 2,
-      rowHeaders: "Row"
+      frozenColumns: [function (row) {
+        return row + 1;
+      }]
     });
     wt.scrollViewport([0, 1]).draw();
     expect(wt.wtTable.getCoords($table.find('tbody tr:first td:first')[0])).toEqual([0, 1]);
@@ -215,7 +217,9 @@ describe('WalkontableScroll', function () {
       offsetColumn: 0,
       displayRows: 10,
       displayColumns: 2,
-      rowHeaders: "Row"
+      frozenColumns: [function (row) {
+        return row + 1;
+      }]
     });
     wt.scrollViewport([0, 2]).draw();
     expect(wt.wtTable.getCoords($table.find('tbody tr:first td:last')[0])).toEqual([0, 2]);

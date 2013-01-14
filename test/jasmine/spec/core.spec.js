@@ -77,8 +77,7 @@ describe('Walkontable', function () {
       offsetColumn: 0,
       displayRows: 10,
       displayColumns: 4,
-      columnHeaders: false,
-      rowHeaders: false
+      columnHeaders: false
     });
     wt.draw();
     expect($table.find('td').length).toBe(40);

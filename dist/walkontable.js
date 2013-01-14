@@ -1,7 +1,7 @@
 /**
  * walkontable 0.1
  * 
- * Date: Mon Jan 14 2013 21:27:27 GMT+0100 (Central European Standard Time)
+ * Date: Tue Jan 15 2013 00:13:23 GMT+0100 (Central European Standard Time)
 */
 
 function WalkontableBorder(instance, settings) {
@@ -370,7 +370,7 @@ Walkontable.prototype.getSetting = function (key, param1, param2, param3) {
     return this.getSetting('totalRows');
   }
   else if (key === 'displayColumns' && this.settings['displayColumns'] === null) {
-    return this.settings['rowHeaders'] ? this.getSetting('totalColumns') + 1 : this.getSetting('totalColumns');
+    return this.getSetting('totalColumns');
   }
   else if (key === 'viewportRows') {
     if (this.wtTable.visibilityEdgeRow) {

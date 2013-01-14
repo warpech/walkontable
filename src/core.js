@@ -185,7 +185,7 @@ Walkontable.prototype.getSetting = function (key, param1, param2, param3) {
     return this.getSetting('totalRows');
   }
   else if (key === 'displayColumns' && this.settings['displayColumns'] === null) {
-    return this.settings['rowHeaders'] ? this.getSetting('totalColumns') + 1 : this.getSetting('totalColumns');
+    return this.getSetting('totalColumns');
   }
   else if (key === 'viewportRows') {
     if (this.wtTable.visibilityEdgeRow) {
