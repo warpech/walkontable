@@ -22,8 +22,8 @@ describe('WalkontableSelection', function () {
       totalColumns: getTotalColumns,
       offsetRow: 0,
       offsetColumn: 0,
-      displayRows: 10,
-      displayColumns: 2,
+      height: 200,
+      width: 100,
       selections: {
         current: {
           className: 'current'
@@ -55,8 +55,8 @@ describe('WalkontableSelection', function () {
       totalColumns: getTotalColumns,
       offsetRow: 0,
       offsetColumn: 0,
-      displayRows: 10,
-      displayColumns: 2,
+      height: 200,
+      width: 100,
       selections: {
         current: {
           className: 'current'
@@ -81,8 +81,8 @@ describe('WalkontableSelection', function () {
       totalColumns: getTotalColumns,
       offsetRow: 0,
       offsetColumn: 0,
-      displayRows: 10,
-      displayColumns: 2,
+      height: 200,
+      width: 100,
       selections: {
         current: {
           border: {
@@ -114,52 +114,7 @@ describe('WalkontableSelection', function () {
     expect(pos2.left).toBeGreaterThan(pos1.left);
   });
 
-  it("should move the selection when table is scrolled", function () {
-    var wt = new Walkontable({
-      table: $table[0],
-      data: getData,
-      totalRows: getTotalRows,
-      totalColumns: getTotalColumns,
-      offsetRow: 0,
-      offsetColumn: 0,
-      displayRows: 10,
-      displayColumns: 3,
-      selections: {
-        current: {
-          className: 'current',
-          border: {
-            width: 1,
-            color: 'red',
-            style: 'solid'
-          }
-        }
-      },
-      onCellMouseDown: function (event, coords, TD) {
-        wt.selections.current.clear();
-        wt.selections.current.add(coords);
-        wt.draw();
-      }
-    });
-    wt.draw();
-
-    var $td1 = $table.find('tbody tr:eq(2) td:eq(1)');
-    var $top = $(wt.selections.current.border.top);
-    $td1.mousedown();
-    var pos1 = $top.position();
-
-    wt.update({
-      offsetRow: 1,
-      offsetColumn: 1
-    });
-    wt.draw();
-
-    var pos2 = $top.position();
-    expect(pos2.top).toBeLessThan(pos1.top);
-    expect(pos2.left).toBeLessThan(pos1.left);
-    expect($table.find('td.current').length).toBe(1);
-  });
-
-  it("should move the selection when table is scrolled vertically (table with height instead of displayRows)", function () {
+  it("should move the selection when table is scrolled vertically", function () {
     var wt = new Walkontable({
       table: $table[0],
       data: getData,
@@ -202,7 +157,7 @@ describe('WalkontableSelection', function () {
     expect($table.find('td.current').length).toBe(0);
   });
 
-  it("should move the selection when table is scrolled horizontally (table with height instead of displayRows)", function () {
+  it("should move the selection when table is scrolled horizontally", function () {
     var wt = new Walkontable({
       table: $table[0],
       data: getData,
@@ -253,8 +208,8 @@ describe('WalkontableSelection', function () {
       totalColumns: getTotalColumns,
       offsetRow: 0,
       offsetColumn: 0,
-      displayRows: 10,
-      displayColumns: 3,
+      height: 200,
+      width: 150,
       selections: {
         current: {
           border: {
@@ -279,8 +234,8 @@ describe('WalkontableSelection', function () {
       totalColumns: getTotalColumns,
       offsetRow: 0,
       offsetColumn: 0,
-      displayRows: 10,
-      displayColumns: 3,
+      height: 200,
+      width: 150,
       selections: {
         current: {
           border: {
@@ -307,8 +262,8 @@ describe('WalkontableSelection', function () {
       totalColumns: getTotalColumns,
       offsetRow: 0,
       offsetColumn: 0,
-      displayRows: 10,
-      displayColumns: 3,
+      height: 200,
+      width: 150,
       selections: {
         current: {
           border: {

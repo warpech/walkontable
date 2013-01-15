@@ -22,8 +22,8 @@ describe('WalkontableScroll', function () {
       totalColumns: getTotalColumns,
       offsetRow: 0,
       offsetColumn: 0,
-      displayRows: 10,
-      displayColumns: 2
+      height: 200,
+      width: 100
     });
     wt.scrollHorizontal(999).draw();
     expect($table.find('tbody tr:eq(0) td:last')[0].innerHTML).toBe('c');
@@ -41,8 +41,8 @@ describe('WalkontableScroll', function () {
       totalColumns: getTotalColumns,
       offsetRow: 0,
       offsetColumn: 0,
-      displayRows: 10,
-      displayColumns: 2,
+      height: 200,
+      width: 100,
       columnHeaders: function (col, TH) {
         TH.innerHTML = plusOne(col);
       },
@@ -52,7 +52,7 @@ describe('WalkontableScroll', function () {
     expect($table.find('tbody tr:eq(0) td:last')[0].innerHTML).toBe('c');
   });
 
-  it("scroll vertical should take totalRows if it is smaller than displayRows", function () {
+  it("scroll vertical should take totalRows if it is smaller than height", function () {
     this.data.splice(5, this.data.length - 5);
 
     var wt = new Walkontable({
@@ -62,14 +62,14 @@ describe('WalkontableScroll', function () {
       totalColumns: getTotalColumns,
       offsetRow: 0,
       offsetColumn: 0,
-      displayRows: 10,
-      displayColumns: 2
+      height: 200,
+      width: 100
     });
     wt.scrollVertical(999).draw();
     expect(wt.wtTable.getCoords($table.find('tbody tr:eq(0) td:eq(0)')[0])).toEqual([0, 0]);
   });
 
-  it("scroll horizontal should take totalColumns if it is smaller than displayColumns", function () {
+  it("scroll horizontal should take totalColumns if it is smaller than width", function () {
     var wt = new Walkontable({
       table: $table[0],
       data: getData,
@@ -77,8 +77,8 @@ describe('WalkontableScroll', function () {
       totalColumns: getTotalColumns,
       offsetRow: 0,
       offsetColumn: 0,
-      displayRows: 10,
-      displayColumns: 10
+      height: 200,
+      width: 500
     });
     wt.scrollHorizontal(999).draw();
     expect(wt.wtTable.getCoords($table.find('tbody tr:eq(0) td:eq(0)')[0])).toEqual([0, 0]);
@@ -92,8 +92,8 @@ describe('WalkontableScroll', function () {
       totalColumns: getTotalColumns,
       offsetRow: 0,
       offsetColumn: 0,
-      displayRows: 10,
-      displayColumns: 2
+      height: 200,
+      width: 100
     });
     wt.scrollVertical(-1).draw();
     expect(wt.wtTable.getCoords($table.find('tbody tr:first td:first')[0])).toEqual([0, 0]);
@@ -109,8 +109,8 @@ describe('WalkontableScroll', function () {
       totalColumns: getTotalColumns,
       offsetRow: 0,
       offsetColumn: 0,
-      displayRows: 10,
-      displayColumns: 2
+      height: 200,
+      width: 100
     });
     wt.scrollVertical(999).draw();
     expect(wt.wtTable.getCoords($table.find('tbody tr:last td:first')[0])).toEqual([19, 0]);
@@ -124,8 +124,8 @@ describe('WalkontableScroll', function () {
       totalColumns: getTotalColumns,
       offsetRow: 0,
       offsetColumn: 0,
-      displayRows: 10,
-      displayColumns: 2
+      height: 200,
+      width: 100
     });
     wt.scrollHorizontal(-1).draw();
     expect(wt.wtTable.getCoords($table.find('tbody tr:first td:first')[0])).toEqual([0, 0]);
@@ -139,8 +139,8 @@ describe('WalkontableScroll', function () {
       totalColumns: getTotalColumns,
       offsetRow: 0,
       offsetColumn: 0,
-      displayRows: 10,
-      displayColumns: 2
+      height: 200,
+      width: 100
     });
     wt.scrollHorizontal(999).draw();
     expect(wt.wtTable.getCoords($table.find('tbody tr:first td:last')[0])).toEqual([0, 3]);
@@ -154,8 +154,8 @@ describe('WalkontableScroll', function () {
       totalColumns: getTotalColumns,
       offsetRow: 0,
       offsetColumn: 0,
-      displayRows: 10,
-      displayColumns: 2
+      height: 200,
+      width: 100
     });
     wt.scrollViewport([0, 1]).draw();
     expect(wt.wtTable.getCoords($table.find('tbody tr:first td:last')[0])).toEqual([0, 1]);
@@ -169,8 +169,8 @@ describe('WalkontableScroll', function () {
       totalColumns: getTotalColumns,
       offsetRow: 0,
       offsetColumn: 2,
-      displayRows: 10,
-      displayColumns: 2
+      height: 200,
+      width: 100
     });
     wt.scrollViewport([0, 1]).draw();
     expect(wt.wtTable.getCoords($table.find('tbody tr:first td:first')[0])).toEqual([0, 1]);
@@ -184,8 +184,8 @@ describe('WalkontableScroll', function () {
       totalColumns: getTotalColumns,
       offsetRow: 0,
       offsetColumn: 0,
-      displayRows: 10,
-      displayColumns: 2
+      height: 200,
+      width: 100
     });
     wt.scrollViewport([0, 2]).draw();
     expect(wt.wtTable.getCoords($table.find('tbody tr:first td:last')[0])).toEqual([0, 2]);
@@ -199,8 +199,8 @@ describe('WalkontableScroll', function () {
       totalColumns: getTotalColumns,
       offsetRow: 0,
       offsetColumn: 2,
-      displayRows: 10,
-      displayColumns: 2,
+      height: 200,
+      width: 100,
       frozenColumns: [function (row) {
         return row + 1;
       }]
@@ -217,8 +217,8 @@ describe('WalkontableScroll', function () {
       totalColumns: getTotalColumns,
       offsetRow: 0,
       offsetColumn: 0,
-      displayRows: 10,
-      displayColumns: 2,
+      height: 200,
+      width: 100,
       frozenColumns: [function (row) {
         return row + 1;
       }]
@@ -235,8 +235,8 @@ describe('WalkontableScroll', function () {
       totalColumns: getTotalColumns,
       offsetRow: 0,
       offsetColumn: 0,
-      displayRows: 10,
-      displayColumns: 2
+      height: 200,
+      width: 100
     });
     wt.scrollViewport([12, 0]).draw();
     expect(wt.wtTable.getCoords($table.find('tbody tr:last td:first')[0])).toEqual([12, 0]);
@@ -250,8 +250,8 @@ describe('WalkontableScroll', function () {
       totalColumns: getTotalColumns,
       offsetRow: 20,
       offsetColumn: 2,
-      displayRows: 10,
-      displayColumns: 2
+      height: 200,
+      width: 100
     });
     wt.scrollViewport([12, 0]).draw();
     expect(wt.wtTable.getCoords($table.find('tbody tr:first td:first')[0])).toEqual([12, 0]);
@@ -269,8 +269,8 @@ describe('WalkontableScroll', function () {
         totalColumns: getTotalColumns,
         offsetRow: 0,
         offsetColumn: 0,
-        displayRows: 10,
-        displayColumns: 2
+        height: 200,
+        width: 100
       });
       wt.scrollViewport([40, 0]).draw();
     }
@@ -291,8 +291,8 @@ describe('WalkontableScroll', function () {
         totalColumns: getTotalColumns,
         offsetRow: 0,
         offsetColumn: 0,
-        displayRows: 10,
-        displayColumns: 2
+        height: 200,
+        width: 100
       });
       wt.scrollViewport([0, 40]).draw();
     }
@@ -312,7 +312,7 @@ describe('WalkontableScroll', function () {
       offsetRow: 0,
       offsetColumn: 0,
       height: 200,
-      displayColumns: 2
+      width: 100
     });
     wt.scrollViewport([getTotalRows() - 1, 0]).draw();
     var originalOffsetRow = wt.settings.offsetRow;

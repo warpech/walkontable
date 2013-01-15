@@ -14,21 +14,21 @@ describe('WalkontableTable', function () {
     }
   });
 
-  it("should create as many rows as in `displayRows`", function () {
+  it("should create as many rows as in `height`", function () {
     var wt = new Walkontable({
       table: $table[0],
       data: getData,
       totalRows: getTotalRows,
       totalColumns: getTotalColumns,
       offsetRow: 0,
-      displayRows: 10,
-      displayColumns: 2
+      height: 200,
+      width: 100
     });
     wt.draw();
     expect($table.find('tbody tr').length).toBe(10);
   });
 
-  it("should create as many rows as in `totalRows` if it is smaller than `displayRows`", function () {
+  it("should create as many rows as in `totalRows` if it is smaller than `height`", function () {
     this.data.splice(5, this.data.length - 5);
 
     var wt = new Walkontable({
@@ -37,8 +37,8 @@ describe('WalkontableTable', function () {
       totalRows: getTotalRows,
       totalColumns: getTotalColumns,
       offsetRow: 0,
-      displayRows: 10,
-      displayColumns: 2
+      height: 200,
+      width: 100
     });
     wt.draw();
     expect($table.find('tbody tr').length).toBe(5);
@@ -54,8 +54,8 @@ describe('WalkontableTable', function () {
         TH.innerHTML = col + 1;
       },
       offsetRow: 0,
-      displayRows: 10,
-      displayColumns: 2
+      height: 200,
+      width: 100
     });
     wt.draw();
     expect($table.find('tbody tr:first td').length).toBe($table.find('thead th').length);
@@ -69,8 +69,8 @@ describe('WalkontableTable', function () {
       totalRows: getTotalRows,
       totalColumns: getTotalColumns,
       offsetRow: 0,
-      displayRows: 10,
-      displayColumns: 2,
+      height: 200,
+      width: 100,
       columnHeaders: function (column, TH) {
         TH.innerHTML = headers[column];
       }
@@ -87,8 +87,8 @@ describe('WalkontableTable', function () {
       totalRows: getTotalRows,
       totalColumns: getTotalColumns,
       offsetRow: 0,
-      displayRows: 10,
-      displayColumns: 2,
+      height: 200,
+      width: 100,
       frozenColumns: [function (row) {
         return row + 1;
       }]
@@ -107,8 +107,8 @@ describe('WalkontableTable', function () {
       totalRows: getTotalRows,
       totalColumns: getTotalColumns,
       offsetRow: 0,
-      displayRows: 10,
-      displayColumns: 2,
+      height: 200,
+      width: 100,
       columnHeaders: function (col, TH) {
         TH.innerHTML = 'Column';
       },
@@ -133,8 +133,8 @@ describe('WalkontableTable', function () {
       totalColumns: getTotalColumns,
       offsetRow: 1,
       offsetColumn: 1,
-      displayRows: 10,
-      displayColumns: 2,
+      height: 200,
+      width: 100,
       columnHeaders: function (col, TH) {
         TH.innerHTML = plusOne(col);
       },
@@ -153,8 +153,8 @@ describe('WalkontableTable', function () {
       totalColumns: getTotalColumns,
       offsetRow: 10,
       offsetColumn: 0,
-      displayRows: 10,
-      displayColumns: 2
+      height: 200,
+      width: 100
     });
     wt.draw();
 
@@ -174,8 +174,8 @@ describe('WalkontableTable', function () {
       totalColumns: getTotalColumns,
       offsetRow: 0,
       offsetColumn: 0,
-      displayRows: 10,
-      displayColumns: 2
+      height: 200,
+      width: 100
     });
     wt.draw();
 
@@ -201,8 +201,8 @@ describe('WalkontableTable', function () {
       totalColumns: getTotalColumns,
       offsetRow: 0,
       offsetColumn: 0,
-      displayRows: 10,
-      displayColumns: 2,
+      height: 200,
+      width: 100,
       frozenColumns: [plusOne]
     });
     wt.draw();
@@ -225,8 +225,8 @@ describe('WalkontableTable', function () {
       totalColumns: getTotalColumns,
       offsetRow: 0,
       offsetColumn: 0,
-      displayRows: 10,
-      displayColumns: 2
+      height: 200,
+      width: 100
     });
     wt.draw();
 
@@ -251,8 +251,8 @@ describe('WalkontableTable', function () {
       totalColumns: getTotalColumns,
       offsetRow: 0,
       offsetColumn: 0,
-      displayRows: 10,
-      displayColumns: 2,
+      height: 200,
+      width: 100,
       frozenColumns: [plusOne]
     });
     wt.draw();
@@ -273,8 +273,8 @@ describe('WalkontableTable', function () {
       totalRows: getTotalRows,
       totalColumns: getTotalColumns,
       offsetRow: 0,
-      displayRows: 10,
-      displayColumns: 2,
+      height: 200,
+      width: 100,
       cellRenderer: function (row, column, TD) {
         var cellData = getData(row, column);
         if (cellData !== void 0) {
@@ -300,8 +300,8 @@ describe('WalkontableTable', function () {
       totalRows: getTotalRows,
       totalColumns: getTotalColumns,
       offsetRow: 0,
-      displayRows: 10,
-      displayColumns: 2
+      height: 200,
+      width: 100
     });
     wt.draw();
     expect($table.find('tbody tr').length).toBe(8);
@@ -311,49 +311,49 @@ describe('WalkontableTable', function () {
     expect($table.find('tbody tr').length).toBe(7);
   });
 
-  it("should add columns when displayColumns is increased", function () {
+  it("should add columns when width is increased", function () {
     var wt = new Walkontable({
       table: $table[0],
       data: getData,
       totalRows: getTotalRows,
       totalColumns: getTotalColumns,
       offsetRow: 0,
-      displayRows: 10,
-      displayColumns: 2
+      height: 200,
+      width: 100
     });
     wt.draw();
     expect($table.find('tbody tr:first td').length).toBe(2);
 
-    wt.update('displayColumns', 3).draw();
+    wt.update('width', 150).draw();
     expect($table.find('tbody tr:first td').length).toBe(3);
   });
 
-  it("should remove columns when displayColumns is decreased", function () {
+  it("should remove columns when width is decreased", function () {
     var wt = new Walkontable({
       table: $table[0],
       data: getData,
       totalRows: getTotalRows,
       totalColumns: getTotalColumns,
       offsetRow: 0,
-      displayRows: 10,
-      displayColumns: 3
+      height: 200,
+      width: 150
     });
     wt.draw();
     expect($table.find('tbody tr:first td').length).toBe(3);
 
-    wt.update('displayColumns', 2).draw();
+    wt.update('width', 100).draw();
     expect($table.find('tbody tr:first td').length).toBe(2);
   });
 
-  it("should remove columns when displayColumns is decreased (with column header)", function () {
+  it("should remove columns when width is decreased (with column header)", function () {
     var wt = new Walkontable({
       table: $table[0],
       data: getData,
       totalRows: getTotalRows,
       totalColumns: getTotalColumns,
       offsetRow: 0,
-      displayRows: 10,
-      displayColumns: 3,
+      height: 200,
+      width: 150,
       columnHeaders: function (col, TH) {
         TH.innerHTML = col + 1;
       }
@@ -362,12 +362,12 @@ describe('WalkontableTable', function () {
     expect($table.find('thead tr:first th').length).toBe(3);
     expect($table.find('tbody tr:first td').length).toBe(3);
 
-    wt.update('displayColumns', 2).draw();
+    wt.update('width', 100).draw();
     expect($table.find('thead tr:first th').length).toBe(2);
     expect($table.find('tbody tr:first td').length).toBe(2);
   });
 
-  it("should render all rows if displayRows is null", function () {
+  it("should render all rows if height is null", function () {
     this.data.splice(20, this.data.length - 20); //second param is required by IE7-8
 
     var wt = new Walkontable({
@@ -375,7 +375,7 @@ describe('WalkontableTable', function () {
       data: getData,
       totalRows: getTotalRows,
       totalColumns: getTotalColumns,
-      displayColumns: 4,
+      width: 150,
       offsetRow: 0,
       offsetColumn: 0
     });
@@ -383,13 +383,13 @@ describe('WalkontableTable', function () {
     expect($table.find('tbody tr').length).toBe(20);
   });
 
-  it("should render all columns if displayColumns is null", function () {
+  it("should render all columns if width is null", function () {
     var wt = new Walkontable({
       table: $table[0],
       data: getData,
       totalRows: getTotalRows,
       totalColumns: getTotalColumns,
-      displayRows: 10,
+      height: 200,
       offsetRow: 0,
       offsetColumn: 0,
       columnHeaders: function (col, TH) {
@@ -401,13 +401,13 @@ describe('WalkontableTable', function () {
     expect($table.find('tbody tr:first').children().length).toBe(4);
   });
 
-  it("should render all columns if displayColumns is null (with row header)", function () {
+  it("should render all columns if width is null (with row header)", function () {
     var wt = new Walkontable({
       table: $table[0],
       data: getData,
       totalRows: getTotalRows,
       totalColumns: getTotalColumns,
-      displayRows: 10,
+      height: 200,
       offsetRow: 0,
       offsetColumn: 0,
       frozenColumns: ['Row'],
@@ -426,7 +426,7 @@ describe('WalkontableTable', function () {
       data: getData,
       totalRows: getTotalRows,
       totalColumns: getTotalColumns,
-      displayRows: 10,
+      height: 200,
       offsetRow: 0,
       offsetColumn: 0,
       frozenColumns: ['Row'],
@@ -444,7 +444,7 @@ describe('WalkontableTable', function () {
       data: getData,
       totalRows: getTotalRows,
       totalColumns: getTotalColumns,
-      displayRows: 10,
+      height: 200,
       offsetRow: 0,
       offsetColumn: 0,
       frozenColumns: ['Row'],
@@ -468,7 +468,7 @@ describe('WalkontableTable', function () {
       data: getData,
       totalRows: getTotalRows,
       totalColumns: getTotalColumns,
-      displayRows: 10,
+      height: 200,
       offsetRow: 0,
       offsetColumn: 0,
       frozenColumns: ['Row'],
@@ -490,7 +490,7 @@ describe('WalkontableTable', function () {
       data: getData,
       totalRows: getTotalRows,
       totalColumns: getTotalColumns,
-      displayRows: 10,
+      height: 200,
       offsetRow: 0,
       offsetColumn: 0,
       frozenColumns: ['Row'],
@@ -512,7 +512,7 @@ describe('WalkontableTable', function () {
       data: getData,
       totalRows: getTotalRows,
       totalColumns: getTotalColumns,
-      displayRows: 10,
+      height: 200,
       offsetRow: 0,
       offsetColumn: 0,
       frozenColumns: [

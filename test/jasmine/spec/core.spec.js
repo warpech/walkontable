@@ -21,8 +21,8 @@ describe('Walkontable', function () {
       totalRows: getTotalRows,
       totalColumns: getTotalColumns,
       offsetRow: 0,
-      displayRows: 10,
-      displayColumns: 2
+      height: 200,
+      width: 100
     });
     wt.draw();
     var TDs = $table.find('tbody tr:first td');
@@ -37,8 +37,8 @@ describe('Walkontable', function () {
       totalRows: getTotalRows,
       totalColumns: getTotalColumns,
       offsetRow: 10,
-      displayRows: 10,
-      displayColumns: 2
+      height: 200,
+      width: 100
     });
     wt.draw();
     var TDs = $table.find('tbody tr:first td');
@@ -53,8 +53,8 @@ describe('Walkontable', function () {
       totalRows: getTotalRows,
       totalColumns: getTotalColumns,
       offsetRow: 0,
-      displayRows: 10,
-      displayColumns: 2
+      height: 200,
+      width: 100
     });
     wt.update({offsetRow: 10});
     wt.draw();
@@ -75,8 +75,8 @@ describe('Walkontable', function () {
       totalColumns: getTotalColumns,
       offsetRow: 0,
       offsetColumn: 0,
-      displayRows: 10,
-      displayColumns: 4
+      height: 200,
+      width: 200
     });
     wt.draw();
     expect($table.find('td').length).toBe(40);
@@ -94,7 +94,7 @@ describe('Walkontable', function () {
       totalColumns: getTotalColumns,
       offsetRow: 0,
       offsetColumn: 0,
-      displayRows: 10,
+      height: 200,
       frozenColumns: ['Row']
     });
     wt.draw();
