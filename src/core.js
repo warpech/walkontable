@@ -24,8 +24,6 @@ function Walkontable(settings) {
     totalColumns: void 0,
     width: null,
     height: null,
-    displayRows: null,
-    displayColumns: null,
     cellRenderer: function (row, column, TD) {
       var cellData = that.getSetting('data', row, column);
       if (cellData !== void 0) {
@@ -181,10 +179,10 @@ Walkontable.prototype.getSetting = function (key, param1, param2, param3) {
       return Math.min(estimated, calculated);
     }
   }
-  else if (key === 'displayRows' && this.settings['displayRows'] === null) {
+  else if (key === 'displayRows') {
     return this.getSetting('totalRows');
   }
-  else if (key === 'displayColumns' && this.settings['displayColumns'] === null) {
+  else if (key === 'displayColumns') {
     return this.getSetting('totalColumns');
   }
   else if (key === 'viewportRows') {

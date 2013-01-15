@@ -24,8 +24,8 @@ describe('WalkontableEvent', function () {
         totalColumns: getTotalColumns,
         offsetRow: 10,
         offsetColumn: 2,
-        displayRows: 10,
-        displayColumns: 2,
+        height: 200,
+        width: 100,
         onCellMouseDown: function (event, coords, TD) {
           myCoords = coords;
           myTD = TD;
@@ -50,8 +50,8 @@ describe('WalkontableEvent', function () {
         totalColumns: getTotalColumns,
         offsetRow: 10,
         offsetColumn: 2,
-        displayRows: 10,
-        displayColumns: 2,
+        height: 200,
+        width: 100,
         onCellMouseOver: function (event, coords, TD) {
           myCoords = coords;
           myTD = TD;
@@ -76,8 +76,8 @@ describe('WalkontableEvent', function () {
         totalColumns: getTotalColumns,
         offsetRow: 10,
         offsetColumn: 2,
-        displayRows: 10,
-        displayColumns: 2,
+        height: 200,
+        width: 100,
         onCellDblClick: function (event, coords, TD) {
           myCoords = coords;
           myTD = TD;
@@ -104,8 +104,8 @@ describe('WalkontableEvent', function () {
         totalColumns: getTotalColumns,
         offsetRow: 10,
         offsetColumn: 2,
-        displayRows: 10,
-        displayColumns: 2
+        height: 200,
+        width: 100
       });
     wt.draw();
 
@@ -131,8 +131,8 @@ describe('WalkontableEvent', function () {
         totalColumns: getTotalColumns,
         offsetRow: 10,
         offsetColumn: 2,
-        displayRows: 10,
-        displayColumns: 2,
+        height: 200,
+        width: 100,
         columnHeaders: function (col, TH) {
           TH.innerHTML = col + 1;
         },
@@ -156,8 +156,8 @@ describe('WalkontableEvent', function () {
         totalColumns: getTotalColumns,
         offsetRow: 10,
         offsetColumn: 2,
-        displayRows: 10,
-        displayColumns: 2,
+        height: 200,
+        width: 100,
         columnHeaders: function (col, TH) {
           TH.innerHTML = col + 1;
         },
@@ -181,8 +181,8 @@ describe('WalkontableEvent', function () {
         totalColumns: getTotalColumns,
         offsetRow: 10,
         offsetColumn: 2,
-        displayRows: 10,
-        displayColumns: 2,
+        height: 200,
+        width: 100,
         columnHeaders: function (col, TH) {
           TH.innerHTML = col + 1;
         },
@@ -209,8 +209,8 @@ describe('WalkontableEvent', function () {
         totalColumns: getTotalColumns,
         offsetRow: 10,
         offsetColumn: 2,
-        displayRows: 10,
-        displayColumns: 2,
+        height: 200,
+        width: 100,
         onCellDblClick: function (event, coords, TD) {
           called = true
         }
@@ -237,8 +237,8 @@ describe('WalkontableEvent', function () {
         totalColumns: getTotalColumns,
         offsetRow: 10,
         offsetColumn: 2,
-        displayRows: 10,
-        displayColumns: 2,
+        height: 200,
+        width: 100,
         onCellDblClick: function (event, coords, TD) {
           called = true
         }
@@ -264,8 +264,8 @@ describe('WalkontableEvent', function () {
         totalColumns: getTotalColumns,
         offsetRow: 10,
         offsetColumn: 2,
-        displayRows: 10,
-        displayColumns: 2,
+        height: 200,
+        width: 100,
         selections: {
           current: {
             className: 'current',
@@ -302,8 +302,8 @@ describe('WalkontableEvent', function () {
         totalColumns: getTotalColumns,
         offsetRow: 10,
         offsetColumn: 2,
-        displayRows: 10,
-        displayColumns: 2,
+        height: 200,
+        width: 100,
         selections: {
           current: {
             className: 'current',
@@ -343,8 +343,8 @@ describe('WalkontableEvent', function () {
         totalColumns: getTotalColumns,
         offsetRow: 10,
         offsetColumn: 2,
-        displayRows: 10,
-        displayColumns: 2,
+        height: 200,
+        width: 100,
         selections: {
           current: {
             className: 'current',
@@ -376,8 +376,8 @@ describe('WalkontableEvent', function () {
         totalColumns: getTotalColumns,
         offsetRow: 10,
         offsetColumn: 2,
-        displayRows: 10,
-        displayColumns: 2,
+        height: 200,
+        width: 100,
         selections: {
           current: {
             className: 'current',

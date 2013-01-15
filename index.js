@@ -104,8 +104,8 @@ function init() {
     },
     offsetRow: 0,
     offsetColumn: 0,
-    //displayRows: displayRows, displayColumns: 5,
-    height: 200, width: 200,
+    height: 200,
+    width: 200,
     frozenColumns: [function (row) {
       return row + 1
     }],

@@ -22,8 +22,8 @@ describe('WalkontableScrollbar', function () {
       totalColumns: getTotalColumns,
       offsetRow: 0,
       offsetColumn: 0,
-      displayRows: 10,
-      displayColumns: 2
+      height: 200,
+      width: 100
     });
     wt.draw();
 
@@ -31,7 +31,7 @@ describe('WalkontableScrollbar', function () {
     expect($table.parents('.wtHolder:eq(0)').children('.dragdealer').length).toEqual(2);
   });
 
-  it("handle should have the size of scrollbar if totalRows is smaller or equal displayRows", function () {
+  it("handle should have the size of scrollbar if totalRows is smaller or equal height", function () {
     this.data.splice(5, this.data.length - 5);
 
     var wt = new Walkontable({
@@ -41,8 +41,8 @@ describe('WalkontableScrollbar', function () {
       totalColumns: getTotalColumns,
       offsetRow: 0,
       offsetColumn: 0,
-      displayRows: 10,
-      displayColumns: 2
+      height: 200,
+      width: 100
     });
     wt.draw();
 
@@ -52,7 +52,7 @@ describe('WalkontableScrollbar', function () {
     expect(slider.height()).toEqual(handle.height());
   });
 
-  it("scrolling should have no effect when totalRows/Columns is smaller than displayRows/Columns", function () {
+  it("scrolling should have no effect when totalRows/Columns is smaller than height/width", function () {
     this.data.splice(5, this.data.length - 5);
 
     try {
@@ -63,8 +63,8 @@ describe('WalkontableScrollbar', function () {
         totalColumns: getTotalColumns,
         offsetRow: 0,
         offsetColumn: 0,
-        displayRows: 10,
-        displayColumns: 10
+        height: 200,
+        width: 500
       });
       wt.draw();
 
@@ -93,8 +93,8 @@ describe('WalkontableScrollbar', function () {
       totalColumns: getTotalColumns,
       offsetRow: 0,
       offsetColumn: 0,
-      displayRows: 10,
-      displayColumns: 2
+      height: 200,
+      width: 100
     });
     wt.draw();
 
@@ -115,8 +115,8 @@ describe('WalkontableScrollbar', function () {
       totalColumns: getTotalColumns,
       offsetRow: 0,
       offsetColumn: 0,
-      displayRows: 10,
-      displayColumns: 2
+      height: 200,
+      width: 100
     });
     wt.draw();
 
