@@ -123,6 +123,15 @@ WalkontableTable.prototype.refreshStretching = function () {
     , frozenColumns = this.instance.getSetting('frozenColumns')
     , frozenColumnsCount = frozenColumns ? frozenColumns.length : 0;
 
+  if (stretchH === 'hybrid') {
+    if (this.instance.wtScroll.wtScrollbarH.visible) {
+      stretchH = 'last';
+    }
+    else {
+      stretchH = 'none';
+    }
+  }
+
   if (stretchH === 'all' || stretchH === 'last') {
     var containerWidth = this.instance.getSetting('width');
     if (this.instance.wtScroll.wtScrollbarV.visible) {

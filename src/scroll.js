@@ -32,24 +32,54 @@ WalkontableScroll.prototype.scrollVertical = function (delta) {
 };
 
 WalkontableScroll.prototype.scrollHorizontal = function (delta) {
-  var viewportColumns = this.instance.getSetting('viewportColumns');
-  if (viewportColumns !== null) {
-    var offsetColumn = this.instance.getSetting('offsetColumn')
-      , newOffsetColumn
-      , max = this.instance.getSetting('totalColumns') - viewportColumns;
-    if (max < 0) {
-      max = 0;
+  if (!this.instance.drawn) {
+    throw new Error('scrollHorizontal can only be called after table was drawn to DOM');
+  }
+
+  var offsetColumn = this.instance.getSetting('offsetColumn')
+    , newOffsetColumn = offsetColumn + delta;
+
+  if (newOffsetColumn > 0) {
+    var totalColumns = this.instance.getSetting('totalColumns');
+    var width = this.instance.getSetting('width');
+
+    if (newOffsetColumn >= totalColumns) {
+      newOffsetColumn = totalColumns - 1;
     }
-    newOffsetColumn = offsetColumn + delta;
-    if (newOffsetColumn < 0) {
-      newOffsetColumn = 0;
+
+    var TD = this.instance.wtTable.TBODY.firstChild.firstChild;
+    if (TD.nodeName === 'TH') {
+      TD = TD.nextSibling;
     }
-    else if (newOffsetColumn >= max) {
-      newOffsetColumn = max;
+    var cellOffset = this.instance.wtDom.offset(TD);
+    var tableOffset = this.instance.wtTable.tableOffset;
+
+    var sum = cellOffset.left - tableOffset.left;
+    var col = newOffsetColumn;
+    while (sum < width && col < totalColumns) {
+      sum += this.instance.getSetting('columnWidth', col);
+      col++;
     }
-    if (newOffsetColumn !== offsetColumn) {
-      this.instance.update('offsetColumn', newOffsetColumn);
+
+    if (sum < width) {
+      while (newOffsetColumn >= 0) {
+        //if sum still less than available width, we cannot scroll that far (must move offset to the left)
+        sum += this.instance.getSetting('columnWidth', newOffsetColumn);
+        if (sum < width) {
+          newOffsetColumn--;
+        }
+        else {
+          break;
+        }
+      }
     }
+  }
+  else if (newOffsetColumn < 0) {
+    newOffsetColumn = 0;
+  }
+
+  if (newOffsetColumn !== offsetColumn) {
+    this.instance.update('offsetColumn', newOffsetColumn);
   }
   return this.instance;
 };

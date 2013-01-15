@@ -1,6 +1,14 @@
 table.table {
   font-family: Arial, sans-serif;
-  width: auto;
+  table-layout: fixed;
+  width: 0;
+  border-collapse: separate;
+  position: relative;
+}
+
+table th,
+table td {
+  overflow: hidden;
 }
 
 table col {

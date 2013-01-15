@@ -735,4 +735,39 @@ describe('WalkontableTable', function () {
     expect(wtHider.width()).toBeGreaterThan($table.width());
     expect(wtHider.find('col:eq(1)').width()).toBe(wtHider.find('col:eq(2)').width());
   });
+
+  it("should strech last visible column when stretchH equals 'hybrid', but only if horizontal scroll is visible", function () {
+    createDataArray(2, 2);
+
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      width: 311,
+      height: 200,
+      scrollH: 'auto',
+      scrollV: 'auto',
+      stretchH: 'hybrid',
+      frozenColumns: [
+        "Col"
+      ]
+    });
+    wt.draw();
+
+    var wtHider = $table.parents('.wtHider');
+    expect(wtHider.outerWidth()).toBeGreaterThan($table.outerWidth());
+    expect(wtHider.find('tr:first td:last').width()).toEqual(wtHider.find('tr:first td:last').prev().width());
+
+    createDataArray(2, 20);
+    wt.scrollHorizontal(40);
+    wt.draw();
+    expect(wtHider.outerWidth()).toEqual($table.outerWidth());
+    expect(wtHider.find('tr:first td:last').width()).toBeGreaterThan(wtHider.find('tr:first td:last').prev().width());
+
+    createDataArray(2, 4);
+    wt.draw();
+    expect(wtHider.outerWidth()).toBeGreaterThan($table.outerWidth());
+    expect(wtHider.find('tr:first td:last').width()).toEqual(wtHider.find('tr:first td:last').prev().width());
+  });
 });

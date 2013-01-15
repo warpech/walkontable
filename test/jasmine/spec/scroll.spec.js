@@ -25,7 +25,7 @@ describe('WalkontableScroll', function () {
       displayRows: 10,
       displayColumns: 2
     });
-    wt.scrollHorizontal(999).draw();
+    wt.draw().scrollHorizontal(999).draw();
     expect($table.find('tbody tr:eq(0) td:last')[0].innerHTML).toBe('c');
   });
 
