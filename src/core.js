@@ -44,8 +44,8 @@ function Walkontable(settings) {
     onCellCornerDblClick: null,
 
     //constants
-    scrollbarWidth: 9,
-    scrollbarHeight: 9
+    scrollbarWidth: 10,
+    scrollbarHeight: 10
   };
 
   //reference to settings

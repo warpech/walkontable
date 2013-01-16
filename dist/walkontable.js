@@ -1,7 +1,7 @@
 /**
  * walkontable 0.1
  * 
- * Date: Wed Jan 16 2013 21:36:34 GMT+0100 (Central European Standard Time)
+ * Date: Wed Jan 16 2013 21:38:22 GMT+0100 (Central European Standard Time)
 */
 
 function WalkontableBorder(instance, settings) {
@@ -229,8 +229,8 @@ function Walkontable(settings) {
     onCellCornerDblClick: null,
 
     //constants
-    scrollbarWidth: 9,
-    scrollbarHeight: 9
+    scrollbarWidth: 10,
+    scrollbarHeight: 10
   };
 
   //reference to settings

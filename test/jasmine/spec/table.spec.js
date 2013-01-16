@@ -628,7 +628,7 @@ describe('WalkontableTable', function () {
       data: getData,
       totalRows: getTotalRows,
       totalColumns: getTotalColumns,
-      width: 300,
+      width: 301,
       height: 200,
       scrollH: 'scroll',
       scrollV: 'scroll',
