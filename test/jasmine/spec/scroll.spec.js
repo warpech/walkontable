@@ -48,7 +48,7 @@ describe('WalkontableScroll', function () {
       },
       frozenColumns: [plusOne]
     });
-    wt.scrollHorizontal(999).draw();
+    wt.draw().scrollHorizontal(999).draw();
     expect($table.find('tbody tr:eq(0) td:last')[0].innerHTML).toBe('c');
   });
 
@@ -80,7 +80,7 @@ describe('WalkontableScroll', function () {
       height: 200,
       width: 500
     });
-    wt.scrollHorizontal(999).draw();
+    wt.draw().scrollHorizontal(999).draw();
     expect(wt.wtTable.getCoords($table.find('tbody tr:eq(0) td:eq(0)')[0])).toEqual([0, 0]);
   });
 
@@ -127,7 +127,7 @@ describe('WalkontableScroll', function () {
       height: 200,
       width: 100
     });
-    wt.scrollHorizontal(-1).draw();
+    wt.draw().scrollHorizontal(-1).draw();
     expect(wt.wtTable.getCoords($table.find('tbody tr:first td:first')[0])).toEqual([0, 0]);
   });
 
@@ -142,7 +142,7 @@ describe('WalkontableScroll', function () {
       height: 200,
       width: 100
     });
-    wt.scrollHorizontal(999).draw();
+    wt.draw().scrollHorizontal(999).draw();
     expect(wt.wtTable.getCoords($table.find('tbody tr:first td:last')[0])).toEqual([0, 3]);
   });
 
@@ -155,10 +155,12 @@ describe('WalkontableScroll', function () {
       offsetRow: 0,
       offsetColumn: 0,
       height: 200,
-      width: 100
+      width: 120
     });
+    wt.draw();
+    var tmp = wt.getViewport();
     wt.scrollViewport([0, 1]).draw();
-    expect(wt.wtTable.getCoords($table.find('tbody tr:first td:last')[0])).toEqual([0, 1]);
+    expect(wt.getViewport()).toEqual(tmp);
   });
 
   it("scroll viewport to a cell on far left should make it visible on left edge", function () {
@@ -172,7 +174,7 @@ describe('WalkontableScroll', function () {
       height: 200,
       width: 100
     });
-    wt.scrollViewport([0, 1]).draw();
+    wt.draw().scrollViewport([0, 1]).draw();
     expect(wt.wtTable.getCoords($table.find('tbody tr:first td:first')[0])).toEqual([0, 1]);
   });
 
@@ -185,10 +187,10 @@ describe('WalkontableScroll', function () {
       offsetRow: 0,
       offsetColumn: 0,
       height: 200,
-      width: 100
+      width: 125
     });
-    wt.scrollViewport([0, 2]).draw();
-    expect(wt.wtTable.getCoords($table.find('tbody tr:first td:last')[0])).toEqual([0, 2]);
+    wt.draw().scrollViewport([0, 2]).draw();
+    expect(wt.getViewport()).toEqual([0, 1, 8, 3]);
   });
 
   it("scroll viewport to a cell on far left should make it visible on left edge (with row header)", function () {
@@ -205,7 +207,7 @@ describe('WalkontableScroll', function () {
         return row + 1;
       }]
     });
-    wt.scrollViewport([0, 1]).draw();
+    wt.draw().scrollViewport([0, 1]).draw();
     expect(wt.wtTable.getCoords($table.find('tbody tr:first td:first')[0])).toEqual([0, 1]);
   });
 
@@ -223,7 +225,7 @@ describe('WalkontableScroll', function () {
         return row + 1;
       }]
     });
-    wt.scrollViewport([0, 2]).draw();
+    wt.draw().scrollViewport([0, 2]).draw();
     expect(wt.wtTable.getCoords($table.find('tbody tr:first td:last')[0])).toEqual([0, 2]);
   });
 
@@ -236,10 +238,10 @@ describe('WalkontableScroll', function () {
       offsetRow: 0,
       offsetColumn: 0,
       height: 200,
-      width: 100
+      width: 125
     });
-    wt.scrollViewport([12, 0]).draw();
-    expect(wt.wtTable.getCoords($table.find('tbody tr:last td:first')[0])).toEqual([12, 0]);
+    wt.draw().scrollViewport([12, 0]).draw();
+    expect(wt.getViewport()).toEqual([5, 0, 13, 2]);
   });
 
   it("scroll viewport to a cell on far top should make it visible on top edge", function () {
@@ -253,7 +255,7 @@ describe('WalkontableScroll', function () {
       height: 200,
       width: 100
     });
-    wt.scrollViewport([12, 0]).draw();
+    wt.draw().scrollViewport([12, 0]).draw();
     expect(wt.wtTable.getCoords($table.find('tbody tr:first td:first')[0])).toEqual([12, 0]);
   });
 
@@ -272,7 +274,7 @@ describe('WalkontableScroll', function () {
         height: 200,
         width: 100
       });
-      wt.scrollViewport([40, 0]).draw();
+      wt.draw().scrollViewport([40, 0]).draw();
     }
     catch (e) {
       err++;
@@ -294,7 +296,7 @@ describe('WalkontableScroll', function () {
         height: 200,
         width: 100
       });
-      wt.scrollViewport([0, 40]).draw();
+      wt.draw().scrollViewport([0, 40]).draw();
     }
     catch (e) {
       err++;
@@ -314,7 +316,7 @@ describe('WalkontableScroll', function () {
       height: 200,
       width: 100
     });
-    wt.scrollViewport([getTotalRows() - 1, 0]).draw();
+    wt.draw().scrollViewport([getTotalRows() - 1, 0]).draw();
     var originalOffsetRow = wt.settings.offsetRow;
     this.data.splice(getTotalRows() - 4, 1); //remove row at index 96
     wt.draw();
@@ -350,7 +352,7 @@ describe('WalkontableScroll', function () {
       width: 260,
       height: 200
     });
-    wt.scrollHorizontal(50).draw();
+    wt.draw().scrollHorizontal(50).draw();
     createDataArray(100, 30);
     wt.draw();
     expect($table.find('tbody tr:first td').length).toBeGreaterThan(3);

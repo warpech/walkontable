@@ -1,7 +1,7 @@
 /**
  * walkontable 0.1
  * 
- * Date: Tue Jan 15 2013 23:57:28 GMT+0100 (Central European Standard Time)
+ * Date: Wed Jan 16 2013 12:29:42 GMT+0100 (Central European Standard Time)
 */
 
 function WalkontableBorder(instance, settings) {
@@ -17,7 +17,7 @@ function WalkontableBorder(instance, settings) {
 
   for (var i = 0; i < 5; i++) {
     var DIV = document.createElement('DIV');
-    DIV.className = 'wtBorder ' + settings.className;
+    DIV.className = 'wtBorder ' + (settings.className || '');
     DIV.style.backgroundColor = settings.border.color;
     DIV.style.height = settings.border.width + 'px';
     DIV.style.width = settings.border.width + 'px';
@@ -338,12 +338,21 @@ Walkontable.prototype.scrollViewport = function (coords) {
   return this;
 };
 
+Walkontable.prototype.getViewport = function () {
+  return [
+    this.getSetting('offsetRow'),
+    this.getSetting('offsetColumn'),
+    this.wtTable.visibilityEdgeRow !== null ? this.wtTable.visibilityEdgeRow : this.getSetting('totalRows') - 1,
+    this.wtTable.visibilityEdgeColumn !== null ? this.wtTable.visibilityEdgeColumn : this.getSetting('totalColumns') - 1
+  ];
+};
+
 Walkontable.prototype.getSetting = function (key, param1, param2, param3) {
   var estimated
     , calculated;
 
   if (key === 'displayRows' && this.settings['height']) {
-    estimated = Math.floor(this.settings['height'] / 20); //silly assumption but should be fine for now
+    estimated = Math.ceil(this.settings['height'] / 20); //silly assumption but should be fine for now
     calculated = this.getSetting('totalRows') - this.getSetting('offsetRow');
     if (calculated < 0) {
       this.update('offsetRow', Math.max(0, this.getSetting('totalRows') - estimated));
@@ -354,7 +363,7 @@ Walkontable.prototype.getSetting = function (key, param1, param2, param3) {
     }
   }
   else if (key === 'displayColumns' && this.settings['width']) {
-    estimated = Math.floor(this.settings['width'] / 50); //silly assumption but should be fine for now
+    estimated = Math.ceil(this.settings['width'] / 50); //silly assumption but should be fine for now
     calculated = this.getSetting('totalColumns') - this.getSetting('offsetColumn');
     if (calculated < 0) {
       this.update('offsetColumn', Math.max(0, this.getSetting('totalColumns') - estimated));
@@ -763,9 +772,9 @@ WalkontableScroll.prototype.scrollHorizontal = function (delta) {
     }
 
     if (sum < width) {
-      while (newOffsetColumn >= 0) {
+      while (newOffsetColumn > 0) {
         //if sum still less than available width, we cannot scroll that far (must move offset to the left)
-        sum += this.instance.getSetting('columnWidth', newOffsetColumn);
+        sum += this.instance.getSetting('columnWidth', newOffsetColumn - 1);
         if (sum < width) {
           newOffsetColumn--;
         }
@@ -1410,8 +1419,8 @@ WalkontableTable.prototype.refreshStretching = function () {
                   newWidth = widths[c] + remainingDiff;
                 }
                 else {
-                  newWidth = widths[c] + Math.round(ratio * widths[c]);
-                  remainingDiff -= Math.round(ratio * widths[c]);
+                  newWidth = widths[c] + Math.floor(ratio * widths[c]);
+                  remainingDiff -= Math.floor(ratio * widths[c]);
                 }
               }
               this.instance.wtTable.COLGROUP.childNodes[c + frozenColumnsCount].style.width = newWidth + 'px';
@@ -1679,12 +1688,13 @@ WalkontableTable.prototype.isCellVisible = function (TD) {
   var tableWidth = this.instance.hasSetting('width') ? this.instance.getSetting('width') : $table.outerWidth()
     , tableHeight = this.instance.hasSetting('height') ? this.instance.getSetting('height') : $table.outerHeight();
 
-  if (this.instance.wtScroll.wtScrollbarV.visible) {
-    tableHeight -= this.instance.getSetting('scrollbarHeight');
-  }
-  if (this.instance.wtScroll.wtScrollbarH.visible) {
-    tableWidth -= this.instance.getSetting('scrollbarWidth');
-  }
+  //at this point we don't really know if the scrollbars are visible
+  //if (this.instance.wtScroll.wtScrollbarV.visible) {
+  tableHeight -= this.instance.getSetting('scrollbarHeight');
+  //}
+  //if (this.instance.wtScroll.wtScrollbarH.visible) {
+  tableWidth -= this.instance.getSetting('scrollbarWidth');
+  //}
 
   if (innerOffsetTop > tableHeight) {
     out = 0;

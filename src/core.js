@@ -153,12 +153,21 @@ Walkontable.prototype.scrollViewport = function (coords) {
   return this;
 };
 
+Walkontable.prototype.getViewport = function () {
+  return [
+    this.getSetting('offsetRow'),
+    this.getSetting('offsetColumn'),
+    this.wtTable.visibilityEdgeRow !== null ? this.wtTable.visibilityEdgeRow : this.getSetting('totalRows') - 1,
+    this.wtTable.visibilityEdgeColumn !== null ? this.wtTable.visibilityEdgeColumn : this.getSetting('totalColumns') - 1
+  ];
+};
+
 Walkontable.prototype.getSetting = function (key, param1, param2, param3) {
   var estimated
     , calculated;
 
   if (key === 'displayRows' && this.settings['height']) {
-    estimated = Math.floor(this.settings['height'] / 20); //silly assumption but should be fine for now
+    estimated = Math.ceil(this.settings['height'] / 20); //silly assumption but should be fine for now
     calculated = this.getSetting('totalRows') - this.getSetting('offsetRow');
     if (calculated < 0) {
       this.update('offsetRow', Math.max(0, this.getSetting('totalRows') - estimated));
@@ -169,7 +178,7 @@ Walkontable.prototype.getSetting = function (key, param1, param2, param3) {
     }
   }
   else if (key === 'displayColumns' && this.settings['width']) {
-    estimated = Math.floor(this.settings['width'] / 50); //silly assumption but should be fine for now
+    estimated = Math.ceil(this.settings['width'] / 50); //silly assumption but should be fine for now
     calculated = this.getSetting('totalColumns') - this.getSetting('offsetColumn');
     if (calculated < 0) {
       this.update('offsetColumn', Math.max(0, this.getSetting('totalColumns') - estimated));

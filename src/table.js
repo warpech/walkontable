@@ -164,8 +164,8 @@ WalkontableTable.prototype.refreshStretching = function () {
                   newWidth = widths[c] + remainingDiff;
                 }
                 else {
-                  newWidth = widths[c] + Math.round(ratio * widths[c]);
-                  remainingDiff -= Math.round(ratio * widths[c]);
+                  newWidth = widths[c] + Math.floor(ratio * widths[c]);
+                  remainingDiff -= Math.floor(ratio * widths[c]);
                 }
               }
               this.instance.wtTable.COLGROUP.childNodes[c + frozenColumnsCount].style.width = newWidth + 'px';
@@ -433,12 +433,13 @@ WalkontableTable.prototype.isCellVisible = function (TD) {
   var tableWidth = this.instance.hasSetting('width') ? this.instance.getSetting('width') : $table.outerWidth()
     , tableHeight = this.instance.hasSetting('height') ? this.instance.getSetting('height') : $table.outerHeight();
 
-  if (this.instance.wtScroll.wtScrollbarV.visible) {
-    tableHeight -= this.instance.getSetting('scrollbarHeight');
-  }
-  if (this.instance.wtScroll.wtScrollbarH.visible) {
-    tableWidth -= this.instance.getSetting('scrollbarWidth');
-  }
+  //at this point we don't really know if the scrollbars are visible
+  //if (this.instance.wtScroll.wtScrollbarV.visible) {
+  tableHeight -= this.instance.getSetting('scrollbarHeight');
+  //}
+  //if (this.instance.wtScroll.wtScrollbarH.visible) {
+  tableWidth -= this.instance.getSetting('scrollbarWidth');
+  //}
 
   if (innerOffsetTop > tableHeight) {
     out = 0;

@@ -106,7 +106,7 @@ describe('WalkontableSelection', function () {
     $td1.mousedown();
     var pos1 = $top.position();
     expect(pos1.top).toBeGreaterThan(0);
-    expect(pos1.left).toBeGreaterThan(0);
+    expect(pos1.left).toBe(0);
 
     $td2.mousedown();
     var pos2 = $top.position();
@@ -142,18 +142,14 @@ describe('WalkontableSelection', function () {
     wt.draw();
 
     var $td1 = $table.find('tbody tr:eq(2) td:eq(0)');
-    var $top = $(wt.selections.current.border.top);
     $td1.mousedown();
-    var pos1 = $top.position();
 
     wt.update({
       offsetRow: 20
     });
     wt.draw();
 
-    var pos2 = $top.position();
-    expect(pos2.top).toBeLessThan(pos1.top);
-    expect(pos2.left).toBeLessThan(pos1.left);
+    expect(wt.selections.current.border.bottom.style.display).toBe('none');
     expect($table.find('td.current').length).toBe(0);
   });
 
@@ -185,18 +181,14 @@ describe('WalkontableSelection', function () {
     wt.draw();
 
     var $td1 = $table.find('tbody tr:eq(2) td:eq(0)');
-    var $top = $(wt.selections.current.border.top);
     $td1.mousedown();
-    var pos1 = $top.position();
 
     wt.update({
       offsetColumn: 3
     });
     wt.draw();
 
-    var pos2 = $top.position();
-    expect(pos2.top).toBeLessThan(pos1.top);
-    expect(pos2.left).toBeLessThan(pos1.left);
+    expect(wt.selections.current.border.right.style.display).toBe('none');
     expect($table.find('td.current').length).toBe(0);
   });
 

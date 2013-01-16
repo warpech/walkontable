@@ -11,7 +11,7 @@ function WalkontableBorder(instance, settings) {
 
   for (var i = 0; i < 5; i++) {
     var DIV = document.createElement('DIV');
-    DIV.className = 'wtBorder ' + settings.className;
+    DIV.className = 'wtBorder ' + (settings.className || '');
     DIV.style.backgroundColor = settings.border.color;
     DIV.style.height = settings.border.width + 'px';
     DIV.style.width = settings.border.width + 'px';

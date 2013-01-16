@@ -62,9 +62,9 @@ WalkontableScroll.prototype.scrollHorizontal = function (delta) {
     }
 
     if (sum < width) {
-      while (newOffsetColumn >= 0) {
+      while (newOffsetColumn > 0) {
         //if sum still less than available width, we cannot scroll that far (must move offset to the left)
-        sum += this.instance.getSetting('columnWidth', newOffsetColumn);
+        sum += this.instance.getSetting('columnWidth', newOffsetColumn - 1);
         if (sum < width) {
           newOffsetColumn--;
         }
