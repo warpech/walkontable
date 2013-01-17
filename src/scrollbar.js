@@ -50,6 +50,8 @@ function WalkontableScrollbar(instance, type) {
     },
     callback: function (x, y) {
       that.skipRefresh = false;
+      clearTimeout(that.waitTimeout);
+      that.waitTimeout = null;
       that.onScroll(type === 'vertical' ? y : x);
     }
   });
@@ -58,14 +60,25 @@ function WalkontableScrollbar(instance, type) {
 
 WalkontableScrollbar.prototype.onScroll = function (delta) {
   if (this.instance.drawn) {
-    var keys = this.type === 'vertical' ? ['offsetRow', 'totalRows', 'viewportRows'] : ['offsetColumn', 'totalColumns', 'viewportColumns'];
+    var keys = this.type === 'vertical' ? ['offsetRow', 'totalRows', 'viewportRows', 'top', 'height'] : ['offsetColumn', 'totalColumns', 'viewportColumns', 'left', 'width'];
     var total = this.instance.getSetting(keys[1]);
     var display = this.instance.getSetting(keys[2]);
     if (total > display) {
-      var newOffset = Math.max(0, Math.round((total - display) * delta));
-      if (newOffset !== this.instance.getSetting(keys[0])) { //is new offset different than old offset
+      var newOffset = Math.round(parseInt(this.handle.style[keys[3]]) * total / parseInt(this.slider.style[keys[4]])); //offset = handlePos * totalRows / offsetRows
+      if (delta === 1) {
+        if (this.type === 'vertical') {
+          this.instance.scrollVertical(Infinity).draw();
+        }
+        else {
+          this.instance.scrollHorizontal(Infinity).draw();
+        }
+      }
+      else if (newOffset !== this.instance.getSetting(keys[0])) { //is new offset different than old offset
         this.instance.update(keys[0], newOffset);
         this.instance.draw();
+      }
+      else {
+        this.refresh();
       }
     }
   }
@@ -96,8 +109,12 @@ WalkontableScrollbar.prototype.refresh = function () {
     return;
   }
 
-  tableWidth -= this.instance.getSetting('scrollbarWidth');
-  tableHeight -= this.instance.getSetting('scrollbarHeight');
+  if (this.instance.wtScroll.wtScrollbarV.visible) {
+    tableWidth -= this.instance.getSetting('scrollbarWidth');
+  }
+  if (this.instance.wtScroll.wtScrollbarH.visible) {
+    tableHeight -= this.instance.getSetting('scrollbarHeight');
+  }
 
   if (this.type === 'vertical') {
     if (totalRows) {
@@ -110,20 +127,23 @@ WalkontableScrollbar.prototype.refresh = function () {
       this.visible = false;
     }
     else {
-      handleSize = Math.round($(this.slider).height() * ratio);
-      if (handleSize < 10) {
-        handleSize = 30;
-      }
-      handlePosition = Math.round((tableHeight - handleSize) * (offsetRow / totalRows));
-      if (handlePosition > tableHeight - handleSize) {
-        handlePosition = tableHeight - handleSize;
-      }
+      var sliderHeight = tableHeight - 2;
 
       this.slider.style.display = 'block';
       this.visible = true;
       this.slider.style.top = this.$table.position().top + 'px';
       this.slider.style.left = tableWidth - 1 + 'px'; //1 is sliders border-width
-      this.slider.style.height = tableHeight - 2 + 'px'; //2 is sliders border-width
+      this.slider.style.height = sliderHeight + 'px'; //2 is sliders border-width
+
+      handleSize = Math.round(sliderHeight * ratio);
+      if (handleSize < 10) {
+        handleSize = 30;
+      }
+      handlePosition = Math.round((sliderHeight) * (offsetRow / totalRows));
+      if (handlePosition > sliderHeight - handleSize) {
+        handlePosition = sliderHeight - handleSize;
+      }
+
       this.handle.style.height = handleSize + 'px';
       this.handle.style.top = handlePosition + 'px';
     }
@@ -137,33 +157,30 @@ WalkontableScrollbar.prototype.refresh = function () {
     if ((ratio === 1 && scrollH === 'auto') || scrollH === 'none') {
       this.slider.style.display = 'none';
       this.visible = false;
-      //this.instance.wtTable.TABLE.style.tableLayout = 'fixed';
-      //this.instance.wtTable.TABLE.style.width = tableWidth + 'px';
     }
     else {
-      handleSize = Math.round($(this.slider).width() * ratio);
-      if (handleSize < 10) {
-        handleSize = 30;
-      }
-      handlePosition = Math.round((tableWidth - handleSize) * (offsetColumn / totalColumns));
-      if (handlePosition > tableWidth - handleSize) {
-        handlePosition = tableWidth - handleSize;
-      }
+      var sliderWidth = tableWidth - 2;
 
-      //this.instance.wtTable.TABLE.style.tableLayout = 'auto';
-      //this.instance.wtTable.TABLE.style.width = '';
       this.slider.style.display = 'block';
       this.visible = true;
       this.slider.style.left = this.$table.position().left + 'px';
       this.slider.style.top = tableHeight - 1 + 'px'; //1 is sliders border-width
-      this.slider.style.width = tableWidth - 2 + 'px'; //2 is sliders border-width
+      this.slider.style.width = sliderWidth + 'px'; //2 is sliders border-width
+
+      handleSize = Math.round(sliderWidth * ratio);
+      if (handleSize < 10) {
+        handleSize = 30;
+      }
+      handlePosition = Math.round(sliderWidth * (offsetColumn / totalColumns));
+      if (handlePosition > tableWidth - handleSize) {
+        handlePosition = tableWidth - handleSize;
+      }
+
       this.handle.style.width = handleSize + 'px';
       this.handle.style.left = handlePosition + 'px';
     }
   }
 
   this.dragdealer.setWrapperOffset();
-  //this.dragdealer.setBoundsPadding();
   this.dragdealer.setBounds();
-  //this.dragdealer.setSteps();
 };

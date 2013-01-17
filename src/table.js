@@ -12,7 +12,7 @@ function WalkontableTable(instance) {
     this.TABLE.cellSpacing = 0;
   }
 
-  this.visibilityEdgeRow = this.visibilityEdgeColumn = null;
+  this.visibilityStartRow = this.visibilityStartColumn = this.visibilityEdgeRow = this.visibilityEdgeColumn = null;
 
   //wtSpreader
   var parent = this.TABLE.parentNode;
@@ -347,6 +347,8 @@ WalkontableTable.prototype._doDraw = function () {
 
   //draw TBODY
   this.visibilityEdgeRow = this.visibilityEdgeColumn = null;
+  this.visibilityStartRow = offsetRow; //needed bacause otherwise the values get out of sync in async mode
+  this.visibilityStartColumn = offsetColumn;
   for (r = 0; r < displayRows; r++) {
     TR = this.TBODY.childNodes[r];
     for (c = 0; c < frozenColumnsCount; c++) { //in future use nextSibling; http://jsperf.com/nextsibling-vs-indexed-childnodes
@@ -409,6 +411,15 @@ WalkontableTable.prototype.refreshSelections = function (selectionsOnly) {
   }
 };
 
+WalkontableTable.prototype.recalcViewportCells = function () {
+  if (this.instance.wtScroll.wtScrollbarV.visible && this.visibilityEdgeColumnRemainder <= this.instance.getSetting('scrollbarHeight')) {
+    this.visibilityEdgeColumn--;
+  }
+  if (this.instance.wtScroll.wtScrollbarH.visible && this.visibilityEdgeRowRemainder <= this.instance.getSetting('scrollbarWidth')) {
+    this.visibilityEdgeRow--;
+  }
+};
+
 WalkontableTable.prototype.isCellVisible = function (TD) {
   var out
     , scrollV = this.instance.getSetting('scrollV')
@@ -422,13 +433,6 @@ WalkontableTable.prototype.isCellVisible = function (TD) {
     , height = $td.outerHeight()
     , tableWidth = this.instance.hasSetting('width') ? this.instance.getSetting('width') : Infinity
     , tableHeight = this.instance.hasSetting('height') ? this.instance.getSetting('height') : Infinity;
-
-  if (scrollV === 'auto' || scrollV === 'scroll' || scrollV === 'hybrid') {
-    tableHeight -= this.instance.getSetting('scrollbarHeight'); //at this point we don't really know if the scrollbars are visible, so let's assume they are
-  }
-  if (scrollH === 'auto' || scrollH === 'scroll' || scrollH === 'hybrid') {
-    tableWidth -= this.instance.getSetting('scrollbarWidth'); //at this point we don't really know if the scrollbars are visible, so let's assume they are
-  }
 
   /**
    * Legend:
@@ -444,9 +448,11 @@ WalkontableTable.prototype.isCellVisible = function (TD) {
     out = 0;
   }
   else if (innerOffsetTop + height > tableHeight) {
+    this.visibilityEdgeRowRemainder = tableHeight - innerOffsetTop;
     out = 1;
   }
   else if (innerOffsetLeft + width > tableWidth) {
+    this.visibilityEdgeColumnRemainder = tableWidth - innerOffsetLeft;
     out = 1;
   }
   else {

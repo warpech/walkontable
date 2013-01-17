@@ -5,8 +5,11 @@ function WalkontableScroll(instance) {
 }
 
 WalkontableScroll.prototype.refreshScrollbars = function () {
-  this.wtScrollbarV.refresh();
   this.wtScrollbarH.refresh();
+  this.wtScrollbarV.refresh();
+  this.instance.wtTable.recalcViewportCells();
+  this.wtScrollbarH.refresh();
+  this.wtScrollbarV.refresh();
   this.instance.wtTable.refreshHiderDimensions();
   this.instance.wtTable.refreshStretching();
 };
@@ -114,7 +117,7 @@ WalkontableScroll.prototype.scrollViewport = function (coords) {
     }
   }
   else {
-    this.scrollVertical(0); //Craig's issue
+    this.scrollVertical(coords[0] - offsetRow);
   }
 
   if (viewportColumns > 0 && viewportColumns < totalColumns) {
@@ -129,7 +132,7 @@ WalkontableScroll.prototype.scrollViewport = function (coords) {
     }
   }
   else {
-    this.scrollHorizontal(0); //Craig's issue
+    this.scrollHorizontal(coords[1] - offsetColumn);
   }
 
   return this.instance;

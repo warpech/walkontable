@@ -154,6 +154,7 @@ Walkontable.prototype.scrollViewport = function (coords) {
 };
 
 Walkontable.prototype.getViewport = function () {
+  //TODO change it to draw values only (add this.wtTable.visibilityStartRow, this.wtTable.visibilityStartColumn)
   return [
     this.getSetting('offsetRow'),
     this.getSetting('offsetColumn'),
@@ -196,13 +197,13 @@ Walkontable.prototype.getSetting = function (key, param1, param2, param3) {
   }
   else if (key === 'viewportRows') {
     if (this.wtTable.visibilityEdgeRow) {
-      return this.wtTable.visibilityEdgeRow - this.getSetting('offsetRow');
+      return this.wtTable.visibilityEdgeRow - this.wtTable.visibilityStartRow;
     }
     return this.getSetting('displayRows');
   }
   else if (key === 'viewportColumns') {
     if (this.wtTable.visibilityEdgeColumn) {
-      return this.wtTable.visibilityEdgeColumn - this.getSetting('offsetColumn');
+      return this.wtTable.visibilityEdgeColumn - this.wtTable.visibilityStartColumn;
     }
     return this.getSetting('displayColumns');
   }
