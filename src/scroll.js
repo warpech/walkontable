@@ -5,8 +5,8 @@ function WalkontableScroll(instance) {
 }
 
 WalkontableScroll.prototype.refreshScrollbars = function () {
-  this.wtScrollbarH.refresh();
-  this.wtScrollbarV.refresh();
+  this.wtScrollbarH.prepare();
+  this.wtScrollbarV.prepare();
   this.instance.wtTable.recalcViewportCells();
   this.wtScrollbarH.refresh();
   this.wtScrollbarV.refresh();
