@@ -13,7 +13,7 @@ function WalkontableEvent(instance) {
     var cell = that.parentCell(event.target);
 
     if (cell.TD && cell.TD.nodeName === 'TD') {
-      if (that.instance.settings.onCellMouseDown) {
+      if (that.instance.hasSetting('onCellMouseDown')) {
         that.instance.getSetting('onCellMouseDown', event, cell.coords, cell.TD);
       }
     }
@@ -35,7 +35,7 @@ function WalkontableEvent(instance) {
 
   var lastMouseOver;
   var onMouseOver = function (event) {
-    if (that.instance.settings.onCellMouseOver) {
+    if (that.instance.hasSetting('onCellMouseOver')) {
       var TD = that.wtDom.closest(event.target, ['TD', 'TH']);
       if (TD && TD !== lastMouseOver) {
         lastMouseOver = TD;
@@ -82,7 +82,7 @@ function WalkontableEvent(instance) {
   };
 
   $(this.instance.wtTable.parent).on('mousedown', onMouseDown);
-  $(this.instance.settings.table).on('mouseover', onMouseOver);
+  $(this.instance.wtTable.TABLE).on('mouseover', onMouseOver);
   $(this.instance.wtTable.parent).on('mouseup', onMouseUp);
 }
 

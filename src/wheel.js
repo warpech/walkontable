@@ -4,7 +4,7 @@ function WalkontableWheel(instance) {
   //reference to instance
   this.instance = instance;
   var wheelTimeout;
-  $(this.instance.settings.table).on('mousewheel', function (event, delta, deltaX, deltaY) {
+  $(this.instance.wtTable.TABLE).on('mousewheel', function (event, delta, deltaX, deltaY) {
     clearTimeout(wheelTimeout);
     wheelTimeout = setTimeout(function () { //timeout is needed because with fast-wheel scrolling mousewheel event comes dozen times per second
       if (deltaY) {

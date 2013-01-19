@@ -584,7 +584,7 @@ describe('WalkontableTable', function () {
         columnWidth: 100,
         cellRenderer: function (row, column, TD) {
           count++;
-          return wt.defaults.cellRenderer(row, column, TD);
+          return wt.wtSettings.defaults.cellRenderer(row, column, TD);
         }
       });
     wt.draw();
@@ -607,7 +607,7 @@ describe('WalkontableTable', function () {
         columnWidth: 100,
         cellRenderer: function (row, column, TD) {
           count++;
-          return wt.defaults.cellRenderer(row, column, TD);
+          return wt.wtSettings.defaults.cellRenderer(row, column, TD);
         }
       });
     wt.draw();

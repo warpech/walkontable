@@ -148,7 +148,7 @@ WalkontableTable.prototype.refreshStretching = function () {
           if (this.instance.wtTable.TBODY.firstChild) {
             widths.push($(this.instance.wtTable.TBODY.firstChild.childNodes[c + frozenColumnsCount]).outerWidth()); //this is needed until td contents are clipped to be exactly the width of "columnWidth"
           }
-          //widths.push(this.instance.getSettingColumnWidth(offsetColumn + c));
+          //widths.push(this.instance.getSetting('columnWidth', offsetColumn + c));
           widthSum += widths[c];
         }
 
@@ -313,7 +313,7 @@ WalkontableTable.prototype._doDraw = function () {
   var width;
   if (this.instance.hasSetting('columnWidth')) {
     for (c = 0; c < displayTds; c++) {
-      width = this.instance.getSettingColumnWidth(offsetColumn + c);
+      width = this.instance.getSetting('columnWidth', offsetColumn + c);
       if (width) {
         this.COLGROUP.childNodes[c + frozenColumnsCount].style.width = width + 'px';
       }
@@ -461,7 +461,7 @@ WalkontableTable.prototype.isCellVisible = function (r, c, TD) {
     , tableWidth = this.instance.hasSetting('width') ? this.instance.getSetting('width') : Infinity
     , tableHeight = this.instance.hasSetting('height') ? this.instance.getSetting('height') : Infinity;
 
-  this.instance.rowHeightCache[r] = height;
+  this.instance.wtSettings.rowHeightCache[r] = height;
 
   /**
    * Legend:

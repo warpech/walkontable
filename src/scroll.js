@@ -38,16 +38,16 @@ WalkontableScroll.prototype.scrollVertical = function (delta) {
     var tableOffset = this.instance.wtTable.tableOffset;
 
     var sum = cellOffset.top - tableOffset.top;
-    var col = newOffsetRow;
-    while (sum < height && col < totalRows) {
-      sum += this.instance.getSettingRowHeight(col);
-      col++;
+    var row = newOffsetRow;
+    while (sum < height && row < totalRows) {
+      sum += this.instance.getSetting('rowHeight', row);
+      row++;
     }
 
     if (sum < height) {
       while (newOffsetRow > 0) {
         //if sum still less than available height, we cannot scroll that far (must move offset up)
-        sum += this.instance.getSettingRowHeight(newOffsetRow - 1);
+        sum += this.instance.getSetting('rowHeight', newOffsetRow - 1);
         if (sum < height) {
           newOffsetRow--;
         }
@@ -93,14 +93,14 @@ WalkontableScroll.prototype.scrollHorizontal = function (delta) {
     var sum = cellOffset.left - tableOffset.left;
     var col = newOffsetColumn;
     while (sum < width && col < totalColumns) {
-      sum += this.instance.getSettingColumnWidth(col);
+      sum += this.instance.getSetting('columnWidth', col);
       col++;
     }
 
     if (sum < width) {
       while (newOffsetColumn > 0) {
         //if sum still less than available width, we cannot scroll that far (must move offset to the left)
-        sum += this.instance.getSettingColumnWidth(newOffsetColumn - 1);
+        sum += this.instance.getSetting('columnWidth', newOffsetColumn - 1);
         if (sum < width) {
           newOffsetColumn--;
         }
