@@ -25,7 +25,7 @@ function Walkontable(settings) {
   this.selections = {};
   var selectionsSettings = this.getSetting('selections');
   if (selectionsSettings) {
-    for (i in selectionsSettings) {
+    for (var i in selectionsSettings) {
       if (selectionsSettings.hasOwnProperty(i)) {
         this.selections[i] = new WalkontableSelection(this, selectionsSettings[i]);
       }

@@ -1,7 +1,7 @@
 /**
  * walkontable 0.1
  * 
- * Date: Sat Jan 19 2013 15:43:10 GMT+0100 (Central European Standard Time)
+ * Date: Sat Jan 19 2013 17:32:36 GMT+0100 (Central European Standard Time)
 */
 
 function WalkontableBorder(instance, settings) {
@@ -210,7 +210,7 @@ function Walkontable(settings) {
   this.selections = {};
   var selectionsSettings = this.getSetting('selections');
   if (selectionsSettings) {
-    for (i in selectionsSettings) {
+    for (var i in selectionsSettings) {
       if (selectionsSettings.hasOwnProperty(i)) {
         this.selections[i] = new WalkontableSelection(this, selectionsSettings[i]);
       }
