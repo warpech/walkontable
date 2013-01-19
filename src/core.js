@@ -22,8 +22,8 @@ function Walkontable(settings) {
     columnHeaders: null, //this must be a function in format: function (col, TH) {}
     totalRows: void 0,
     totalColumns: void 0,
-    width: null,
-    height: null,
+    width: 3000,
+    height: 3000,
     cellRenderer: function (row, column, TD) {
       var cellData = that.getSetting('data', row, column);
       if (cellData !== void 0) {
@@ -94,6 +94,7 @@ function Walkontable(settings) {
   }
 
   this.drawn = false;
+  this.rowHeightCache = [];
 }
 
 Walkontable.prototype.draw = function (selectionsOnly) {
@@ -112,8 +113,8 @@ Walkontable.prototype.draw = function (selectionsOnly) {
 
 Walkontable.prototype._doDraw = function (selectionsOnly) {
   selectionsOnly = selectionsOnly && this.settings.offsetRow === this.lastOffsetRow && this.settings.offsetColumn === this.lastOffsetColumn;
-  this.lastOffsetRow = this.settings.offsetRow;
-  this.lastOffsetColumn = this.settings.offsetColumn;
+  this.lastOffsetRow = this.getSetting('offsetRow');
+  this.lastOffsetColumn = this.getSetting('offsetColumn');
   this.wtTable.draw(selectionsOnly);
 };
 
@@ -163,6 +164,17 @@ Walkontable.prototype.getViewport = function () {
   ];
 };
 
+Walkontable.prototype.getSettingRowHeight = function (row) {
+  if (typeof this.rowHeightCache[row] !== 'undefined') {
+    return this.rowHeightCache[row];
+  }
+  return 20;
+};
+
+Walkontable.prototype.getSettingColumnWidth = function (column) {
+  return Math.min(200, this.getSetting('columnWidth', column));
+};
+
 Walkontable.prototype.getSetting = function (key, param1, param2, param3) {
   var estimated
     , calculated;
@@ -196,13 +208,13 @@ Walkontable.prototype.getSetting = function (key, param1, param2, param3) {
     return this.getSetting('totalColumns');
   }
   else if (key === 'viewportRows') {
-    if (this.wtTable.visibilityEdgeRow) {
+    if (this.wtTable.visibilityEdgeRow !== null) {
       return this.wtTable.visibilityEdgeRow - this.wtTable.visibilityStartRow;
     }
     return this.getSetting('displayRows');
   }
   else if (key === 'viewportColumns') {
-    if (this.wtTable.visibilityEdgeColumn) {
+    if (this.wtTable.visibilityEdgeColumn !== null) {
       return this.wtTable.visibilityEdgeColumn - this.wtTable.visibilityStartColumn;
     }
     return this.getSetting('displayColumns');

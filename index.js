@@ -127,9 +127,6 @@ function init() {
         }
       }
     },
-    onCellMouseOver: function (event, coords, TD) {
-      wt.wtTable.isCellVisible(TD);
-    },
     onCellMouseDown: function (event, coords, TD) {
       if (wt.selections.area.isSelected(coords, TD) > -1) {
         wt.selections.area.remove(coords, TD);

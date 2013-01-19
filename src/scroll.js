@@ -15,19 +15,52 @@ WalkontableScroll.prototype.refreshScrollbars = function () {
 };
 
 WalkontableScroll.prototype.scrollVertical = function (delta) {
-  var offsetRow = this.instance.getSetting('offsetRow')
-    , newOffsetRow
-    , max = this.instance.getSetting('totalRows') - this.instance.getSetting('viewportRows');
-  if (max < 0) {
-    max = 0;
+  if (!this.instance.drawn) {
+    throw new Error('scrollVertical can only be called after table was drawn to DOM');
   }
-  newOffsetRow = offsetRow + delta;
-  if (newOffsetRow < 0) {
+
+  var offsetRow = this.instance.getSetting('offsetRow')
+    , newOffsetRow = offsetRow + delta;
+
+  if (newOffsetRow > 0) {
+    var totalRows = this.instance.getSetting('totalRows');
+    var height = this.instance.getSetting('height') - this.instance.getSetting('scrollbarHeight');
+
+    if (newOffsetRow >= totalRows) {
+      newOffsetRow = totalRows - 1;
+    }
+
+    var TD = this.instance.wtTable.TBODY.firstChild.firstChild;
+    if (TD.nodeName === 'TH') {
+      TD = TD.nextSibling;
+    }
+    var cellOffset = this.instance.wtDom.offset(TD);
+    var tableOffset = this.instance.wtTable.tableOffset;
+
+    var sum = cellOffset.top - tableOffset.top;
+    var col = newOffsetRow;
+    while (sum < height && col < totalRows) {
+      sum += this.instance.getSettingRowHeight(col);
+      col++;
+    }
+
+    if (sum < height) {
+      while (newOffsetRow > 0) {
+        //if sum still less than available height, we cannot scroll that far (must move offset up)
+        sum += this.instance.getSettingRowHeight(newOffsetRow - 1);
+        if (sum < height) {
+          newOffsetRow--;
+        }
+        else {
+          break;
+        }
+      }
+    }
+  }
+  else if (newOffsetRow < 0) {
     newOffsetRow = 0;
   }
-  else if (newOffsetRow >= max) {
-    newOffsetRow = max;
-  }
+
   if (newOffsetRow !== offsetRow) {
     this.instance.update('offsetRow', newOffsetRow);
   }
@@ -60,14 +93,14 @@ WalkontableScroll.prototype.scrollHorizontal = function (delta) {
     var sum = cellOffset.left - tableOffset.left;
     var col = newOffsetColumn;
     while (sum < width && col < totalColumns) {
-      sum += this.instance.getSetting('columnWidth', col);
+      sum += this.instance.getSettingColumnWidth(col);
       col++;
     }
 
     if (sum < width) {
       while (newOffsetColumn > 0) {
         //if sum still less than available width, we cannot scroll that far (must move offset to the left)
-        sum += this.instance.getSetting('columnWidth', newOffsetColumn - 1);
+        sum += this.instance.getSettingColumnWidth(newOffsetColumn - 1);
         if (sum < width) {
           newOffsetColumn--;
         }
@@ -104,6 +137,9 @@ WalkontableScroll.prototype.scrollViewport = function (coords) {
   else if (coords[1] < 0 || coords[1] > totalColumns - 1) {
     throw new Error('column ' + coords[1] + ' does not exist');
   }
+
+  viewportRows = viewportRows || 1; //for cells larger than viewport it reports 0, but we still have to treat it like visible cell
+  viewportColumns = viewportColumns || 1;
 
   if (viewportRows < totalRows) {
     if (coords[0] > offsetRow + viewportRows - 1) {

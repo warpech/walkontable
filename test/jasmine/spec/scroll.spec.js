@@ -65,7 +65,7 @@ describe('WalkontableScroll', function () {
       height: 200,
       width: 100
     });
-    wt.scrollVertical(999).draw();
+    wt.draw().scrollVertical(999).draw();
     expect(wt.wtTable.getCoords($table.find('tbody tr:eq(0) td:eq(0)')[0])).toEqual([0, 0]);
   });
 
@@ -95,7 +95,7 @@ describe('WalkontableScroll', function () {
       height: 200,
       width: 100
     });
-    wt.scrollVertical(-1).draw();
+    wt.draw().scrollVertical(-1).draw();
     expect(wt.wtTable.getCoords($table.find('tbody tr:first td:first')[0])).toEqual([0, 0]);
   });
 
@@ -112,7 +112,7 @@ describe('WalkontableScroll', function () {
       height: 200,
       width: 100
     });
-    wt.scrollVertical(999).draw();
+    wt.draw().scrollVertical(999).draw();
     expect(wt.wtTable.getCoords($table.find('tbody tr:last td:first')[0])).toEqual([19, 0]);
   });
 
@@ -220,13 +220,13 @@ describe('WalkontableScroll', function () {
       offsetRow: 0,
       offsetColumn: 0,
       height: 200,
-      width: 100,
+      width: 130,
       frozenColumns: [function (row) {
         return row + 1;
       }]
     });
     wt.draw().scrollViewport([0, 2]).draw();
-    expect(wt.wtTable.getCoords($table.find('tbody tr:first td:last')[0])).toEqual([0, 2]);
+    expect(wt.wtTable.getCoords($table.find('tbody tr:first td:last')[0])).toEqual([0, 3]);
   });
 
   it("scroll viewport to a cell on far bottom should make it visible on bottom edge", function () {
@@ -334,7 +334,7 @@ describe('WalkontableScroll', function () {
       offsetColumn: 0,
       height: 260
     });
-    wt.scrollVertical(50).draw();
+    wt.draw().scrollVertical(50).draw();
     this.data.splice(30, this.data.length - 30);
     wt.draw();
     expect($table.find('tbody tr').length).toBeGreaterThan(9);

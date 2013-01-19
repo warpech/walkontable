@@ -20,39 +20,36 @@ function WalkontableScrollbar(instance, type) {
   this.slider.appendChild(this.handle);
   this.instance.wtTable.parent.appendChild(this.slider);
 
-  that.waitTimeout = null;
-  that.queuedAnimationCallback = null;
+  var firstRun = true;
+  this.dragTimeout = null;
+  var dragDelta;
+  var dragRender = function () {
+    that.onScroll(dragDelta);
+  };
+
   this.dragdealer = new Dragdealer(this.slider, {
     vertical: (type === 'vertical'),
     horizontal: (type === 'horizontal'),
     speed: 100,
     yPrecision: 100,
     animationCallback: function (x, y) {
-      that.skipRefresh = true;
-      var nextRender = function () {
-        if (that.skipRefresh) { //mouse button still not released
-          that.onScroll(type === 'vertical' ? y : x);
-        }
-        that.waitTimeout = setTimeout(function () {
-          that.waitTimeout = null;
-          if (that.queuedAnimationCallback) {
-            that.queuedAnimationCallback();
-            that.queuedAnimationCallback = null;
-          }
-        }, 100);
-      };
-      if (that.waitTimeout === null) {
-        nextRender();
+      if (firstRun) {
+        firstRun = false;
+        return;
       }
-      else {
-        that.queuedAnimationCallback = nextRender;
+      that.skipRefresh = true;
+      dragDelta = type === 'vertical' ? y : x;
+      if (that.dragTimeout === null) {
+        that.dragTimeout = setInterval(dragRender, 100);
+        dragRender();
       }
     },
     callback: function (x, y) {
       that.skipRefresh = false;
-      clearTimeout(that.waitTimeout);
-      that.waitTimeout = null;
-      that.onScroll(type === 'vertical' ? y : x);
+      clearInterval(that.dragTimeout);
+      that.dragTimeout = null;
+      dragDelta = type === 'vertical' ? y : x;
+      that.onScroll(dragDelta);
     }
   });
   that.skipRefresh = false;
@@ -65,6 +62,7 @@ WalkontableScrollbar.prototype.onScroll = function (delta) {
     var display = this.instance.getSetting(keys[2]);
     if (total > display) {
       var newOffset = Math.round(parseInt(this.handle.style[keys[3]]) * total / parseInt(this.slider.style[keys[4]])); //offset = handlePos * totalRows / offsetRows
+
       if (delta === 1) {
         if (this.type === 'vertical') {
           this.instance.scrollVertical(Infinity).draw();
@@ -74,8 +72,12 @@ WalkontableScrollbar.prototype.onScroll = function (delta) {
         }
       }
       else if (newOffset !== this.instance.getSetting(keys[0])) { //is new offset different than old offset
-        this.instance.update(keys[0], newOffset);
-        this.instance.draw();
+        if (this.type === 'vertical') {
+          this.instance.scrollVertical(newOffset - this.instance.getSetting(keys[0])).draw();
+        }
+        else {
+          this.instance.scrollHorizontal(newOffset - this.instance.getSetting(keys[0])).draw();
+        }
       }
       else {
         this.refresh();

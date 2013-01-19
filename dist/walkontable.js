@@ -1,7 +1,7 @@
 /**
  * walkontable 0.1
  * 
- * Date: Thu Jan 17 2013 18:25:15 GMT+0100 (Central European Standard Time)
+ * Date: Sat Jan 19 2013 14:42:31 GMT+0100 (Central European Standard Time)
 */
 
 function WalkontableBorder(instance, settings) {
@@ -207,8 +207,8 @@ function Walkontable(settings) {
     columnHeaders: null, //this must be a function in format: function (col, TH) {}
     totalRows: void 0,
     totalColumns: void 0,
-    width: null,
-    height: null,
+    width: 3000,
+    height: 3000,
     cellRenderer: function (row, column, TD) {
       var cellData = that.getSetting('data', row, column);
       if (cellData !== void 0) {
@@ -279,6 +279,7 @@ function Walkontable(settings) {
   }
 
   this.drawn = false;
+  this.rowHeightCache = [];
 }
 
 Walkontable.prototype.draw = function (selectionsOnly) {
@@ -297,8 +298,8 @@ Walkontable.prototype.draw = function (selectionsOnly) {
 
 Walkontable.prototype._doDraw = function (selectionsOnly) {
   selectionsOnly = selectionsOnly && this.settings.offsetRow === this.lastOffsetRow && this.settings.offsetColumn === this.lastOffsetColumn;
-  this.lastOffsetRow = this.settings.offsetRow;
-  this.lastOffsetColumn = this.settings.offsetColumn;
+  this.lastOffsetRow = this.getSetting('offsetRow');
+  this.lastOffsetColumn = this.getSetting('offsetColumn');
   this.wtTable.draw(selectionsOnly);
 };
 
@@ -348,6 +349,17 @@ Walkontable.prototype.getViewport = function () {
   ];
 };
 
+Walkontable.prototype.getSettingRowHeight = function (row) {
+  if (typeof this.rowHeightCache[row] !== 'undefined') {
+    return this.rowHeightCache[row];
+  }
+  return 20;
+};
+
+Walkontable.prototype.getSettingColumnWidth = function (column) {
+  return Math.min(200, this.getSetting('columnWidth', column));
+};
+
 Walkontable.prototype.getSetting = function (key, param1, param2, param3) {
   var estimated
     , calculated;
@@ -381,13 +393,13 @@ Walkontable.prototype.getSetting = function (key, param1, param2, param3) {
     return this.getSetting('totalColumns');
   }
   else if (key === 'viewportRows') {
-    if (this.wtTable.visibilityEdgeRow) {
+    if (this.wtTable.visibilityEdgeRow !== null) {
       return this.wtTable.visibilityEdgeRow - this.wtTable.visibilityStartRow;
     }
     return this.getSetting('displayRows');
   }
   else if (key === 'viewportColumns') {
-    if (this.wtTable.visibilityEdgeColumn) {
+    if (this.wtTable.visibilityEdgeColumn !== null) {
       return this.wtTable.visibilityEdgeColumn - this.wtTable.visibilityStartColumn;
     }
     return this.getSetting('displayColumns');
@@ -502,8 +514,6 @@ WalkontableDom.prototype.removeClass = function (ele, cls) {
 
  event.eventName = eventName;
  event.target = target;
-
- console.log("próbujem", event, element, target);
 
  if (document.createEvent) {
  target.dispatchEvent(event);
@@ -726,19 +736,52 @@ WalkontableScroll.prototype.refreshScrollbars = function () {
 };
 
 WalkontableScroll.prototype.scrollVertical = function (delta) {
-  var offsetRow = this.instance.getSetting('offsetRow')
-    , newOffsetRow
-    , max = this.instance.getSetting('totalRows') - this.instance.getSetting('viewportRows');
-  if (max < 0) {
-    max = 0;
+  if (!this.instance.drawn) {
+    throw new Error('scrollVertical can only be called after table was drawn to DOM');
   }
-  newOffsetRow = offsetRow + delta;
-  if (newOffsetRow < 0) {
+
+  var offsetRow = this.instance.getSetting('offsetRow')
+    , newOffsetRow = offsetRow + delta;
+
+  if (newOffsetRow > 0) {
+    var totalRows = this.instance.getSetting('totalRows');
+    var height = this.instance.getSetting('height') - this.instance.getSetting('scrollbarHeight');
+
+    if (newOffsetRow >= totalRows) {
+      newOffsetRow = totalRows - 1;
+    }
+
+    var TD = this.instance.wtTable.TBODY.firstChild.firstChild;
+    if (TD.nodeName === 'TH') {
+      TD = TD.nextSibling;
+    }
+    var cellOffset = this.instance.wtDom.offset(TD);
+    var tableOffset = this.instance.wtTable.tableOffset;
+
+    var sum = cellOffset.top - tableOffset.top;
+    var col = newOffsetRow;
+    while (sum < height && col < totalRows) {
+      sum += this.instance.getSettingRowHeight(col);
+      col++;
+    }
+
+    if (sum < height) {
+      while (newOffsetRow > 0) {
+        //if sum still less than available height, we cannot scroll that far (must move offset up)
+        sum += this.instance.getSettingRowHeight(newOffsetRow - 1);
+        if (sum < height) {
+          newOffsetRow--;
+        }
+        else {
+          break;
+        }
+      }
+    }
+  }
+  else if (newOffsetRow < 0) {
     newOffsetRow = 0;
   }
-  else if (newOffsetRow >= max) {
-    newOffsetRow = max;
-  }
+
   if (newOffsetRow !== offsetRow) {
     this.instance.update('offsetRow', newOffsetRow);
   }
@@ -771,14 +814,14 @@ WalkontableScroll.prototype.scrollHorizontal = function (delta) {
     var sum = cellOffset.left - tableOffset.left;
     var col = newOffsetColumn;
     while (sum < width && col < totalColumns) {
-      sum += this.instance.getSetting('columnWidth', col);
+      sum += this.instance.getSettingColumnWidth(col);
       col++;
     }
 
     if (sum < width) {
       while (newOffsetColumn > 0) {
         //if sum still less than available width, we cannot scroll that far (must move offset to the left)
-        sum += this.instance.getSetting('columnWidth', newOffsetColumn - 1);
+        sum += this.instance.getSettingColumnWidth(newOffsetColumn - 1);
         if (sum < width) {
           newOffsetColumn--;
         }
@@ -815,6 +858,9 @@ WalkontableScroll.prototype.scrollViewport = function (coords) {
   else if (coords[1] < 0 || coords[1] > totalColumns - 1) {
     throw new Error('column ' + coords[1] + ' does not exist');
   }
+
+  viewportRows = viewportRows || 1; //for cells larger than viewport it reports 0, but we still have to treat it like visible cell
+  viewportColumns = viewportColumns || 1;
 
   if (viewportRows < totalRows) {
     if (coords[0] > offsetRow + viewportRows - 1) {
@@ -870,39 +916,36 @@ function WalkontableScrollbar(instance, type) {
   this.slider.appendChild(this.handle);
   this.instance.wtTable.parent.appendChild(this.slider);
 
-  that.waitTimeout = null;
-  that.queuedAnimationCallback = null;
+  var firstRun = true;
+  this.dragTimeout = null;
+  var dragDelta;
+  var dragRender = function () {
+    that.onScroll(dragDelta);
+  };
+
   this.dragdealer = new Dragdealer(this.slider, {
     vertical: (type === 'vertical'),
     horizontal: (type === 'horizontal'),
     speed: 100,
     yPrecision: 100,
     animationCallback: function (x, y) {
-      that.skipRefresh = true;
-      var nextRender = function () {
-        if (that.skipRefresh) { //mouse button still not released
-          that.onScroll(type === 'vertical' ? y : x);
-        }
-        that.waitTimeout = setTimeout(function () {
-          that.waitTimeout = null;
-          if (that.queuedAnimationCallback) {
-            that.queuedAnimationCallback();
-            that.queuedAnimationCallback = null;
-          }
-        }, 100);
-      };
-      if (that.waitTimeout === null) {
-        nextRender();
+      if (firstRun) {
+        firstRun = false;
+        return;
       }
-      else {
-        that.queuedAnimationCallback = nextRender;
+      that.skipRefresh = true;
+      dragDelta = type === 'vertical' ? y : x;
+      if (that.dragTimeout === null) {
+        that.dragTimeout = setInterval(dragRender, 100);
+        dragRender();
       }
     },
     callback: function (x, y) {
       that.skipRefresh = false;
-      clearTimeout(that.waitTimeout);
-      that.waitTimeout = null;
-      that.onScroll(type === 'vertical' ? y : x);
+      clearInterval(that.dragTimeout);
+      that.dragTimeout = null;
+      dragDelta = type === 'vertical' ? y : x;
+      that.onScroll(dragDelta);
     }
   });
   that.skipRefresh = false;
@@ -915,6 +958,7 @@ WalkontableScrollbar.prototype.onScroll = function (delta) {
     var display = this.instance.getSetting(keys[2]);
     if (total > display) {
       var newOffset = Math.round(parseInt(this.handle.style[keys[3]]) * total / parseInt(this.slider.style[keys[4]])); //offset = handlePos * totalRows / offsetRows
+
       if (delta === 1) {
         if (this.type === 'vertical') {
           this.instance.scrollVertical(Infinity).draw();
@@ -924,8 +968,12 @@ WalkontableScrollbar.prototype.onScroll = function (delta) {
         }
       }
       else if (newOffset !== this.instance.getSetting(keys[0])) { //is new offset different than old offset
-        this.instance.update(keys[0], newOffset);
-        this.instance.draw();
+        if (this.type === 'vertical') {
+          this.instance.scrollVertical(newOffset - this.instance.getSetting(keys[0])).draw();
+        }
+        else {
+          this.instance.scrollHorizontal(newOffset - this.instance.getSetting(keys[0])).draw();
+        }
       }
       else {
         this.refresh();
@@ -1445,7 +1493,7 @@ WalkontableTable.prototype.refreshStretching = function () {
           if (this.instance.wtTable.TBODY.firstChild) {
             widths.push($(this.instance.wtTable.TBODY.firstChild.childNodes[c + frozenColumnsCount]).outerWidth()); //this is needed until td contents are clipped to be exactly the width of "columnWidth"
           }
-          //widths.push(this.instance.getSetting('columnWidth', offsetColumn + c));
+          //widths.push(this.instance.getSettingColumnWidth(offsetColumn + c));
           widthSum += widths[c];
         }
 
@@ -1610,9 +1658,9 @@ WalkontableTable.prototype._doDraw = function () {
   var width;
   if (this.instance.hasSetting('columnWidth')) {
     for (c = 0; c < displayTds; c++) {
-      width = this.instance.getSetting('columnWidth', offsetColumn + c);
+      width = this.instance.getSettingColumnWidth(offsetColumn + c);
       if (width) {
-        this.COLGROUP.childNodes[c + frozenColumnsCount].style.width = this.instance.getSetting('columnWidth', offsetColumn + c) + 'px';
+        this.COLGROUP.childNodes[c + frozenColumnsCount].style.width = width + 'px';
       }
       else {
         this.COLGROUP.childNodes[c + frozenColumnsCount].style.width = '';
@@ -1660,6 +1708,10 @@ WalkontableTable.prototype._doDraw = function () {
        TH.innerHTML = '';
        }*/
     }
+
+    var visibilityFullRow = null;
+    var visibilityFullColumn = null;
+
     for (c = 0; c < displayTds; c++) { //in future use nextSibling; http://jsperf.com/nextsibling-vs-indexed-childnodes
       if (this.visibilityEdgeColumn !== null && offsetColumn + c > this.visibilityEdgeColumn) {
         break;
@@ -1672,18 +1724,32 @@ WalkontableTable.prototype._doDraw = function () {
           TD.innerHTML = '&nbsp;';
         }
 
-        var visibility = this.isCellVisible(TD);
-        if (this.visibilityEdgeRow === null && this.visibilityEdgeColumn === null && visibility === 1 && c !== 0) {
+        var visibility = this.isCellVisible(offsetRow + r, offsetColumn + c, TD);
+        if (this.visibilityEdgeColumn === null && visibility & FLAG_VISIBLE_HORIZONTAL) {
+          visibilityFullColumn = offsetColumn + c;
+        }
+        else if (this.visibilityEdgeColumn === null && visibility & FLAG_PARTIALLY_VISIBLE_HORIZONTAL) {
           this.visibilityEdgeColumn = offsetColumn + c;
         }
-        if (this.visibilityEdgeRow === null && visibility === 1 && c === 0) {
+
+        if (this.visibilityEdgeRow === null && visibility & FLAG_VISIBLE_VERTICAL) {
+          visibilityFullRow = offsetRow + r;
+        }
+        else if (this.visibilityEdgeRow === null && visibility & FLAG_PARTIALLY_VISIBLE_VERTICAL) {
           this.visibilityEdgeRow = offsetRow + r;
         }
       }
     }
-    if (this.visibilityEdgeRow !== null && offsetRow + r > this.visibilityEdgeRow) {
-      break;
-    }
+    /*if (this.visibilityEdgeRow !== null && offsetRow + r > this.visibilityEdgeRow) {
+     break;
+     }*/
+  }
+
+  if (this.visibilityEdgeRow === null) {
+    this.visibilityEdgeRow = visibilityFullRow + 1;
+  }
+  if (this.visibilityEdgeColumn === null) {
+    this.visibilityEdgeColumn = visibilityFullColumn + 1;
   }
 
   this.refreshSelections();
@@ -1709,16 +1775,25 @@ WalkontableTable.prototype.refreshSelections = function (selectionsOnly) {
 };
 
 WalkontableTable.prototype.recalcViewportCells = function () {
-  if (this.instance.wtScroll.wtScrollbarV.visible && this.visibilityEdgeColumnRemainder <= this.instance.getSetting('scrollbarHeight')) {
+  if (this.instance.wtScroll.wtScrollbarV.visible && this.visibilityEdgeColumnRemainder <= this.instance.getSetting('scrollbarWidth')) {
     this.visibilityEdgeColumn--;
+    this.visibilityEdgeColumnRemainder = Infinity;
   }
-  if (this.instance.wtScroll.wtScrollbarH.visible && this.visibilityEdgeRowRemainder <= this.instance.getSetting('scrollbarWidth')) {
+  if (this.instance.wtScroll.wtScrollbarH.visible && this.visibilityEdgeRowRemainder <= this.instance.getSetting('scrollbarHeight')) {
     this.visibilityEdgeRow--;
+    this.visibilityEdgeRowRemainder = Infinity;
   }
 };
 
-WalkontableTable.prototype.isCellVisible = function (TD) {
-  var out
+var FLAG_VISIBLE_HORIZONTAL = 0x1; // 000001
+var FLAG_VISIBLE_VERTICAL = 0x2; // 000010
+var FLAG_PARTIALLY_VISIBLE_HORIZONTAL = 0x4; // 000100
+var FLAG_PARTIALLY_VISIBLE_VERTICAL = 0x8; // 001000
+var FLAG_NOT_VISIBLE_HORIZONTAL = 0x16; // 010000
+var FLAG_NOT_VISIBLE_VERTICAL = 0x32; // 100000
+
+WalkontableTable.prototype.isCellVisible = function (r, c, TD) {
+  var out = 0
     , scrollV = this.instance.getSetting('scrollV')
     , scrollH = this.instance.getSetting('scrollH')
     , cellOffset = this.wtDom.offset(TD)
@@ -1731,29 +1806,37 @@ WalkontableTable.prototype.isCellVisible = function (TD) {
     , tableWidth = this.instance.hasSetting('width') ? this.instance.getSetting('width') : Infinity
     , tableHeight = this.instance.hasSetting('height') ? this.instance.getSetting('height') : Infinity;
 
+  this.instance.rowHeightCache[r] = height;
+
   /**
    * Legend:
-   * 0 - not visible
-   * 1 - partially visible
-   * 2 - visible
+   * 0 - not visible vertically
+   * 1 - not visible horizontally
+   * 2 - partially visible vertically
+   * 3 - partially visible horizontally
+   * 4 - visible
    */
 
   if (innerOffsetTop > tableHeight) {
-    out = 0;
-  }
-  else if (innerOffsetLeft > tableWidth) {
-    out = 0;
+    out |= FLAG_NOT_VISIBLE_VERTICAL;
   }
   else if (innerOffsetTop + height > tableHeight) {
     this.visibilityEdgeRowRemainder = tableHeight - innerOffsetTop;
-    out = 1;
+    out |= FLAG_PARTIALLY_VISIBLE_VERTICAL;
+  }
+  else {
+    out |= FLAG_VISIBLE_VERTICAL;
+  }
+
+  if (innerOffsetLeft > tableWidth) {
+    out |= FLAG_NOT_VISIBLE_HORIZONTAL;
   }
   else if (innerOffsetLeft + width > tableWidth) {
     this.visibilityEdgeColumnRemainder = tableWidth - innerOffsetLeft;
-    out = 1;
+    out |= FLAG_PARTIALLY_VISIBLE_HORIZONTAL;
   }
   else {
-    out = 2;
+    out |= FLAG_VISIBLE_HORIZONTAL;
   }
 
   return out;

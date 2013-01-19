@@ -94,8 +94,6 @@ WalkontableDom.prototype.removeClass = function (ele, cls) {
  event.eventName = eventName;
  event.target = target;
 
- console.log("próbujem", event, element, target);
-
  if (document.createEvent) {
  target.dispatchEvent(event);
  } else {
