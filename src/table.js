@@ -123,6 +123,10 @@ WalkontableTable.prototype.refreshStretching = function () {
     , frozenColumns = this.instance.getSetting('frozenColumns')
     , frozenColumnsCount = frozenColumns ? frozenColumns.length : 0;
 
+  if (!this.instance.hasSetting('columnWidth') || !this.instance.getSetting('totalRows')) {
+    return;
+  }
+
   if (stretchH === 'hybrid') {
     if (this.instance.wtScroll.wtScrollbarH.visible) {
       stretchH = 'last';
@@ -132,52 +136,62 @@ WalkontableTable.prototype.refreshStretching = function () {
     }
   }
 
+  var TD = this.instance.wtTable.TBODY.firstChild.firstChild;
+  if (TD.nodeName === 'TH') {
+    TD = TD.nextSibling;
+  }
+  var cellOffset = this.instance.wtDom.offset(TD)
+    , tableOffset = this.instance.wtTable.tableOffset
+    , rowHeaderWidth = cellOffset.left - tableOffset.left
+    , widths = []
+    , widthSum = 0
+    , c;
+  for (c = 0; c < displayTds; c++) {
+    widths.push(this.instance.getSetting('columnWidth', offsetColumn + c));
+    widthSum += widths[c];
+  }
+  var domWidth = widthSum + rowHeaderWidth;
+
   if (stretchH === 'all' || stretchH === 'last') {
     var containerWidth = this.instance.getSetting('width');
     if (this.instance.wtScroll.wtScrollbarV.visible) {
       containerWidth -= this.instance.getSetting('scrollbarWidth');
     }
 
-    var domWidth = $(this.instance.wtTable.TABLE).outerWidth();
     var diff = containerWidth - domWidth;
     if (diff > 0) {
-      var widths = [];
-      var widthSum = 0;
-      if (this.instance.hasSetting('columnWidth')) {
-        for (var c = 0; c < displayTds; c++) {
-          if (this.instance.wtTable.TBODY.firstChild) {
-            widths.push($(this.instance.wtTable.TBODY.firstChild.childNodes[c + frozenColumnsCount]).outerWidth()); //this is needed until td contents are clipped to be exactly the width of "columnWidth"
-          }
-          //widths.push(this.instance.getSetting('columnWidth', offsetColumn + c));
-          widthSum += widths[c];
-        }
+      if (stretchH === 'all') {
+        var newWidth;
+        var remainingDiff = diff;
+        var ratio = diff / widthSum;
 
-        if (widthSum) {
-          if (stretchH === 'all') {
-            var newWidth;
-            var remainingDiff = diff;
-            var ratio = diff / widthSum;
-
-            for (c = 0; c < displayTds; c++) {
-              if (widths[c]) {
-                if (c === displayTds - 1) {
-                  newWidth = widths[c] + remainingDiff;
-                }
-                else {
-                  newWidth = widths[c] + Math.floor(ratio * widths[c]);
-                  remainingDiff -= Math.floor(ratio * widths[c]);
-                }
-              }
-              this.instance.wtTable.COLGROUP.childNodes[c + frozenColumnsCount].style.width = newWidth + 'px';
+        for (c = 0; c < displayTds; c++) {
+          if (widths[c]) {
+            if (c === displayTds - 1) {
+              newWidth = widths[c] + remainingDiff;
+            }
+            else {
+              newWidth = widths[c] + Math.floor(ratio * widths[c]);
+              remainingDiff -= Math.floor(ratio * widths[c]);
             }
           }
-          else {
-            if (widths[widths.length - 1]) {
-              this.instance.wtTable.COLGROUP.lastChild.style.width = widths[widths.length - 1] + diff + 'px';
-            }
-          }
+          widths[c] = newWidth;
         }
       }
+      else {
+        if (widths[widths.length - 1]) {
+          widths[widths.length - 1] = widths[widths.length - 1] + diff;
+        }
+      }
+    }
+  }
+
+  for (c = 0; c < displayTds; c++) {
+    if (widths[c]) {
+      this.COLGROUP.childNodes[c + frozenColumnsCount].style.width = widths[c] + 'px';
+    }
+    else {
+      this.COLGROUP.childNodes[c + frozenColumnsCount].style.width = '';
     }
   }
 };
@@ -255,7 +269,7 @@ WalkontableTable.prototype.draw = function (selectionsOnly) {
     this.tableOffset = this.wtDom.offset(this.TABLE);
     //this.TABLE.removeChild(this.TBODY); //possible future optimization - http://jsperf.com/table-scrolling/9
     this.adjustAvailableNodes();
-    this._doDraw(selectionsOnly);
+    this._doDraw();
     //this.TABLE.appendChild(this.TBODY);
   }
 
@@ -272,8 +286,6 @@ WalkontableTable.prototype.draw = function (selectionsOnly) {
   }
 
   this.instance.drawn = true;
-
-  //this.instance.scrollViewport([this.instance.getSetting('offsetRow'), this.instance.getSetting('offsetColumn')]); //needed by WalkontableScroll -> remove row from the last scroll page should scroll viewport a row up if needed
   return this;
 };
 
@@ -307,19 +319,6 @@ WalkontableTable.prototype._doDraw = function () {
     }
     else {
       this.wtDom.removeClass(this.COLGROUP.childNodes[c], 'rowHeader');
-    }
-  }
-
-  var width;
-  if (this.instance.hasSetting('columnWidth')) {
-    for (c = 0; c < displayTds; c++) {
-      width = this.instance.getSetting('columnWidth', offsetColumn + c);
-      if (width) {
-        this.COLGROUP.childNodes[c + frozenColumnsCount].style.width = width + 'px';
-      }
-      else {
-        this.COLGROUP.childNodes[c + frozenColumnsCount].style.width = '';
-      }
     }
   }
 
@@ -406,16 +405,13 @@ WalkontableTable.prototype._doDraw = function () {
   if (this.visibilityEdgeColumn === null) {
     this.visibilityEdgeColumn = visibilityFullColumn + 1;
   }
-
-  this.refreshSelections();
 };
 
 WalkontableTable.prototype.refreshPositions = function (selectionsOnly) {
-  if (selectionsOnly) { //otherwise it was already rendered by _doDraw
-    this.refreshSelections(selectionsOnly);
-  }
-
   this.instance.wtScroll.refreshScrollbars();
+  this.refreshHiderDimensions();
+  this.refreshStretching();
+  this.refreshSelections(selectionsOnly);
 };
 
 WalkontableTable.prototype.refreshSelections = function (selectionsOnly) {

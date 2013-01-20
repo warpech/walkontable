@@ -10,8 +10,6 @@ WalkontableScroll.prototype.refreshScrollbars = function () {
   this.instance.wtTable.recalcViewportCells();
   this.wtScrollbarH.refresh();
   this.wtScrollbarV.refresh();
-  this.instance.wtTable.refreshHiderDimensions();
-  this.instance.wtTable.refreshStretching();
 };
 
 WalkontableScroll.prototype.scrollVertical = function (delta) {
