@@ -322,6 +322,8 @@ WalkontableTable.prototype._doDraw = function () {
     }
   }
 
+  this.refreshStretching(); //needed here or otherwise scrollbarH is not shown
+
   //draw THEAD
   if (frozenColumnsCount && this.instance.hasSetting('columnHeaders')) {
     for (c = 0; c < frozenColumnsCount; c++) {
