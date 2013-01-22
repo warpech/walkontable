@@ -119,7 +119,8 @@ WalkontableScrollbar.prototype.prepare = function () {
     scroll = this.instance.getSetting('scrollH');
   }
 
-  if ((ratio === 1 && scroll === 'auto') || scroll === 'none') {
+  if (((ratio === 1 || isNaN(ratio)) && scroll === 'auto') || scroll === 'none') {
+    //isNaN is needed because ratio equals NaN when totalRows/totalColumns equals 0
     this.visible = false;
   }
   else {

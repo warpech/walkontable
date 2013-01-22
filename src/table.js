@@ -123,7 +123,7 @@ WalkontableTable.prototype.refreshStretching = function () {
     , frozenColumns = this.instance.getSetting('frozenColumns')
     , frozenColumnsCount = frozenColumns ? frozenColumns.length : 0;
 
-  if (!this.instance.hasSetting('columnWidth') || !this.instance.getSetting('totalRows')) {
+  if (!this.instance.hasSetting('columnWidth')) {
     return;
   }
 
@@ -136,10 +136,22 @@ WalkontableTable.prototype.refreshStretching = function () {
     }
   }
 
-  var TD = this.instance.wtTable.TBODY.firstChild.firstChild;
-  if (TD.nodeName === 'TH') {
+  var TD;
+  if (this.instance.wtTable.TBODY.firstChild && this.instance.wtTable.TBODY.firstChild.firstChild) {
+    TD = this.instance.wtTable.TBODY.firstChild.firstChild;
+  }
+  else if (this.instance.wtTable.THEAD.firstChild && this.instance.wtTable.THEAD.firstChild.firstChild) {
+    TD = this.instance.wtTable.THEAD.firstChild.firstChild;
+  }
+
+  if (frozenColumnsCount) {
     TD = TD.nextSibling;
   }
+
+  if (!TD) {
+    return;
+  }
+
   var cellOffset = this.instance.wtDom.offset(TD)
     , tableOffset = this.instance.wtTable.tableOffset
     , rowHeaderWidth = cellOffset.left - tableOffset.left
