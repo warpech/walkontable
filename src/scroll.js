@@ -22,7 +22,7 @@ WalkontableScroll.prototype.scrollVertical = function (delta) {
 
   if (newOffsetRow > 0) {
     var totalRows = this.instance.getSetting('totalRows');
-    var height = this.instance.getSetting('height') - this.instance.getSetting('scrollbarHeight');
+    var height = (this.instance.getSetting('height') || Infinity) - this.instance.getSetting('scrollbarHeight'); //Infinity is needed, otherwise you could scroll a table that did not have height specified
 
     if (newOffsetRow >= totalRows) {
       newOffsetRow = totalRows - 1;
@@ -151,7 +151,7 @@ WalkontableScroll.prototype.scrollViewport = function (coords) {
     }
   }
   else {
-    this.scrollVertical(coords[0] - offsetRow);
+    //this.scrollVertical(coords[0] - offsetRow); //this should not be needed anymore
   }
 
   if (viewportColumns > 0 && viewportColumns < totalColumns) {
@@ -166,7 +166,7 @@ WalkontableScroll.prototype.scrollViewport = function (coords) {
     }
   }
   else {
-    this.scrollHorizontal(coords[1] - offsetColumn);
+    //this.scrollHorizontal(coords[1] - offsetColumn); //this should not be needed anymore
   }
 
   return this.instance;

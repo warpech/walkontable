@@ -22,8 +22,8 @@ function WalkontableSettings(instance, settings) {
     columnHeaders: null, //this must be a function in format: function (col, TH) {}
     totalRows: void 0,
     totalColumns: void 0,
-    width: 3000,
-    height: 3000,
+    width: null,
+    height: null,
     cellRenderer: function (row, column, TD) {
       var cellData = that.getSetting('data', row, column);
       if (cellData !== void 0) {
