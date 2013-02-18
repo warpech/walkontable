@@ -296,10 +296,40 @@ describe('WalkontableSelection', function () {
 
     wt.selections.area.add([0, 0]);
     wt.selections.area.add([0, 1]);
-    wt.draw();
+    wt.draw(true);
 
     expect($table.find('.highlightRow').length).toEqual(2);
     expect($table.find('.highlightColumn').length).toEqual(18);
+  });
+
+  it("should highlight cells in selected row & column, when same class is shared between 2 selection definitions", function () {
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      offsetRow: 0,
+      offsetColumn: 0,
+      height: 200,
+      width: 300,
+      selections: {
+        current: {
+          highlightRowClassName: 'highlightRow',
+          highlightColumnClassName: 'highlightColumn'
+        },
+        area: {
+          highlightRowClassName: 'highlightRow',
+          highlightColumnClassName: 'highlightColumn'
+        }
+      }
+    });
+    wt.draw();
+
+    wt.selections.current.add([0, 0]);
+    wt.draw(true);
+
+    expect($table.find('.highlightRow').length).toEqual(3);
+    expect($table.find('.highlightColumn').length).toEqual(9);
   });
 
   it("should remove highlight when selection is deselected", function () {
