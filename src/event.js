@@ -4,7 +4,7 @@ function WalkontableEvent(instance) {
   //reference to instance
   this.instance = instance;
 
-  this.wtDom = new WalkontableDom();
+  this.wtDom = this.instance.wtDom;
 
   var dblClickOrigin = [null, null, null, null]
     , dblClickTimeout = null;

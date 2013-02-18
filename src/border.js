@@ -2,7 +2,7 @@ function WalkontableBorder(instance, settings) {
   //reference to instance
   this.instance = instance;
   this.settings = settings;
-  this.wtDom = new WalkontableDom();
+  this.wtDom = this.instance.wtDom;
 
   this.main = document.createElement("div");
   this.main.style.position = 'absolute';

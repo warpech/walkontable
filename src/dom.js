@@ -1,4 +1,8 @@
-function WalkontableDom() {
+function WalkontableDom(instance) {
+  if (instance) {
+    this.instance = instance;
+    this.instance.wtDomCache = [];
+  }
 }
 
 //goes up the DOM tree (including given element) until it finds an element that matches the nodeName
@@ -20,6 +24,50 @@ WalkontableDom.prototype.prevSiblings = function (elem) {
     }
   }
   return out;
+};
+
+WalkontableDom.prototype.tdHasClass = function (trIndex, tdIndex, cls) {
+  return !!(this.instance.wtDomCache[trIndex] && this.instance.wtDomCache[trIndex][tdIndex] && this.instance.wtDomCache[trIndex][tdIndex][cls]);
+};
+
+WalkontableDom.prototype.tdAddClass = function (trIndex, tdIndex, cls) {
+  if (!this.tdHasClass(trIndex, tdIndex, cls)) {
+    if (!this.instance.wtDomCache[trIndex]) {
+      this.instance.wtDomCache[trIndex] = [];
+    }
+    if (!this.instance.wtDomCache[trIndex][tdIndex]) {
+      this.instance.wtDomCache[trIndex][tdIndex] = {};
+      this.instance.wtDomCache[trIndex][tdIndex]._node = this.instance.wtTable.getCell([trIndex + this.instance.getSetting('offsetRow'), tdIndex + this.instance.getSetting('offsetColumn')]);
+    }
+    this.instance.wtDomCache[trIndex][tdIndex]._node.className += " " + cls;
+    this.instance.wtDomCache[trIndex][tdIndex][cls] = true;
+  }
+};
+
+WalkontableDom.prototype.tdRemoveClass = function (trIndex, tdIndex, cls) {
+  if (this.tdHasClass(trIndex, tdIndex, cls)) {
+    var reg = new RegExp('(\\s|^)' + cls + '(\\s|$)');
+    this.instance.wtDomCache[trIndex][tdIndex]._node.className = this.instance.wtDomCache[trIndex][tdIndex]._node.className.replace(reg, ' ').replace(/^\s\s*/, '').replace(/\s\s*$/, ''); //last 2 replaces do right trim (see http://blog.stevenlevithan.com/archives/faster-trim-javascript)
+    this.instance.wtDomCache[trIndex][tdIndex][cls] = false;
+  }
+};
+
+WalkontableDom.prototype.tdResetCache = function () {
+  for (var i in this.instance.wtDomCache) {
+    if (this.instance.wtDomCache.hasOwnProperty(i)) {
+      for (var j in this.instance.wtDomCache[i]) {
+        if (this.instance.wtDomCache[i].hasOwnProperty(j)) {
+          for (var k in this.instance.wtDomCache[i][j]) {
+            if (this.instance.wtDomCache[i][j].hasOwnProperty(k)) {
+              if (k !== '_node') {
+                this.instance.wtDomCache[i][j][k] = false;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 };
 
 //http://snipplr.com/view/3561/addclass-removeclass-hasclass/

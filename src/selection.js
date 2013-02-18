@@ -5,22 +5,6 @@ function WalkontableSelection(instance, settings) {
   if (settings.border) {
     this.border = new WalkontableBorder(instance, settings);
   }
-  this.onAdd = function (coords) {
-    var TD = instance.wtTable.getCell(coords);
-    if (typeof TD === 'object') {
-      if (settings.className) {
-        instance.wtDom.addClass(TD, settings.className);
-      }
-    }
-  };
-  /*this.onRemove = function (coords) {
-   var TD = instance.wtTable.getCell(coords);
-   if (typeof TD === 'object') {
-   if (settings.className) {
-   instance.wtDom.removeClass(TD, settings.className);
-   }
-   }
-   };*/
 }
 
 WalkontableSelection.prototype.add = function (coords) {
@@ -90,44 +74,41 @@ WalkontableSelection.prototype.getCorners = function () {
 };
 
 WalkontableSelection.prototype.draw = function (selectionsOnly) {
-  var TDs, TD, i, ilen, corners, r, c;
+  var corners, r, c;
 
-  ilen = this.selected.length;
-  if (ilen) {
+  var offsetRow = this.instance.getSetting('offsetRow')
+    , lastVisibleRow = offsetRow + this.instance.getSetting('displayRows') - 1
+    , offsetColumn = this.instance.getSetting('offsetColumn')
+    , lastVisibleColumn = offsetColumn + this.instance.getSetting('displayColumns') - 1;
+
+  if (this.selected.length) {
     corners = this.getCorners();
-    var offsetRow = this.instance.getSetting('offsetRow')
-      , lastVisibleRow = offsetRow + this.instance.getSetting('displayRows') - 1
-      , offsetColumn = this.instance.getSetting('offsetColumn')
-      , lastVisibleColumn = offsetColumn + this.instance.getSetting('displayColumns') - 1
-      , currentRowClassName = this.instance.getSetting('currentRowClassName')
-      , currentColumnClassName = this.instance.getSetting('currentColumnClassName');
 
     for (r = offsetRow; r <= lastVisibleRow; r++) {
       for (c = offsetColumn; c <= lastVisibleColumn; c++) {
-        TD = this.instance.wtTable.getCell([r, c]);
         if (r >= corners[0] && r <= corners[2] && c >= corners[1] && c <= corners[3]) {
           //selected cell
-          currentRowClassName && this.instance.wtDom.removeClass(TD, currentRowClassName);
-          currentColumnClassName && this.instance.wtDom.removeClass(TD, currentColumnClassName);
-          this.onAdd([r, c], TD);
+          this.settings.highlightRowClassName && this.instance.wtDom.tdRemoveClass(r - offsetRow, c - offsetColumn, this.settings.highlightRowClassName);
+          this.settings.highlightColumnClassName && this.instance.wtDom.tdRemoveClass(r - offsetRow, c - offsetColumn, this.settings.highlightColumnClassName);
+          this.settings.className && this.instance.wtDom.tdAddClass(r - offsetRow, c - offsetColumn, this.settings.className);
         }
         else if (r >= corners[0] && r <= corners[2]) {
           //selection is in this row
-          currentColumnClassName && this.instance.wtDom.removeClass(TD, currentColumnClassName);
-          currentRowClassName && this.instance.wtDom.addClass(TD, currentRowClassName);
-          this.instance.wtDom.removeClass(TD, this.settings.className);
+          this.settings.highlightColumnClassName && this.instance.wtDom.tdRemoveClass(r - offsetRow, c - offsetColumn, this.settings.highlightColumnClassName);
+          this.settings.highlightRowClassName && this.instance.wtDom.tdAddClass(r - offsetRow, c - offsetColumn, this.settings.highlightRowClassName);
+          this.settings.className && this.instance.wtDom.tdRemoveClass(r - offsetRow, c - offsetColumn, this.settings.className);
         }
         else if (c >= corners[1] && c <= corners[3]) {
           //selection is in this column
-          currentRowClassName && this.instance.wtDom.removeClass(TD, currentRowClassName);
-          currentColumnClassName && this.instance.wtDom.addClass(TD, currentColumnClassName);
-          this.instance.wtDom.removeClass(TD, this.settings.className);
+          this.settings.highlightRowClassName && this.instance.wtDom.tdRemoveClass(r - offsetRow, c - offsetColumn, this.settings.highlightRowClassName);
+          this.settings.highlightColumnClassName && this.instance.wtDom.tdAddClass(r - offsetRow, c - offsetColumn, this.settings.highlightColumnClassName);
+          this.settings.className && this.instance.wtDom.tdRemoveClass(r - offsetRow, c - offsetColumn, this.settings.className);
         }
         else {
           //no selection
-          currentRowClassName && this.instance.wtDom.removeClass(TD, currentRowClassName);
-          currentColumnClassName && this.instance.wtDom.removeClass(TD, currentColumnClassName);
-          this.instance.wtDom.removeClass(TD, this.settings.className);
+          this.settings.highlightRowClassName && this.instance.wtDom.tdRemoveClass(r - offsetRow, c - offsetColumn, this.settings.highlightRowClassName);
+          this.settings.highlightColumnClassName && this.instance.wtDom.tdRemoveClass(r - offsetRow, c - offsetColumn, this.settings.highlightColumnClassName);
+          this.settings.className && this.instance.wtDom.tdRemoveClass(r - offsetRow, c - offsetColumn, this.settings.className);
         }
       }
     }
@@ -135,12 +116,16 @@ WalkontableSelection.prototype.draw = function (selectionsOnly) {
     this.border && this.border.appear(corners);
   }
   else {
-    if (selectionsOnly && this.settings.className) {
-      TDs = this.instance.wtTable.TABLE.getElementsByTagName('TD');
-      for (i = 0, ilen = TDs.length; i < ilen; i++) {
-        this.instance.wtDom.removeClass(TDs[i], this.settings.className);
+    if (selectionsOnly) {
+      for (r = 0; r <= lastVisibleRow - offsetRow; r++) {
+        for (c = 0; c <= lastVisibleColumn - offsetColumn; c++) {
+          this.settings.highlightRowClassName && this.instance.wtDom.tdRemoveClass(r, c, this.settings.highlightRowClassName);
+          this.settings.highlightColumnClassName && this.instance.wtDom.tdRemoveClass(r, c, this.settings.highlightColumnClassName);
+          this.settings.className && this.instance.wtDom.tdRemoveClass(r, c, this.settings.className);
+        }
       }
     }
+
     this.border && this.border.disappear();
   }
 };

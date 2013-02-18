@@ -3,11 +3,11 @@ function Walkontable(settings) {
 
   //bootstrap from settings
   this.wtSettings = new WalkontableSettings(this, settings);
+  this.wtDom = new WalkontableDom(this);
   this.wtTable = new WalkontableTable(this);
   this.wtScroll = new WalkontableScroll(this);
   this.wtWheel = new WalkontableWheel(this);
   this.wtEvent = new WalkontableEvent(this);
-  this.wtDom = new WalkontableDom();
 
   //find original headers
   if (this.wtTable.THEAD.childNodes.length && this.wtTable.THEAD.childNodes[0].childNodes.length) {

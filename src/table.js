@@ -2,7 +2,7 @@ function WalkontableTable(instance) {
   //reference to instance
   this.instance = instance;
   this.TABLE = this.instance.getSetting('table');
-  this.wtDom = new WalkontableDom();
+  this.wtDom = this.instance.wtDom;
   this.wtDom.removeTextNodes(this.TABLE);
 
   this.hasEmptyCellProblem = ($.browser.msie && (parseInt($.browser.version, 10) <= 7));
@@ -250,9 +250,6 @@ WalkontableTable.prototype.adjustAvailableNodes = function () {
     for (c = 0; c < frozenColumnsCount; c++) {
       TR.appendChild(document.createElement('TH'));
     }
-    for (c = 0; c < displayTds; c++) {
-      TR.appendChild(document.createElement('TD'));
-    }
     this.TBODY.appendChild(TR);
     this.tbodyChildrenLength++;
   }
@@ -379,6 +376,7 @@ WalkontableTable.prototype._doDraw = function () {
 
     var visibilityFullRow = null;
     var visibilityFullColumn = null;
+    this.wtDom.tdResetCache();
 
     for (c = 0; c < displayTds; c++) { //in future use nextSibling; http://jsperf.com/nextsibling-vs-indexed-childnodes
       if (this.visibilityEdgeColumn !== null && offsetColumn + c > this.visibilityEdgeColumn) {

@@ -274,4 +274,61 @@ describe('WalkontableSelection', function () {
 
     expect(wt.selections.current.getSelected().length).toEqual(0);
   });
+
+  it("should highlight cells in selected row & column", function () {
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      offsetRow: 0,
+      offsetColumn: 0,
+      height: 200,
+      width: 300,
+      selections: {
+        area: {
+          highlightRowClassName: 'highlightRow',
+          highlightColumnClassName: 'highlightColumn'
+        }
+      }
+    });
+    wt.draw();
+
+    wt.selections.area.add([0, 0]);
+    wt.selections.area.add([0, 1]);
+    wt.draw();
+
+    expect($table.find('.highlightRow').length).toEqual(2);
+    expect($table.find('.highlightColumn').length).toEqual(18);
+  });
+
+  it("should remove highlight when selection is deselected", function () {
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      offsetRow: 0,
+      offsetColumn: 0,
+      height: 200,
+      width: 300,
+      selections: {
+        area: {
+          highlightRowClassName: 'highlightRow',
+          highlightColumnClassName: 'highlightColumn'
+        }
+      }
+    });
+    wt.draw();
+
+    wt.selections.area.add([0, 0]);
+    wt.selections.area.add([0, 1]);
+    wt.draw();
+
+    wt.selections.area.clear();
+    wt.draw();
+
+    expect($table.find('.highlightRow').length).toEqual(0);
+    expect($table.find('.highlightColumn').length).toEqual(0);
+  });
 });

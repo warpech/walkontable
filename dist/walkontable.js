@@ -1,14 +1,14 @@
 /**
  * walkontable 0.1
  * 
- * Date: Wed Jan 23 2013 01:38:29 GMT+0100 (Central European Standard Time)
+ * Date: Mon Feb 18 2013 19:03:29 GMT+0100 (Central European Standard Time)
 */
 
 function WalkontableBorder(instance, settings) {
   //reference to instance
   this.instance = instance;
   this.settings = settings;
-  this.wtDom = new WalkontableDom();
+  this.wtDom = this.instance.wtDom;
 
   this.main = document.createElement("div");
   this.main.style.position = 'absolute';
@@ -188,11 +188,11 @@ function Walkontable(settings) {
 
   //bootstrap from settings
   this.wtSettings = new WalkontableSettings(this, settings);
+  this.wtDom = new WalkontableDom(this);
   this.wtTable = new WalkontableTable(this);
   this.wtScroll = new WalkontableScroll(this);
   this.wtWheel = new WalkontableWheel(this);
   this.wtEvent = new WalkontableEvent(this);
-  this.wtDom = new WalkontableDom();
 
   //find original headers
   if (this.wtTable.THEAD.childNodes.length && this.wtTable.THEAD.childNodes[0].childNodes.length) {
@@ -284,7 +284,11 @@ Walkontable.prototype.getSetting = function (key, param1, param2, param3) {
 Walkontable.prototype.hasSetting = function (key) {
   return this.wtSettings.has(key);
 };
-function WalkontableDom() {
+function WalkontableDom(instance) {
+  if (instance) {
+    this.instance = instance;
+    this.instance.wtDomCache = [];
+  }
 }
 
 //goes up the DOM tree (including given element) until it finds an element that matches the nodeName
@@ -306,6 +310,50 @@ WalkontableDom.prototype.prevSiblings = function (elem) {
     }
   }
   return out;
+};
+
+WalkontableDom.prototype.tdHasClass = function (trIndex, tdIndex, cls) {
+  return !!(this.instance.wtDomCache[trIndex] && this.instance.wtDomCache[trIndex][tdIndex] && this.instance.wtDomCache[trIndex][tdIndex][cls]);
+};
+
+WalkontableDom.prototype.tdAddClass = function (trIndex, tdIndex, cls) {
+  if (!this.tdHasClass(trIndex, tdIndex, cls)) {
+    if (!this.instance.wtDomCache[trIndex]) {
+      this.instance.wtDomCache[trIndex] = [];
+    }
+    if (!this.instance.wtDomCache[trIndex][tdIndex]) {
+      this.instance.wtDomCache[trIndex][tdIndex] = {};
+      this.instance.wtDomCache[trIndex][tdIndex]._node = this.instance.wtTable.getCell([trIndex + this.instance.getSetting('offsetRow'), tdIndex + this.instance.getSetting('offsetColumn')]);
+    }
+    this.instance.wtDomCache[trIndex][tdIndex]._node.className += " " + cls;
+    this.instance.wtDomCache[trIndex][tdIndex][cls] = true;
+  }
+};
+
+WalkontableDom.prototype.tdRemoveClass = function (trIndex, tdIndex, cls) {
+  if (this.tdHasClass(trIndex, tdIndex, cls)) {
+    var reg = new RegExp('(\\s|^)' + cls + '(\\s|$)');
+    this.instance.wtDomCache[trIndex][tdIndex]._node.className = this.instance.wtDomCache[trIndex][tdIndex]._node.className.replace(reg, ' ').replace(/^\s\s*/, '').replace(/\s\s*$/, ''); //last 2 replaces do right trim (see http://blog.stevenlevithan.com/archives/faster-trim-javascript)
+    this.instance.wtDomCache[trIndex][tdIndex][cls] = false;
+  }
+};
+
+WalkontableDom.prototype.tdResetCache = function () {
+  for (var i in this.instance.wtDomCache) {
+    if (this.instance.wtDomCache.hasOwnProperty(i)) {
+      for (var j in this.instance.wtDomCache[i]) {
+        if (this.instance.wtDomCache[i].hasOwnProperty(j)) {
+          for (var k in this.instance.wtDomCache[i][j]) {
+            if (this.instance.wtDomCache[i][j].hasOwnProperty(k)) {
+              if (k !== '_node') {
+                this.instance.wtDomCache[i][j][k] = false;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 };
 
 //http://snipplr.com/view/3561/addclass-removeclass-hasclass/
@@ -447,7 +495,7 @@ function WalkontableEvent(instance) {
   //reference to instance
   this.instance = instance;
 
-  this.wtDom = new WalkontableDom();
+  this.wtDom = this.instance.wtDom;
 
   var dblClickOrigin = [null, null, null, null]
     , dblClickTimeout = null;
@@ -983,22 +1031,6 @@ function WalkontableSelection(instance, settings) {
   if (settings.border) {
     this.border = new WalkontableBorder(instance, settings);
   }
-  this.onAdd = function (coords) {
-    var TD = instance.wtTable.getCell(coords);
-    if (typeof TD === 'object') {
-      if (settings.className) {
-        instance.wtDom.addClass(TD, settings.className);
-      }
-    }
-  };
-  /*this.onRemove = function (coords) {
-   var TD = instance.wtTable.getCell(coords);
-   if (typeof TD === 'object') {
-   if (settings.className) {
-   instance.wtDom.removeClass(TD, settings.className);
-   }
-   }
-   };*/
 }
 
 WalkontableSelection.prototype.add = function (coords) {
@@ -1068,44 +1100,41 @@ WalkontableSelection.prototype.getCorners = function () {
 };
 
 WalkontableSelection.prototype.draw = function (selectionsOnly) {
-  var TDs, TD, i, ilen, corners, r, c;
+  var corners, r, c;
 
-  ilen = this.selected.length;
-  if (ilen) {
+  var offsetRow = this.instance.getSetting('offsetRow')
+    , lastVisibleRow = offsetRow + this.instance.getSetting('displayRows') - 1
+    , offsetColumn = this.instance.getSetting('offsetColumn')
+    , lastVisibleColumn = offsetColumn + this.instance.getSetting('displayColumns') - 1;
+
+  if (this.selected.length) {
     corners = this.getCorners();
-    var offsetRow = this.instance.getSetting('offsetRow')
-      , lastVisibleRow = offsetRow + this.instance.getSetting('displayRows') - 1
-      , offsetColumn = this.instance.getSetting('offsetColumn')
-      , lastVisibleColumn = offsetColumn + this.instance.getSetting('displayColumns') - 1
-      , currentRowClassName = this.instance.getSetting('currentRowClassName')
-      , currentColumnClassName = this.instance.getSetting('currentColumnClassName');
 
     for (r = offsetRow; r <= lastVisibleRow; r++) {
       for (c = offsetColumn; c <= lastVisibleColumn; c++) {
-        TD = this.instance.wtTable.getCell([r, c]);
         if (r >= corners[0] && r <= corners[2] && c >= corners[1] && c <= corners[3]) {
           //selected cell
-          currentRowClassName && this.instance.wtDom.removeClass(TD, currentRowClassName);
-          currentColumnClassName && this.instance.wtDom.removeClass(TD, currentColumnClassName);
-          this.onAdd([r, c], TD);
+          this.settings.highlightRowClassName && this.instance.wtDom.tdRemoveClass(r - offsetRow, c - offsetColumn, this.settings.highlightRowClassName);
+          this.settings.highlightColumnClassName && this.instance.wtDom.tdRemoveClass(r - offsetRow, c - offsetColumn, this.settings.highlightColumnClassName);
+          this.settings.className && this.instance.wtDom.tdAddClass(r - offsetRow, c - offsetColumn, this.settings.className);
         }
         else if (r >= corners[0] && r <= corners[2]) {
           //selection is in this row
-          currentColumnClassName && this.instance.wtDom.removeClass(TD, currentColumnClassName);
-          currentRowClassName && this.instance.wtDom.addClass(TD, currentRowClassName);
-          this.instance.wtDom.removeClass(TD, this.settings.className);
+          this.settings.highlightColumnClassName && this.instance.wtDom.tdRemoveClass(r - offsetRow, c - offsetColumn, this.settings.highlightColumnClassName);
+          this.settings.highlightRowClassName && this.instance.wtDom.tdAddClass(r - offsetRow, c - offsetColumn, this.settings.highlightRowClassName);
+          this.settings.className && this.instance.wtDom.tdRemoveClass(r - offsetRow, c - offsetColumn, this.settings.className);
         }
         else if (c >= corners[1] && c <= corners[3]) {
           //selection is in this column
-          currentRowClassName && this.instance.wtDom.removeClass(TD, currentRowClassName);
-          currentColumnClassName && this.instance.wtDom.addClass(TD, currentColumnClassName);
-          this.instance.wtDom.removeClass(TD, this.settings.className);
+          this.settings.highlightRowClassName && this.instance.wtDom.tdRemoveClass(r - offsetRow, c - offsetColumn, this.settings.highlightRowClassName);
+          this.settings.highlightColumnClassName && this.instance.wtDom.tdAddClass(r - offsetRow, c - offsetColumn, this.settings.highlightColumnClassName);
+          this.settings.className && this.instance.wtDom.tdRemoveClass(r - offsetRow, c - offsetColumn, this.settings.className);
         }
         else {
           //no selection
-          currentRowClassName && this.instance.wtDom.removeClass(TD, currentRowClassName);
-          currentColumnClassName && this.instance.wtDom.removeClass(TD, currentColumnClassName);
-          this.instance.wtDom.removeClass(TD, this.settings.className);
+          this.settings.highlightRowClassName && this.instance.wtDom.tdRemoveClass(r - offsetRow, c - offsetColumn, this.settings.highlightRowClassName);
+          this.settings.highlightColumnClassName && this.instance.wtDom.tdRemoveClass(r - offsetRow, c - offsetColumn, this.settings.highlightColumnClassName);
+          this.settings.className && this.instance.wtDom.tdRemoveClass(r - offsetRow, c - offsetColumn, this.settings.className);
         }
       }
     }
@@ -1113,12 +1142,16 @@ WalkontableSelection.prototype.draw = function (selectionsOnly) {
     this.border && this.border.appear(corners);
   }
   else {
-    if (selectionsOnly && this.settings.className) {
-      TDs = this.instance.wtTable.TABLE.getElementsByTagName('TD');
-      for (i = 0, ilen = TDs.length; i < ilen; i++) {
-        this.instance.wtDom.removeClass(TDs[i], this.settings.className);
+    if (selectionsOnly) {
+      for (r = 0; r <= lastVisibleRow - offsetRow; r++) {
+        for (c = 0; c <= lastVisibleColumn - offsetColumn; c++) {
+          this.settings.highlightRowClassName && this.instance.wtDom.tdRemoveClass(r, c, this.settings.highlightRowClassName);
+          this.settings.highlightColumnClassName && this.instance.wtDom.tdRemoveClass(r, c, this.settings.highlightColumnClassName);
+          this.settings.className && this.instance.wtDom.tdRemoveClass(r, c, this.settings.className);
+        }
       }
     }
+
     this.border && this.border.disappear();
   }
 };
@@ -1400,7 +1433,7 @@ function WalkontableTable(instance) {
   //reference to instance
   this.instance = instance;
   this.TABLE = this.instance.getSetting('table');
-  this.wtDom = new WalkontableDom();
+  this.wtDom = this.instance.wtDom;
   this.wtDom.removeTextNodes(this.TABLE);
 
   this.hasEmptyCellProblem = ($.browser.msie && (parseInt($.browser.version, 10) <= 7));
@@ -1648,9 +1681,6 @@ WalkontableTable.prototype.adjustAvailableNodes = function () {
     for (c = 0; c < frozenColumnsCount; c++) {
       TR.appendChild(document.createElement('TH'));
     }
-    for (c = 0; c < displayTds; c++) {
-      TR.appendChild(document.createElement('TD'));
-    }
     this.TBODY.appendChild(TR);
     this.tbodyChildrenLength++;
   }
@@ -1777,6 +1807,7 @@ WalkontableTable.prototype._doDraw = function () {
 
     var visibilityFullRow = null;
     var visibilityFullColumn = null;
+    this.wtDom.tdResetCache();
 
     for (c = 0; c < displayTds; c++) { //in future use nextSibling; http://jsperf.com/nextsibling-vs-indexed-childnodes
       if (this.visibilityEdgeColumn !== null && offsetColumn + c > this.visibilityEdgeColumn) {
