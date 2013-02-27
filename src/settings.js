@@ -42,6 +42,7 @@ function WalkontableSettings(instance, settings) {
     onCellDblClick: null,
     onCellCornerMouseDown: null,
     onCellCornerDblClick: null,
+    onDraw: null,
 
     //constants
     scrollbarWidth: 10,

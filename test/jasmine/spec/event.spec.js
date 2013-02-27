@@ -402,4 +402,23 @@ describe('WalkontableEvent', function () {
     $td.trigger('mouseup');
     expect(clicked).toEqual(true);
   });
+
+  it("should call `onDraw` callback after render", function () {
+    var count = 0
+      , wt = new Walkontable({
+        table: $table[0],
+        data: getData,
+        totalRows: getTotalRows,
+        totalColumns: getTotalColumns,
+        offsetRow: 10,
+        offsetColumn: 2,
+        height: 200,
+        width: 100,
+        onDraw: function () {
+          count++;
+        }
+      });
+    wt.draw();
+    expect(count).toEqual(1);
+  });
 });

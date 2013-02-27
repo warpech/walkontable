@@ -54,6 +54,7 @@ Walkontable.prototype._doDraw = function (selectionsOnly) {
   this.lastOffsetRow = this.getSetting('offsetRow');
   this.lastOffsetColumn = this.getSetting('offsetColumn');
   this.wtTable.draw(selectionsOnly);
+  this.getSetting('onDraw');
 };
 
 Walkontable.prototype.update = function (settings, value) {
