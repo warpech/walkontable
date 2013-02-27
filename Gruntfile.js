@@ -16,30 +16,31 @@
  */
 module.exports = function (grunt) {
   grunt.initConfig({
-    pkg: '<json:package.json>',
-    meta: {
-      banner: '/**\n' +
-        ' * <%= pkg.name %> <%= pkg.version %>\n' +
-        ' * \n' +
-        ' * Date: <%= (new Date()).toString() %>\n' +
-        '*/'
-    },
+    pkg: grunt.file.readJSON('package.json'),
     concat: {
+      options: {
+        banner: '/**\n' +
+          ' * <%= pkg.name %> <%= pkg.version %>\n' +
+          ' * \n' +
+          ' * Date: <%= (new Date()).toString() %>\n' +
+          '*/\n\n'
+      },
       full_js: {
         src: [
-          '<banner>',
-          'src/*',
-          'src/3rdparty/*'
+          'src/*.js',
+          'src/3rdparty/*.js'
         ],
         dest: 'dist/walkontable.js'
       }
     },
     watch: {
-      files: ['src/*', 'src/3rdparty/*'],
-      tasks: 'concat'
+      files: ['src/*.js', 'src/3rdparty/*.js'],
+      tasks: ['concat']
     }
   });
 
   // Default task.
-  grunt.registerTask('default', 'concat');
+  grunt.registerTask('default', ['concat']);
+
+  grunt.loadNpmTasks('grunt-contrib-concat');
 };
