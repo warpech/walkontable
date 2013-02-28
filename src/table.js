@@ -11,6 +11,7 @@ function WalkontableTable(instance) {
   if (this.hasCellSpacingProblem) { //IE7
     this.TABLE.cellSpacing = 0;
   }
+  this.TABLE.setAttribute('tabindex', 10000); //http://www.barryvan.com.au/2009/01/onfocus-and-onblur-for-divs-in-fx/; 32767 is max tabindex for IE7,8
 
   this.visibilityStartRow = this.visibilityStartColumn = this.visibilityEdgeRow = this.visibilityEdgeColumn = null;
 
@@ -263,7 +264,9 @@ WalkontableTable.prototype.adjustAvailableNodes = function () {
   for (var r = 0, rlen = TRs.length; r < rlen; r++) {
     trChildrenLength = TRs[r].childNodes.length;
     while (trChildrenLength < displayTds + frozenColumnsCount) {
-      TRs[r].appendChild(document.createElement('TD'));
+      var TD = document.createElement('TD');
+      TD.setAttribute('tabindex', 10000); //http://www.barryvan.com.au/2009/01/onfocus-and-onblur-for-divs-in-fx/; 32767 is max tabindex for IE7,8
+      TRs[r].appendChild(TD);
       trChildrenLength++;
     }
     while (trChildrenLength > displayTds + frozenColumnsCount) {
