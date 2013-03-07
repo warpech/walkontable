@@ -291,6 +291,35 @@ describe('WalkontableTable', function () {
     expect($table.find('td:first')[0].style.backgroundColor).toBe('yellow');
   });
 
+  it("should reset cell style when table is scrolled horizontally", function () {
+    var wt = new Walkontable({
+      table: $table[0],
+      data: getData,
+      totalRows: getTotalRows,
+      totalColumns: getTotalColumns,
+      offsetRow: 0,
+      height: 200,
+      width: 100,
+      cellRenderer: function (row, column, TD) {
+        var cellData = getData(row, column);
+        if (cellData !== void 0) {
+          TD.innerHTML = cellData + column;
+        }
+        else {
+          TD.innerHTML = '';
+        }
+        TD.className = '';
+        if (column === 0) {
+          TD.style.backgroundColor = 'yellow';
+        }
+      }
+    });
+    wt.draw();
+    expect($table.find('td:first')[0].style.backgroundColor).toBe('yellow');
+    wt.scrollViewport([0, 2]).draw();
+    expect($table.find('td:first')[0].style.backgroundColor).not.toBe('yellow');
+  });
+
   it("should remove rows if they were removed in data source", function () {
     this.data.splice(8, this.data.length - 8); //second param is required by IE7-8
 

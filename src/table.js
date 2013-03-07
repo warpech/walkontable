@@ -388,6 +388,7 @@ WalkontableTable.prototype._doDraw = function () {
       else {
         TD = TR.childNodes[c + frozenColumnsCount];
         TD.className = '';
+        TD.removeAttribute('style');
         this.instance.getSetting('cellRenderer', offsetRow + r, offsetColumn + c, TD);
         if (this.hasEmptyCellProblem && TD.innerHTML === '') { //IE7
           TD.innerHTML = '&nbsp;';
