@@ -2,17 +2,18 @@
  * This file is used to build Walkontable from `src/*`
  *
  * Installation:
- * 1. Install Grunt (`npm install -g grunt`)
+ * 1. Install Grunt CLI (`npm install -g grunt-cli`)
+ * 1. Install Grunt 0.4.0 and other dependencies (`npm install`)
  *
  * Build:
- * Execute `grunt` from root directory of this directory (where grunt.js is)
+ * Execute `grunt` from root directory of this directory (where Gruntfile.js is)
  * To execute automatically after each change, execute `grunt --force default watch`
  *
  * Result:
  * building Walkontable will create files:
  *  - dist/walkontable.js
  *
- * See https://github.com/cowboy/grunt for more information about Grunt
+ * See http://gruntjs.com/getting-started for more information about Grunt
  */
 module.exports = function (grunt) {
   grunt.initConfig({
@@ -43,4 +44,5 @@ module.exports = function (grunt) {
   grunt.registerTask('default', ['concat']);
 
   grunt.loadNpmTasks('grunt-contrib-concat');
+  grunt.loadNpmTasks('grunt-contrib-watch');
 };
