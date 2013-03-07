@@ -103,6 +103,9 @@ $(window).load(function () {
     }})
     .on('cycle', function (event) {
       $("body").prepend($('<div>' + String(event.target) + '</div>'));
+      if (window.console) {
+        console.log("Benchmark finished: " + String(event.target));
+      }
     })
     .run({async: false});
 });
