@@ -34,6 +34,22 @@ module.exports = function (grunt) {
         dest: 'dist/walkontable.js'
       }
     },
+    jasmine: { //simply run tests by `grunt test`
+      src: [
+        'test/jasmine/lib/jquery.min.js',
+        'src/*.js',
+        'src/3rdparty/*.js',
+        'test/jasmine/SpecHelper.js'
+      ],
+      options: {
+        specs: [
+          'test/jasmine/spec/*.js'
+        ],
+        styles: [
+          'css/walkontable.css'
+        ]
+      }
+    },
     watch: {
       files: ['src/*.js', 'src/3rdparty/*.js'],
       tasks: ['concat']
@@ -42,7 +58,9 @@ module.exports = function (grunt) {
 
   // Default task.
   grunt.registerTask('default', ['concat']);
+  grunt.registerTask('test', ['concat', 'jasmine']);
 
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-contrib-jasmine');
 };
