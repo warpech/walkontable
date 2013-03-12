@@ -285,17 +285,7 @@ WalkontableTable.prototype.draw = function (selectionsOnly) {
     //this.TABLE.appendChild(this.TBODY);
   }
 
-  //redraw selections and scrollbars
-  if (this.instance.hasSetting('async')) {
-    var that = this;
-    window.clearTimeout(this.instance.selectionsTimeout);
-    this.instance.selectionsTimeout = window.setTimeout(function () {
-      that.refreshPositions(selectionsOnly);
-    }, 0);
-  }
-  else {
-    this.refreshPositions(selectionsOnly);
-  }
+  this.refreshPositions(selectionsOnly);
 
   this.instance.drawn = true;
   return this;
