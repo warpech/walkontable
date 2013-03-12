@@ -288,10 +288,10 @@ WalkontableTable.prototype.draw = function (selectionsOnly) {
   //redraw selections and scrollbars
   if (this.instance.hasSetting('async')) {
     var that = this;
-    window.cancelRequestAnimFrame(this.selectionsFrame);
-    that.selectionsFrame = window.requestAnimFrame(function () {
+    window.clearTimeout(this.instance.selectionsTimeout);
+    this.instance.selectionsTimeout = window.setTimeout(function () {
       that.refreshPositions(selectionsOnly);
-    });
+    }, 0);
   }
   else {
     this.refreshPositions(selectionsOnly);

@@ -6,8 +6,8 @@ function WalkontableEvent(instance) {
 
   this.wtDom = this.instance.wtDom;
 
-  var dblClickOrigin = [null, null, null, null]
-    , dblClickTimeout = null;
+  var dblClickOrigin = [null, null, null, null];
+  this.instance.dblClickTimeout = null;
 
   var onMouseDown = function (event) {
     var cell = that.parentCell(event.target);
@@ -60,7 +60,7 @@ function WalkontableEvent(instance) {
       }
 
       if (dblClickOrigin[3] !== null && dblClickOrigin[3] === dblClickOrigin[2]) {
-        if (dblClickTimeout && dblClickOrigin[2] === dblClickOrigin[1] && dblClickOrigin[1] === dblClickOrigin[0]) {
+        if (that.instance.dblClickTimeout && dblClickOrigin[2] === dblClickOrigin[1] && dblClickOrigin[1] === dblClickOrigin[0]) {
           if (cell.TD) {
             that.instance.getSetting('onCellDblClick', event, cell.coords, cell.TD);
           }
@@ -68,13 +68,13 @@ function WalkontableEvent(instance) {
             that.instance.getSetting('onCellCornerDblClick', event, cell.coords, cell.TD);
           }
 
-          clearTimeout(dblClickTimeout);
-          dblClickTimeout = null;
+          clearTimeout(that.instance.dblClickTimeout);
+          that.instance.dblClickTimeout = null;
         }
         else {
-          clearTimeout(dblClickTimeout);
-          dblClickTimeout = setTimeout(function () {
-            dblClickTimeout = null;
+          clearTimeout(that.instance.dblClickTimeout);
+          that.instance.dblClickTimeout = setTimeout(function () {
+            that.instance.dblClickTimeout = null;
           }, 500);
         }
       }

@@ -39,7 +39,7 @@ Walkontable.prototype.draw = function (selectionsOnly) {
   //this.instance.scrollViewport([this.instance.getSetting('offsetRow'), this.instance.getSetting('offsetColumn')]); //needed by WalkontableScroll -> remove row from the last scroll page should scroll viewport a row up if needed
   if (this.hasSetting('async')) {
     var that = this;
-    that.drawFrame = setTimeout(function () {
+    that.drawTimeout = setTimeout(function () {
       that._doDraw(selectionsOnly);
     }, 0);
   }
@@ -72,8 +72,8 @@ Walkontable.prototype.scrollHorizontal = function (delta) {
 Walkontable.prototype.scrollViewport = function (coords) {
   if (this.hasSetting('async')) {
     var that = this;
-    clearTimeout(that.scrollFrame);
-    that.scrollFrame = setTimeout(function () {
+    clearTimeout(that.scrollTimeout);
+    that.scrollTimeout = setTimeout(function () {
       that.wtScroll.scrollViewport(coords);
     }, 0);
   }
@@ -99,4 +99,12 @@ Walkontable.prototype.getSetting = function (key, param1, param2, param3) {
 
 Walkontable.prototype.hasSetting = function (key) {
   return this.wtSettings.has(key);
+};
+
+Walkontable.prototype.destroy = function () {
+  clearTimeout(this.drawTimeout);
+  clearTimeout(this.scrollTimeout);
+  clearTimeout(this.wheelTimeout);
+  clearTimeout(this.dblClickTimeout);
+  clearTimeout(this.selectionsTimeout);
 };
