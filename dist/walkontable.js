@@ -1,7 +1,7 @@
 /**
  * walkontable 0.2.0
  * 
- * Date: Mon Mar 18 2013 16:23:12 GMT+0100 (Central European Standard Time)
+ * Date: Mon Mar 18 2013 18:12:25 GMT+0100 (Central European Standard Time)
 */
 
 function WalkontableBorder(instance, settings) {
@@ -1969,8 +1969,15 @@ WalkontableTable.prototype.getCell = function (coords) {
     }
     else {
       var frozenColumns = this.instance.getSetting('frozenColumns')
-        , frozenColumnsCount = frozenColumns ? frozenColumns.length : 0;
-      return this.TBODY.childNodes[coords[0] - offsetRow].childNodes[coords[1] - offsetColumn + frozenColumnsCount];
+        , frozenColumnsCount = (frozenColumns ? frozenColumns.length : 0)
+        , tr = this.TBODY.childNodes[coords[0] - offsetRow];
+
+      if (typeof tr === "undefined") { //this block is only needed in async mode
+        this.adjustAvailableNodes();
+        tr = this.TBODY.childNodes[coords[0] - offsetRow];
+      }
+
+      return tr.childNodes[coords[1] - offsetColumn + frozenColumnsCount];
     }
   }
 };
