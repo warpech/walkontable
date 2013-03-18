@@ -30,8 +30,8 @@ function WalkontableScrollbar(instance, type) {
   this.dragdealer = new Dragdealer(this.slider, {
     vertical: (type === 'vertical'),
     horizontal: (type === 'horizontal'),
+    slide: false,
     speed: 100,
-    yPrecision: 100,
     animationCallback: function (x, y) {
       if (firstRun) {
         firstRun = false;
