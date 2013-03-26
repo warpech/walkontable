@@ -1,7 +1,7 @@
 /**
  * walkontable 0.2.0
  * 
- * Date: Mon Mar 18 2013 18:12:25 GMT+0100 (Central European Standard Time)
+ * Date: Tue Mar 26 2013 17:38:01 GMT+0100 (Central European Standard Time)
 */
 
 function WalkontableBorder(instance, settings) {
@@ -104,11 +104,11 @@ WalkontableBorder.prototype.appear = function (corners) {
     top = minTop - containerOffset.top - 1;
     left = minLeft - containerOffset.left - 1;
 
-    if (parseInt($from.css('border-top-width')) > 0) {
+    if (parseInt($from.css('border-top-width'), 10) > 0) {
       top += 1;
       height -= 1;
     }
-    if (parseInt($from.css('border-left-width')) > 0) {
+    if (parseInt($from.css('border-left-width'), 10) > 0) {
       left += 1;
       width -= 1;
     }
@@ -455,6 +455,17 @@ WalkontableDom.prototype.removeTextNodes = function (elem, parent) {
     }
   }
 };
+
+// Remove childs function
+// WARNING - this doesn't unload events and data attached by jQuery
+// http://jsperf.com/jquery-html-vs-empty-vs-innerhtml/9
+WalkontableDom.prototype.empty = function (element) {
+  var child;
+  while (child = element.lastChild) {
+    element.removeChild(child);
+  }
+};
+
 
 /**
  * seems getBounding is usually faster: http://jsperf.com/offset-vs-getboundingclientrect/4
@@ -877,7 +888,7 @@ WalkontableScrollbar.prototype.onScroll = function (delta) {
     var total = this.instance.getSetting(keys[1]);
     var display = this.instance.getSetting(keys[2]);
     if (total > display) {
-      var newOffset = Math.round(parseInt(this.handle.style[keys[3]]) * total / parseInt(this.slider.style[keys[4]])); //offset = handlePos * totalRows / offsetRows
+      var newOffset = Math.round(parseInt(this.handle.style[keys[3]], 10) * total / parseInt(this.slider.style[keys[4]], 10)); //offset = handlePos * totalRows / offsetRows
 
       if (delta === 1) {
         if (this.type === 'vertical') {
@@ -954,6 +965,7 @@ WalkontableScrollbar.prototype.refresh = function () {
   }
 
   var ratio
+    , delta
     , sliderSize
     , handleSize
     , handlePosition
@@ -1014,14 +1026,16 @@ WalkontableScrollbar.prototype.refresh = function () {
   if (handleSize < 10) {
     handleSize = 15;
   }
+
   handlePosition = Math.round(sliderSize * (offsetCount / totalCount));
-  if (handlePosition > tableWidth - handleSize) {
-    handlePosition = tableWidth - handleSize;
+  if ((delta = tableWidth - handleSize) > 0 && handlePosition > delta) {
+    handlePosition = delta;
   }
 
   if (this.type === 'vertical') {
     this.handle.style.height = handleSize + 'px';
     this.handle.style.top = handlePosition + 'px';
+
   }
   else { //horizontal
     this.handle.style.width = handleSize + 'px';
@@ -1291,7 +1305,7 @@ function WalkontableSettings(instance, settings) {
         TD.innerHTML = cellData;
       }
       else {
-        TD.innerHTML = '';
+        this.wtDom.empty(TD);
       }
     },
     columnWidth: 50,
@@ -1392,6 +1406,9 @@ WalkontableSettings.prototype.displayRows = function () {
     , calculated;
 
   if (this.settings['height']) {
+    if (typeof this.settings['height'] !== 'number') {
+      throw new Error('Walkontable height parameter must be a number (' + typeof this.settings['height'] + ' given)');
+    }
     estimated = Math.ceil(this.settings['height'] / 20); //silly assumption but should be fine for now
     calculated = this.getSetting('totalRows') - this.getSetting('offsetRow');
     if (calculated < 0) {
@@ -1412,6 +1429,9 @@ WalkontableSettings.prototype.displayColumns = function () {
     , calculated;
 
   if (this.settings['width']) {
+    if (typeof this.settings['width'] !== 'number') {
+      throw new Error('Walkontable width parameter must be a number (' + typeof this.settings['width'] + ' given)');
+    }
     estimated = Math.ceil(this.settings['width'] / 50); //silly assumption but should be fine for now
     calculated = this.getSetting('totalColumns') - this.getSetting('offsetColumn');
     if (calculated < 0) {
@@ -1652,12 +1672,13 @@ WalkontableTable.prototype.refreshStretching = function () {
 };
 
 WalkontableTable.prototype.adjustAvailableNodes = function () {
-  var totalRows = this.instance.getSetting('totalRows')
-    , totalColumns = this.instance.getSetting('totalColumns')
-    , displayRows = this.instance.getSetting('displayRows')
-    , displayColumns = this.instance.getSetting('displayColumns')
+  var instance = this.instance
+    , totalRows = instance.getSetting('totalRows')
+    , totalColumns = instance.getSetting('totalColumns')
+    , displayRows = instance.getSetting('displayRows')
+    , displayColumns = instance.getSetting('displayColumns')
     , displayTds
-    , frozenColumns = this.instance.getSetting('frozenColumns')
+    , frozenColumns = instance.getSetting('frozenColumns')
     , frozenColumnsCount = frozenColumns ? frozenColumns.length : 0
     , TR
     , c;
@@ -1776,7 +1797,7 @@ WalkontableTable.prototype._doDraw = function () {
         frozenColumns[c](null, TH);
       }
       else {
-        TH.innerHTML = '';
+        this.wtDom.empty(TH);
       }
       if (this.hasEmptyCellProblem && TH.innerHTML === '') { //IE7
         TH.innerHTML = '&nbsp;';
