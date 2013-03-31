@@ -1,5 +1,6 @@
 function Walkontable(settings) {
-  var originalHeaders = [];
+  var self = this,
+      originalHeaders = [];
 
   //bootstrap from settings
   this.wtSettings = new WalkontableSettings(this, settings);
@@ -16,7 +17,7 @@ function Walkontable(settings) {
     }
     if (!this.hasSetting('columnHeaders')) {
       this.update('columnHeaders', function (column, TH) {
-        TH.innerHTML = originalHeaders[column];
+        self.wtDom.avoidInnerHTML(TH, originalHeaders[column]);
       });
     }
   }
@@ -51,6 +52,10 @@ Walkontable.prototype.draw = function (selectionsOnly) {
 
 Walkontable.prototype._doDraw = function (selectionsOnly) {
   selectionsOnly = selectionsOnly && this.getSetting('offsetRow') === this.lastOffsetRow && this.getSetting('offsetColumn') === this.lastOffsetColumn;
+  if (this.drawn) {
+    this.scrollVertical(0);
+    this.scrollHorizontal(0);
+  }
   this.lastOffsetRow = this.getSetting('offsetRow');
   this.lastOffsetColumn = this.getSetting('offsetColumn');
   this.wtTable.draw(selectionsOnly);

@@ -177,9 +177,14 @@ WalkontableDom.prototype.removeTextNodes = function (elem, parent) {
   }
 };
 
-// Remove childs function
-// WARNING - this doesn't unload events and data attached by jQuery
-// http://jsperf.com/jquery-html-vs-empty-vs-innerhtml/9
+/**
+ * Remove childs function
+ * WARNING - this doesn't unload events and data attached by jQuery
+ * http://jsperf.com/jquery-html-vs-empty-vs-innerhtml/9
+ * @param element
+ * @returns {void}
+ */
+//
 WalkontableDom.prototype.empty = function (element) {
   var child;
   while (child = element.lastChild) {
@@ -187,36 +192,28 @@ WalkontableDom.prototype.empty = function (element) {
   }
 };
 
+/**
+ * Insert content into element trying avoid innerHTML method.
+ * @return {void}
+ */
+WalkontableDom.prototype.avoidInnerHTML = function (element, content) {
+  if ((/(<(.*)>|&(.*);)/g).test(content)) {
+    element.innerHTML = content;
+  } else {
+    var child;
+    while (child = element.lastChild) {
+      element.removeChild(child);
+    }
+
+    element.appendChild(document.createTextNode(content));
+  }
+};
 
 /**
  * seems getBounding is usually faster: http://jsperf.com/offset-vs-getboundingclientrect/4
  * but maybe offset + cache would work?
  * edit: after more tests turns out offsetLeft/Top is faster
  */
-/*WalkontableDom.prototype.offset = function (elem) {
- var rect = elem.getBoundingClientRect();
- return {
- top: rect.top + document.documentElement.scrollTop,
- left: rect.left + document.documentElement.scrollLeft
- };
- };*/
-
-/*
- WalkontableDom.prototype.offsetLeft = function (elem) {
- var offset = elem.offsetLeft;
- while (elem = elem.offsetParent) {
- offset += elem.offsetLeft;
- }
- return offset;
- };
-
- WalkontableDom.prototype.offsetTop = function (elem) {
- var offset = elem.offsetTop;
- while (elem = elem.offsetParent) {
- offset += elem.offsetTop;
- }
- return offset;
- };*/
 
 WalkontableDom.prototype.offset = function (elem) {
   var offsetLeft = elem.offsetLeft
