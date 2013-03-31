@@ -70,21 +70,23 @@ WalkontableDom.prototype.tdResetCache = function () {
   }
 };
 
-if (document.documentElement.classList) {
-  // html5 classList api
+if (document.body.classList) {
+
+  // HTML5 classList API
   WalkontableDom.prototype.hasClass = function (ele, cls) {
     return ele.classList.contains(cls);
   };
 
   WalkontableDom.prototype.addClass = function (ele, cls) {
-    ele.classList.add(cls);
+    return ele.classList.add(cls);
   };
 
   WalkontableDom.prototype.removeClass = function (ele, cls) {
-    ele.classList.remove(cls);
+    return ele.classList.remove(cls);
   };
-}
-else {
+
+} else {
+
   //http://snipplr.com/view/3561/addclass-removeclass-hasclass/
   WalkontableDom.prototype.hasClass = function (ele, cls) {
     return ele.className.match(new RegExp('(\\s|^)' + cls + '(\\s|$)'));
@@ -100,6 +102,7 @@ else {
       ele.className = ele.className.replace(reg, ' ').replace(/^\s\s*/, '').replace(/\s\s*$/, ''); //last 2 replaces do right trim (see http://blog.stevenlevithan.com/archives/faster-trim-javascript)
     }
   };
+
 }
 
 /*//http://net.tutsplus.com/tutorials/javascript-ajax/javascript-from-null-cross-browser-event-binding/
