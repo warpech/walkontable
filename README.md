@@ -1,3 +1,5 @@
+## Warning: This project is currently not maintained in this repo, but as part of Handsontable: https://github.com/warpech/jquery-handsontable/tree/master/src/3rdparty/walkontable
+
 # Walkontable
 
 This is a playground for next table view engine that will enable virtual rendering in [Handsontable](http://handsontable.com/).
